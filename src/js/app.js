@@ -1,15 +1,17 @@
-const { providers } = require("web3");
+// const { providers } = require("web3");
 
 App = {
   web3Provider: null,
   contracts: {},
   account: '0x0',
-
-  init: function() {
+  init: async function() {
+    await $.getJSON("env.json", function(e) {
+      App.env = e;
+    });
     return App.initWeb3();
   },
 
-  initWeb3: function() {
+  initWeb3: async function() {
     // if (typeof window.ethereum !== 'undefined') {
     //   // If a web3 instance is already provided by Meta Mask.
     //   App.web3Provider = window.ethereum;
@@ -23,13 +25,14 @@ App = {
     //     });
     //   });
     // } else {
-      // Specify default instance if no web3 instance provided
-      App.web3Provider = new Web3.providers.HttpProvider('http://192.168.18.5:7545');
+      // Specify default instance if no web3 instance 
+      App.web3Provider = new Web3.providers.HttpProvider(App.env.ethereumServer);
       web3 = new Web3(App.web3Provider);
     // }
     wallet = ethers.Wallet.createRandom();
-    etherProvider = new ethers.providers.JsonRpcProvider('http://192.168.18.5:7545');
-    App.importAccounts(wallet.privateKey);
+    etherProvider = new ethers.providers.JsonRpcProvider(App.env.ethereumServer);
+    await App.importAccounts(wallet.privateKey);
+    await App.requestEthersForRegistration(wallet.address);
     return App.initContract();
   },
   importAccounts:async function(privateKey,passphrase='mypass'){
@@ -38,7 +41,7 @@ App = {
     // await etherProvider.send('hardhat_impersonateAccount', [account]);
     // await etherProvider.send('hardhat_impersonateAccount',[wallet.address]);
     try{
-      const responce = await axios.post('http://192.168.18.5:7545',{
+      const responce = await axios.post(App.env.ethereumServer,{
         jsonrpc:'2.0',
         method:'personal_importRawKey',
         params:[privateKey,passphrase],
@@ -48,7 +51,7 @@ App = {
       console.log("Imported acount: "+responce.data.result);
       console.log(responce.data);
 
-      const unlockResponce = await axios.post('http://192.168.18.5:7545',{
+      const unlockResponce = await axios.post(App.env.ethereumServer,{
         jsonrpc:'2.0',
         method:'personal_unlockAccount',
         params:[responce.data.result,passphrase,null],
@@ -61,6 +64,13 @@ App = {
     }catch(err){
       console.log("error importing account");
       throw err;
+    }
+  },
+  requestEthersForRegistration:async function(account) {
+    const res = await axios.post(App.env.helper+'/allocateEthersForRegistration',{address:account});
+    if(res.data.error) console.log("Error occured : "+res.data.error.message);
+    else {
+      console.log(res.data);
     }
   },
   initContract: function() {
