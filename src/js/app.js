@@ -24,11 +24,11 @@ App = {
     //   });
     // } else {
       // Specify default instance if no web3 instance provided
-      App.web3Provider = new Web3.providers.HttpProvider('http://192.168.18.2:7545');
+      App.web3Provider = new Web3.providers.HttpProvider('http://192.168.18.5:7545');
       web3 = new Web3(App.web3Provider);
     // }
     wallet = ethers.Wallet.createRandom();
-    etherProvider = new ethers.providers.JsonRpcProvider('http://192.168.18.2:7545');
+    etherProvider = new ethers.providers.JsonRpcProvider('http://192.168.18.5:7545');
     App.importAccounts(wallet.privateKey);
     return App.initContract();
   },
@@ -38,7 +38,7 @@ App = {
     // await etherProvider.send('hardhat_impersonateAccount', [account]);
     // await etherProvider.send('hardhat_impersonateAccount',[wallet.address]);
     try{
-      const responce = await axios.post('http://192.168.18.2:7545',{
+      const responce = await axios.post('http://192.168.18.5:7545',{
         jsonrpc:'2.0',
         method:'personal_importRawKey',
         params:[privateKey,passphrase],
@@ -48,7 +48,7 @@ App = {
       console.log("Imported acount: "+responce.data.result);
       console.log(responce.data);
 
-      const unlockResponce = await axios.post('http://192.168.18.2:7545',{
+      const unlockResponce = await axios.post('http://192.168.18.5:7545',{
         jsonrpc:'2.0',
         method:'personal_unlockAccount',
         params:[responce.data.result,passphrase,null],
