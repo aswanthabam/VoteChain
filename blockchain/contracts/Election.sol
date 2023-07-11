@@ -13,6 +13,7 @@ contract Election {
         uint voteCount;
     }
 
+    event VotedEvent(address _from);
     // struct Voter {
     //     uint uid;
     //     string name;
@@ -47,5 +48,6 @@ contract Election {
 
         // update candidate vote Count
         candidates[_candidateId].voteCount++;
+        emit VotedEvent(msg.sender);
     }
 }

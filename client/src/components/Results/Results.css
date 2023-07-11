@@ -1,0 +1,7 @@
+*{
+    font-size: 17px;
+}
+td {
+    width:20%;
+    border: 1px solid black;
+}

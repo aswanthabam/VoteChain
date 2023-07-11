@@ -1,0 +1,38 @@
+#!/bin/bash
+echo -n "
+What do you want to do ?
+  1) Start client
+  2) Start Helper Server
+  3) Open Truffle Console
+  4) Compile Contracts
+  5) Migrate Contracts (with update client)
+  6) Production build
+  
+  10) Start Dev
+Choose : "
+
+read opt
+
+if [ "$opt" -eq 1 ]
+then
+  cd client && npm start
+elif [ "$opt" -eq 2 ]
+then 
+  cd helper && nodemon
+elif [ "$opt" -eq 3 ]
+then
+  cd blockchain && truffle console
+elif [ "$opt" -eq 4 ]
+then
+  cd blockchain && truffle compile
+elif [ "$opt" -eq 5 ]
+then 
+  cd blockchain && truffle migrate --reset && cp build/contracts/Election.json ../client/src/Election.json
+elif [ "$opt" -eq 10 ]
+then 
+  gnome-terminal --tab --title="Client Server" -- bash -c 'cd client && npm start'
+  gnome-terminal --tab --title="Helper Server" -- bash -c 'cd helper && nodemon'
+  gnome-terminal --tab --title="Ganache" -- bash -c '~/Desktop/ganache'
+else 
+  echo "Invalid option"
+fi
