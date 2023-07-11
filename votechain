@@ -9,6 +9,7 @@ What do you want to do ?
   6) Production build
   
   10) Start Dev
+  11) Git push
 Choose : "
 
 read opt
@@ -33,6 +34,11 @@ then
   gnome-terminal --tab --title="Client Server" -- bash -c 'cd client && npm start'
   gnome-terminal --tab --title="Helper Server" -- bash -c 'cd helper && nodemon'
   gnome-terminal --tab --title="Ganache" -- bash -c '~/Desktop/ganache'
+elif [ "$opt" -eq 11 ]
+then
+  echo -n "Enter commit message : "
+  read comm
+  git add . && git commit -m "$comm" && git push origin main
 else 
   echo "Invalid option"
 fi
