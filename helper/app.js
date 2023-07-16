@@ -9,8 +9,8 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const Tx = require('ethereumjs-tx').Transaction;
 
-const senderAddress="0x23b0438547a478A4a32501961137Dd0E1E8C36FE";
-const senderPrivateKey="0x411dfacefaff8672907b8c0163485422cdc9d63b80f5414825ecc2dadab7f11e";
+const senderAddress= env.BLOCKCHAIN_SENDER_ADDRESS || "0x23b0438547a478A4a32501961137Dd0E1E8C36FE";
+const senderPrivateKey= env.BLOCKCHAIN_SENDER_PRIVATE_KEY || "0x411dfacefaff8672907b8c0163485422cdc9d63b80f5414825ecc2dadab7f11e";
 
 app.use(cors());
 app.use(logger('dev'));
@@ -27,7 +27,7 @@ app.use(function(req, res, next) {
   next();
 });
 app.use((req,res,next) => {
-  web3Provider = new web3.Web3.providers.HttpProvider('http://192.168.18.2:7545');
+  web3Provider = new web3.Web3.providers.HttpProvider(env.BLOCKCHAIN_URL || 'http://192.168.18.2:7545');
   req.web3 = new web3.Web3(web3Provider);
   req.senderAccount = {
     privateKey: Buffer.from(senderPrivateKey, 'hex'),

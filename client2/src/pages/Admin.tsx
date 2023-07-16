@@ -14,18 +14,22 @@ export default function Admin ({navigation, route}) {
     async function init() {
       setHelperUrl(await AsyncStorage.getItem("helperServerUrl") || "http://192.168.18.2:3131");
       setBlockchainUrl(await AsyncStorage.getItem("blockchainUrl") || "http://192.168.18.2:7545");
+      setContractAddress(await AsyncStorage.getItem("contractAddress") || "0x6ea72486a146e2b3cD3D1d5908B3107eB72F4991");
     }
     init();
   },[])
   const [helperUrl,setHelperUrl] = useState();
   const [blockchainUrl,setBlockchainUrl] = useState();
+  const [contractAddress,setContractAddress] = useState();
 
   const saveValues = () => {
     console.log("Saving config");
-    console.log(helperUrl);
-    console.log(blockchainUrl);
+    console.log("Helper: ",helperUrl);
+    console.log("Blockchain URL: ",blockchainUrl);
+    console.log("Contract Address: ",contractAddress);
     AsyncStorage.setItem("helperServerUrl",helperUrl);
     AsyncStorage.setItem("blockchainUrl",blockchainUrl);
+    AsyncStorage.setItem("contractAddress",contractAddress);
   };
 
   return (
@@ -42,6 +46,12 @@ export default function Admin ({navigation, route}) {
         value={blockchainUrl}
         onChangeText={setBlockchainUrl}
         placeholder="Blockchain URL"></TextInput>
+      <Text>Contract Address</Text>
+      <TextInput
+        style={textStyle}
+        value={contractAddress}
+        onChangeText={setContractAddress}
+        placeholder="Contract Address"></TextInput>
       <Button
         title="Save"
         onPress={saveValues}

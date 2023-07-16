@@ -1,11 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import {Text, View,StyleSheet, Button} from 'react-native';
 import Results from '../components/Results/Results';
-import "react-native-get-random-values"
+import { getRandomValues } from 'react-native-quick-crypto';
+global.getRandomValues = getRandomValues;
+
 // Import the the ethers shims (**BEFORE** ethers)
 import "@ethersproject/shims"
-import {Wallet, ethers} from 'ethers';
-import 'react-native-crypto';
+import {Wallet, ethers} from '../ethers';
+// import 'react-native-crypto';
 
 //import { Buffer } from 'buffer';
 import contractABI from '../election.json';
@@ -19,38 +21,45 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 // // Access the native modules
 // const { RandomNumberGenerator } = NativeModules;
 
-export default function Home ({navigation, route}) {
-  const [state, setState] = useState("");
-  const [candidates,setCandidates] = useState([]);
-  const [stateProvider,setProvider] = useState({});
-  const [stateElection,setElection] = useState({});
-  const [stateWallet,setWallet] = useState(null);
-
+export default class Home extends React.Component {
+  state = {
+    candidates:[],
+    provider:{},
+    election:{},
+    wallet:null,
+    test:"Test Result"
+  }
   // variables
-  var provider,election,wallet;
-
-  useEffect(()=>{
-    async function init () {
-      const [provider,election] = await initWeb3();
-      await loadCandidates(election);
-      await loadAccount();
-    };
-    init();
-  },[]);
-
-  const initWeb3 = async () => {
+  // var provider,election,wallet;
+  constructor(val: any) {
+    super(val);
+    this.set = this.set.bind(this);
+    this.vote = this.vote.bind(this);
+  }
+  async componentDidMount(){
+    await this.init();
+  }
+  async init () {
+    const [provider,election] = await this.initWeb3();
+    await this.loadCandidates(election);
+    await this.loadAccount(provider);
+  };
+  set(val : any) {
+    return new Promise<Boolean>((resolve => {this.setState(val,()=>{resolve(true);})}))
+  }
+  async initWeb3() {
     console.log("Initializing Ethers.js ...");
     var url = await AsyncStorage.getItem("blockchainUrl") || "http://192.168.18.2:7545";
     console.log("The url is : ",url);
-    provider = new ethers.JsonRpcProvider(url); // JSONRpc provider
-    await setProvider(provider); // Set the state
+    var provider = new ethers.JsonRpcProvider(url); // JSONRpc provider
+    await this.set({provider:provider}); // Set the state
     console.log("Loading contracts");
-    election = new ethers.Contract("0x6ea72486a146e2b3cD3D1d5908B3107eB72F4991", contractABI, provider); // Load Election contract
-    await setElection(prev => election); // Set the state
+    var election = new ethers.Contract(await AsyncStorage.getItem("contractAddress") || "0x6ea72486a146e2b3cD3D1d5908B3107eB72F4991", contractABI, provider); // Load Election contract
+    await this.set({election:election}); // Set the state
     console.log("Contract initialized ");
     return [provider,election];
   };
-  const loadCandidates = async (election = stateElection) => {
+  async loadCandidates(election = this.state.election) {
     try {
       var candidatesCount = await election.candidatesCount(); // Load candidatesCount
       candidatesCount = parseInt(candidatesCount.toString()); // Parse from BigInt to Int
@@ -64,43 +73,47 @@ export default function Home ({navigation, route}) {
         };
         candidates.push(candidate);
       }
-      await setCandidates(candidates); // Set Candidates state
+      await this.set({candidates:candidates}); // Set Candidates state
       console.log("The candiadates are ",candidates)
     }catch(err) {
       console.log(err);
     }
   }
-  const loadAccount = async (provider = stateProvider) => {
+  async loadAccount(provider = this.state.provider){
     console.log("FInding if saved account exists");
     var privateKey = await AsyncStorage.getItem("privateKey");
     if(privateKey != null && privateKey != undefined) {
       console.log("Private key exists");
-      wallet = new Wallet(privateKey,provider);
+      var wallet = new Wallet(privateKey,provider);
       console.log("Created wallet: ",wallet.address);
-      setWallet(wallet);
+      await this.set({wallet:wallet});
       return true;
     }else {
       console.log("Account doesnt exists")
       return false;
     }
   }
-  const createAccount = async (provider = stateProvider) => {
-    var start = performance.now();
-    console.log("Creating a new account ..");
-    try{wallet = ethers.Wallet.createRandom(provider);}catch(err){console.log("Error creating an account: ",err);}
-    var end = performance.now();
-    console.log("New account generated in : ",end-start,"ms");
-    // setElection(election);
-    await setWallet(wallet);
-    await AsyncStorage.setItem("privateKey",wallet.privateKey);
-    // start = performance.now();
-    // var enWallet = await wallet.encrypt("mypassword",{},(progress)=>{console.log(progress)});
-    // console.log("Encrypted: ",enWallet);
-    // console.log("Encrypted in ",performance.now() - start,"ms");
-    console.log("Account created : ");
-    console.log(wallet.address);
+  createAccount (provider = this.state.provider) {
+    return new Promise<Boolean>(async (resolve) => {
+      var start = performance.now();
+      console.log("Creating a new account ..");
+      var wallet = null;
+      try{wallet = ethers.Wallet.createRandom(provider);}catch(err){console.log("Error creating an account: ",err);}
+      var end = performance.now();
+      console.log("New account generated in : ",(end-start)/1000,"s");
+      // setElection(election);
+      await this.set({wallet:wallet});
+      await AsyncStorage.setItem("privateKey",wallet.privateKey);
+      // start = performance.now();
+      // var enWallet = await wallet.encrypt("mypassword",{},(progress)=>{console.log(progress)});
+      // console.log("Encrypted: ",enWallet);
+      // console.log("Encrypted in ",performance.now() - start,"ms");
+      console.log("Account created : ");
+      console.log(wallet.address);
+      resolve(true);
+    });
   }
-  const requestEthers = async (wallet = stateWallet) => {
+  async requestEthers(wallet = this.state.wallet) {
     var res = await axios.post((await AsyncStorage.getItem("helperServerUrl") || "http://192.168.18.2:3131")+'/allocateEthersForRegistration',{address:wallet.address});
     if(res.data.error) console.log("Error occured : "+res.data.error.message);
     else {
@@ -108,56 +121,61 @@ export default function Home ({navigation, route}) {
       console.log(res.data);
     }
   }
-  const vote = async (candidateId,provider = stateProvider,election = stateElection, wallet = stateWallet) => {
-    console.log("Voting to : ",candidates[candidateId-1].name);
-    console.log("Account balance: ",await provider.getBalance(wallet.address))
+  async vote (candidateId : number,provider = this.state.provider,election = this.state.election, wallet = this.state.wallet) {
+    console.log("Voting to : ",this.state.candidates[candidateId-1].name);
+    console.log("Account balance: ",parseInt((await provider.getBalance(wallet.address)).toString()) / 1000000000000000000," ETH")
     try{
       // stateWallet.provider = stateProvider;
-      var election2 = await election.connect(stateWallet);
+      var election2 = await election.connect(wallet);
       console.log(election2.runner);
       var res = await election2.vote(candidateId);
       console.log(res);
     }catch(err) {
       console.log("Error : ",err);
     }
-    await loadCandidates();
+    await this.loadCandidates();
   }
   
-  return (
-    <View
-      style={{
-        flex: 1,
-        alignItems: 'center',
-      }}>
-      
-      {/*
-      <Button
-        onPress={(async ()=>{vote(1)})}
-        title="Vote Candidate 1"
-        color="#841584"
-        accessibilityLabel="Learn more about this purple button"
-      /> */}
-      <VoteForm candidates={candidates} vote={vote}></VoteForm>
-      <Text style={{fontSize:25,fontWeight:900}}>Vote Chain</Text>
-      <Results candidates={candidates}></Results>
-      <Text>Your account is : {stateWallet == null ? "Creating ..." : stateWallet.address }</Text>
-      <Button
-        onPress={(async ()=>{new Promise(async resolve=>{await createAccount();resolve();})})}
-        title="Create Account"
-        color="#841584"
-        accessibilityLabel=""
-      />
-      <Button
-        onPress={(async ()=>{requestEthers()})}
-        title="Request Ethers"
-        color="#841584"
-        accessibilityLabel="Learn more about this purple button"
-      />
-      <Button
-        onPress={(async ()=>{navigation.navigate("Admin")})}
-        title="Go to admin"
-        color="#ccc"
-      />
-    </View>
-  );
+  async test(wallet = this.state.wallet) {
+    console.log(wallet.privateKey);
+    this.set({test:wallet.privateKey});
+  }
+  render() {
+    return (
+      <View
+        style={{
+          flex: 1,
+          alignItems: 'center',
+        }}>
+        
+        <VoteForm candidates={this.state.candidates} vote={this.vote}></VoteForm>
+        <Text style={{fontSize:25,fontWeight:900}}>Vote Chain</Text>
+        <Results candidates={this.state.candidates}></Results>
+        <Text selectable>Your account is : {this.state.wallet == null ? "Creating ..." : this.state.wallet.address }</Text>
+        <Button
+          onPress={()=>{this.createAccount().then(val=>{console.log(val)})}}
+          title="Create Account"
+          color="#841584"
+          accessibilityLabel=""
+        />
+        <Button
+          onPress={(async ()=>{this.requestEthers()})}
+          title="Request Ethers"
+          color="#841584"
+          accessibilityLabel="Learn more about this purple button"
+        />
+        <Button
+          onPress={(async ()=>{this.props.navigation.navigate("Admin")})}
+          title="Go to admin"
+          color="#ccc"
+        />
+        <Button
+          onPress={(async ()=>{this.test()})}
+          title="Run Test Commands"
+          color="#ccc"
+        />
+        <Text selectable>Test Results : {this.state.test}</Text>
+      </View>
+    );  
+  }
 };
