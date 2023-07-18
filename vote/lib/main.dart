@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:vote/home.dart';
-import 'package:vote/results.dart';
-import 'package:vote/contract_linker.dart';
+import 'package:vote/classes/preferences.dart';
+import 'package:vote/pages/home.dart';
+import 'package:vote/pages/admin.dart';
+import 'package:vote/components/results.dart';
+import 'package:vote/classes/contract_linker.dart';
 
 void main() {
   runApp(const App());
@@ -15,7 +17,7 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
-  late ContractLinker linker = ContractLinker();
+  late ContractLinker linker;
   @override
   void initState() {
     super.initState();
@@ -23,8 +25,9 @@ class _AppState extends State<App> {
   }
 
   void init() async {
-    linker.initWeb3();
-    await linker.loadContracts();
+    // await Preferences.init();
+    linker = ContractLinker();
+    linker.init(cond: Preferences.init());
   }
 
   // This widget is the root of your application.
@@ -32,6 +35,11 @@ class _AppState extends State<App> {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Vote Chain',
+      initialRoute: 'home',
+      routes: {
+        'home': (context) => MyAppBar(body: Home(linker: linker)),
+        'admin': (context) => MyAppBar(body: Admin()),
+      },
       home: MyAppBar(
         body: Home(
           linker: linker,
@@ -50,12 +58,23 @@ class MyAppBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        // leading: IconButton(onPressed: () {}, icon: Icon(Icons.menu)),
+        automaticallyImplyLeading: true,
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.pushNamed(context, 'admin');
+            },
+            icon: Icon(Icons.settings),
+            tooltip: "Settings (Admin)",
+          )
+        ],
         title: Text("Vote Chain"),
-        backgroundColor: Colors.grey.shade500.withAlpha(180),
+        backgroundColor: Colors.blue.shade300.withAlpha(180),
         centerTitle: true,
         titleTextStyle: TextStyle(
-            color: Color.fromARGB(255, 0, 113, 77),
-            fontSize: 25,
+            color: Color.fromARGB(255, 255, 255, 255),
+            fontSize: 20,
             fontWeight: FontWeight.bold),
       ),
       body: this.body,
