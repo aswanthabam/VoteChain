@@ -1,5 +1,24 @@
 #!/bin/bash
+
+printSecondMenu() {
 echo -n "
+  1) Change Environment
+choose: "
+}
+readSecondValue() {
+  read val;
+  case $val in 
+    1)
+    echo "One"
+    ;;
+  esac
+}
+moreOptions() {
+printSecondMenu
+readSecondValue
+}
+printMenu() {
+  echo -n "
 What do you want to do ?
   1) Start client
   2) Start Helper Server
@@ -7,11 +26,14 @@ What do you want to do ?
   4) Compile Contracts
   5) Migrate Contracts (with update client)
   6) Production build
+  7) More Options
+  
   
   10) Start Dev
   11) Git push
 Choose : "
-
+}
+readValue() {
 read opt
 
 if [ "$opt" -eq 1 ]
@@ -39,6 +61,15 @@ then
   echo -n "Enter commit message : "
   read comm
   git add . && git commit -m "$comm" && git push origin main
+elif [ "$opt" -eq 7 ]
+then
+  moreOptions
 else 
   echo "Invalid option"
 fi
+}
+main() {
+  printMenu
+  readValue
+}
+main

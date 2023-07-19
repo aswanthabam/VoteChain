@@ -109,7 +109,7 @@
   "sourceMap": "77:1251:0:-;;;101:102;8:9:-1;5:2;;;30:1;27;20:12;5:2;101:102:0;132:27;;;;;;;;;;;;;;;;;;:12;;;:27;;:::i;:::-;;169;;;;;;;;;;;;;;;;;;:12;;;:27;;:::i;:::-;;77:1251;;641:193;701:3;716:15;;:17;;;;;;;;;;;;;773:36;;;;;;;;783:15;;773:36;;;;800:5;773:36;;;;807:1;773:36;;;743:10;:27;754:15;;743:27;;;;;;;;;;;:66;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;;;;826:1;819:8;;641:193;;;:::o;77:1251::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;:::o;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;:::o;:::-;;;;;;;",
   "deployedSourceMap": "77:1251:0:-;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;77:1251:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;885:441;;;;;;13:2:-1;8:3;5:11;2:2;;;29:1;26;19:12;2:2;885:441:0;;;;;;;;;;;;;;;;;:::i;:::-;;607:27;;;:::i;:::-;;;;;;;;;;;;;;;;;;;556:44;;;;;;13:2:-1;8:3;5:11;2:2;;;29:1;26;19:12;2:2;556:44:0;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;23:1:-1;8:100;33:3;30:1;27:10;8:100;;;99:1;94:3;90:11;84:18;80:1;75:3;71:11;64:39;52:2;49:1;45:10;40:15;;8:100;;;12:14;556:44:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;840:38;;;;;;13:2:-1;8:3;5:11;2:2;;;29:1;26;19:12;2:2;840:38:0;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;885:441;994:6;:18;1001:10;994:18;;;;;;;;;;;;;;;;;;;;;;;;;993:19;985:28;;;;;;1084:1;1069:12;:16;:51;;;;;1105:15;;1089:12;:31;;1069:51;1061:60;;;;;;1192:4;1171:6;:18;1178:10;1171:18;;;;;;;;;;;;;;;;:25;;;;;;;;;;;;;;;;;;1246:10;:24;1257:12;1246:24;;;;;;;;;;;:34;;;:36;;;;;;;;;;;;;1297:22;1308:10;1297:22;;;;;;;;;;;;;;;;;;;;;;885:441;:::o;607:27::-;;;;:::o;556:44::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::o;840:38::-;;;;;;;;;;;;;;;;;;;;;;:::o",
   "source": "// SPDX-License-Identifier: SEE LICENSE IN LICENSE\npragma solidity ^0.5.16;\n\ncontract Election {\n    constructor() public {\n        addCandidate(\"candidate 1\");\n        addCandidate(\"candidate 2\");\n    }\n\n    struct Candidate {\n        uint id;\n        string name;\n        uint voteCount;\n    }\n\n    event VotedEvent(address _from);\n    // struct Voter {\n    //     uint uid;\n    //     string name;\n    //     address voterAddress;\n    //     string info;\n    //     bool uidVerified;\n    //     bool approvedToVote;\n    //     bool voted;\n    // }\n\n    mapping(uint => Candidate) public candidates;\n\n    uint public candidatesCount;\n\n    function addCandidate(string memory _name) private returns (int) {\n        candidatesCount++;\n        candidates[candidatesCount] = Candidate(candidatesCount, _name, 0);\n        return 1;\n    }\n\n    mapping(address => bool) public voters;\n\n    function vote(uint _candidateId) public {\n        // require that they haven't voted before\n        require(!voters[msg.sender]);\n\n        // require a valid candidate\n        require(_candidateId > 0 && _candidateId <= candidatesCount);\n\n        // record that voter has voted\n        voters[msg.sender] = true;\n\n        // update candidate vote Count\n        candidates[_candidateId].voteCount++;\n        emit VotedEvent(msg.sender);\n    }\n}\n",
-  "sourcePath": "/home/aswanth/Desktop/E-Votting/blockchain/contracts/Election.sol",
+  "sourcePath": "/data/data/com.termux/files/home/E-Votting/blockchain/contracts/Election.sol",
   "ast": {
     "absolutePath": "project:/contracts/Election.sol",
     "exportedSymbols": {
@@ -2859,10 +2859,40 @@
       "links": {},
       "address": "0x1d5E6D945a814F7b8eCeA4a00565A2Cf9a6c07DD",
       "transactionHash": "0x9fbe73b66a8c1f9775fdb27b61c6a059627ca7a1ec73d8306e2d5dbee1b573a7"
+    },
+    "1689495609338": {
+      "events": {},
+      "links": {},
+      "address": "0xF44865D4B4412A1B8f3e4d4dB5Ac45091F99A907",
+      "transactionHash": "0x96ed7f5f8154893c8c9ffc912addeee0b0797a04f8028ffcd358bc26fb3f26d9"
+    },
+    "1689516315700": {
+      "events": {},
+      "links": {},
+      "address": "0x4A2f40D79A92969fdDf775C1d081AB0C38CBcF40",
+      "transactionHash": "0xf1f1db7601ca8c17002e7dc087652794f251365ce7cc5f5c929f48d24b816d71"
+    },
+    "1689517193897": {
+      "events": {},
+      "links": {},
+      "address": "0x2C1Be55091Bc0B93515049813Cb28A7Beab8740e",
+      "transactionHash": "0xbabadabf33ad043729e65ec22c3947e0f188faecd7e3801fb141cac52c29d8a4"
+    },
+    "1689704597217": {
+      "events": {},
+      "links": {},
+      "address": "0x92fC707717cc35Dc8be190f4e5f05168680D0639",
+      "transactionHash": "0x825989d17af2e2880c3c948b3af967c4f0f95d6a44ded2cbacc4dae9ac975850"
+    },
+    "1689780502693": {
+      "events": {},
+      "links": {},
+      "address": "0x00e3A5A610cEf2a7D517252B1860eC48BF6EFD0e",
+      "transactionHash": "0x193fe96f3eed2d8b1ba1171f25a76c89699a4134899e4e8742028941ccb3c1a5"
     }
   },
   "schemaVersion": "3.4.14",
-  "updatedAt": "2023-07-15T08:52:05.345Z",
+  "updatedAt": "2023-07-19T16:02:40.953Z",
   "networkType": "ethereum",
   "devdoc": {
     "methods": {}
