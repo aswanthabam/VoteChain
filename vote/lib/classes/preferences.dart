@@ -5,18 +5,21 @@ class Preferences {
   static late String rpcUrl;
   static late String helperUrl;
   static late String contractAddress;
+  static late String wsUrl;
 
   static String RPC_KEY = "rpcUrl";
   static String HELPER_KEY = "helperUrl";
   static String CONTRACT_KEY = 'contractAddress';
+  static String WS_URL = "wsUrl";
 
   static Future<void> init() async {
     pref = await SharedPreferences.getInstance();
     // pref.clear();
-    rpcUrl = pref.getString(RPC_KEY) ?? "http://192.168.18.2:7545";
-    helperUrl = pref.getString(HELPER_KEY) ?? "http://192.168.18.2:3131";
+    rpcUrl = pref.getString(RPC_KEY) ?? "http://127.0.0.1:7545";
+    helperUrl = pref.getString(HELPER_KEY) ?? "http://127.0.0.1:3131";
     contractAddress = pref.getString(CONTRACT_KEY) ??
         "0x6ea72486a146e2b3cd3d1d5908b3107eb72f4991";
+    wsUrl = pref.getString(WS_URL) ?? "ws://127.0.0.1:7545";
   }
 
   static void setRpcUrl(String val) {
@@ -32,6 +35,11 @@ class Preferences {
   static void setConractAddress(String val) {
     pref.setString(CONTRACT_KEY, val);
     contractAddress = val;
+  }
+
+  static void setWsUrl(String val) {
+    pref.setString(WS_URL, val);
+    wsUrl = val;
   }
 
   static Future<bool> reset() async {

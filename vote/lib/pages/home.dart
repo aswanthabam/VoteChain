@@ -87,7 +87,7 @@ class Info extends StatelessWidget {
                   },
                   style: TextButton.styleFrom(
                     padding: EdgeInsets.all(10),
-                    backgroundColor: Colors.blue.shade300,
+                    backgroundColor: Colors.blue.shade600,
                     iconColor: Colors.white,
                   ),
                   child: Row(
@@ -95,7 +95,7 @@ class Info extends StatelessWidget {
                     children: [
                       Text(
                           style: TextStyle(color: Colors.white),
-                          "Create Account"),
+                          "Fund Account"),
                       Icon(Icons.add)
                     ],
                   ))),

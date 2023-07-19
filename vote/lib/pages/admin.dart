@@ -16,6 +16,9 @@ class _AdminState extends State<Admin> {
       TextEditingController(text: "http://192.168.18.2:3131");
   TextEditingController contractAddress =
       TextEditingController(text: "0x6ea72486a146e2b3cd3d1d5908b3107eb72f4991");
+  TextEditingController wsUrl =
+      TextEditingController(text: "ws://192.168.18.2:7545");
+
   @override
   void initState() {
     // TODO: implement initState
@@ -23,6 +26,7 @@ class _AdminState extends State<Admin> {
     rpcUrl.text = Preferences.rpcUrl;
     helperUrl.text = Preferences.helperUrl;
     contractAddress.text = Preferences.contractAddress;
+    wsUrl.text = Preferences.wsUrl;
   }
 
   @override
@@ -41,6 +45,20 @@ class _AdminState extends State<Admin> {
                   borderRadius: BorderRadius.all(Radius.circular(10)),
                 )),
             controller: rpcUrl,
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          TextField(
+            decoration: InputDecoration(
+                labelText: "WebSocket Url",
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                )),
+            controller: wsUrl,
           ),
           SizedBox(
             height: 20,
@@ -92,6 +110,8 @@ class _AdminState extends State<Admin> {
                     Preferences.setRpcUrl(rpcUrl.text);
                     Preferences.setHelperUrl(helperUrl.text);
                     Preferences.setConractAddress(contractAddress.text);
+                    Preferences.setWsUrl(wsUrl.text);
+                    print("Saved");
                   },
                   child: Text("Save"))
             ],

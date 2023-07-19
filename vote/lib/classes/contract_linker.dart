@@ -52,14 +52,20 @@ class ContractLinker extends ChangeNotifier {
     }
   }
 
-  Future<void> initWeb3() async {
+  Future<bool> initWeb3() async {
     print("Initializing  ...");
-    client = Web3Client(_rpcUrl, httpClient, socketConnector: () {
-      return IOWebSocketChannel.connect(_wsUrl).cast<String>();
-    });
-    client.getChainId().then((value) {
-      print("Chain Id: $value");
-    });
+    try {
+      client = Web3Client(Preferences.rpcUrl, httpClient, socketConnector: () {
+        return IOWebSocketChannel.connect(Preferences.wsUrl).cast<String>();
+      });
+      client.getChainId().then((value) {
+        print("Chain Id: $value");
+      });
+      return true;
+    } catch (err) {
+      print("Error initializing web3 client");
+      return false;
+    }
   }
 
   Future<void> createAccount() async {
@@ -99,7 +105,6 @@ class ContractLinker extends ChangeNotifier {
     await contract_loaded;
     List<Candidates> list = [];
     try {
-      // print(await getBalance());
       int candidates_count = (await election.candidatesCount()).toInt();
       for (var i = 1; i <= candidates_count; i++) {
         list.add(await election.candidates(BigInt.from(i)));
