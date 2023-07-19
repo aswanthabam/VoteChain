@@ -35,9 +35,9 @@ What do you want to do ?
   4) Compile Contracts
   5) Migrate Contracts (with update client)
   6) Production build
-  7) More Options
+  7) Start Ganache Cli 
   
-  
+  9) More Options
   10) Start Dev
   11) Git push
 Choose : "
@@ -70,9 +70,13 @@ then
   echo -n "Enter commit message : "
   read comm
   git add . && git commit -m "$comm" && git push origin main
-elif [ "$opt" -eq 7 ]
+elif [ "$opt" -eq 9 ]
 then
   moreOptions
+elif [ "$opt" -eq 7 ]
+then
+  echo "Starting ganache..."
+  ganache -p 7545 --db ganache.db -g 0 -h 0.0.0.0
 else 
   echo "Invalid option"
 fi
