@@ -9,7 +9,16 @@ readSecondValue() {
   read val;
   case $val in 
     1)
-    echo "One"
+      echo "Enter BlockChain Url: ($BLOCKCHAIN_URL)"
+      read bu
+      [[ ! -z "$bu" ]] && export BLOCKCHAIN_URL=$bu && echo "export BLOCKCHAIN_URL=$bu" >> ~/.bashrc
+      echo "Sender Address: ($BLOCKCHAIN_SENDER_ADDRESS)"
+      read sa
+      [[ ! -z "$sa" ]] && export BLOCKCHAIN_SENDER_ADDRESS=$sa && echo "export BLOCKCHAIN_SENDER_ADDRESS=$sa" >> ~/.bashrc
+      echo "Private Key: ($BLOCKCHAIN_SENDER_PRIVATE_KEY)"
+      read pk
+      [[ ! -z "$pk" ]] && export BLOCKCHAIN_SENDER_PRIVATE_KEY=$pk && echo "export BLOCKCHAIN_SENDER_PRIVATE_KEY=$pk" >> ~/.bashrc
+      echo "Open new terminal for take in effect !"
     ;;
   esac
 }
