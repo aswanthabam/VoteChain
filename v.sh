@@ -1,5 +1,8 @@
 #!/bin/bash
 
+openTerminal() {
+  gnome-terminal --tab 
+}
 printSecondMenu() {
 echo -n "
   1) Change Environment
@@ -43,7 +46,7 @@ What do you want to do ?
 Choose : "
 }
 readValue() {
-read opt
+[[ -z "$1" ]] && read opt || opt="$1"
 
 if [ "$opt" -eq 1 ]
 then
@@ -61,10 +64,7 @@ elif [ "$opt" -eq 5 ]
 then 
   cd blockchain && truffle migrate --reset && cp build/contracts/Election.json ../client/src/Election.json
 elif [ "$opt" -eq 10 ]
-then 
-  gnome-terminal --tab --title="Client Server" -- bash -c 'cd client && npm start'
-  gnome-terminal --tab --title="Helper Server" -- bash -c 'cd helper && nodemon'
-  gnome-terminal --tab --title="Ganache" -- bash -c '~/Desktop/ganache'
+then echo hi
 elif [ "$opt" -eq 11 ]
 then
   echo -n "Enter commit message : "
@@ -76,13 +76,13 @@ then
 elif [ "$opt" -eq 7 ]
 then
   echo "Starting ganache..."
-  ganache -p 7545 --db ganache.db -g 0 -h 0.0.0.0
+  ganache -g 0 -d -e 300 --database.dbPath=ganache.db -l 0xa460f -p 7545
 else 
   echo "Invalid option"
 fi
 }
 main() {
-  printMenu
+  [[ -z "$1" ]] && printMenu
   readValue
 }
-main
+main "$1"
