@@ -1,8 +1,28 @@
 #!/bin/bash
 
 openTerminal() {
-  gnome-terminal --tab 
+  gnome-terminal --tab --title="$2" -- bash -c "$1"
 }
+startDev() {
+  echo -n "What client do you need?
+  1) React
+  2) React Native
+  3) Flutter
+  *) Skip
+choose : "
+read val;
+  case $val in
+  1) openTerminal "cd client && npm start" "React Client" ;;
+  2) openTerminal "cd client2 && npm start" "React Native Client" ;;
+  3) openTerminal "cd vote && flutter run" "Flutter Client" ;;
+  *) echo "Skipping ..." ;;
+  esac
+  echo "Starting Helper Server"
+  openTerminal "cd helper && nodemon" "Helper Server "
+  echo "Starting helper server"
+  openTerminal "ganache -g 0 -d -e 300 --database.dbPath=ganache.db -l 0xa460f -p 7545" "Ganache"
+}
+  
 printSecondMenu() {
 echo -n "
   1) Change Environment
@@ -64,7 +84,8 @@ elif [ "$opt" -eq 5 ]
 then 
   cd blockchain && truffle migrate --reset && cp build/contracts/Election.json ../client/src/Election.json
 elif [ "$opt" -eq 10 ]
-then echo hi
+then 
+  startDev
 elif [ "$opt" -eq 11 ]
 then
   echo -n "Enter commit message : "
@@ -83,6 +104,6 @@ fi
 }
 main() {
   [[ -z "$1" ]] && printMenu
-  readValue
+  readValue "$1"
 }
 main "$1"
