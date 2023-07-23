@@ -82,16 +82,21 @@ class ContractLinker extends ChangeNotifier {
   Future<bool> loadContracts() async {
     await inited;
     print("Loading Contracts ...");
-    String abiString =
-        await rootBundle.loadString("src/artifacts/Election.json");
-    var jsonAbi = jsonDecode(abiString);
-    _contractAddress = EthereumAddress.fromHex(
-        Preferences.contractAddress ?? jsonAbi['networks']['5777']['address']);
-    print("Contract Address : $_contractAddress");
-    election =
-        Election(address: _contractAddress, client: client, chainId: 1337);
-    print("Loaded Contracts");
-    return true;
+    try {
+      String abiString =
+          await rootBundle.loadString("src/artifacts/Election.json");
+      var jsonAbi = jsonDecode(abiString);
+      _contractAddress = EthereumAddress.fromHex(Preferences.contractAddress ??
+          jsonAbi['networks']['5777']['address']);
+      print("Contract Address : $_contractAddress");
+      election =
+          Election(address: _contractAddress, client: client, chainId: 1337);
+      print("Loaded Contracts");
+      return true;
+    } catch (err) {
+      print("Error loading contracts: " + err.toString());
+      return false;
+    }
   }
 
   Future<List<Candidates>> loadCandidates2() async {
@@ -180,11 +185,15 @@ class ContractLinker extends ChangeNotifier {
 
   Future<double> getBalance() async {
     await inited;
-    double bal =
-        (await client.getBalance(_address)).getValueInUnit(EtherUnit.ether);
-    if (_balance != bal) notifyListeners();
-    _balance = bal;
-    return _balance;
+    try {
+      double bal =
+          (await client.getBalance(_address)).getValueInUnit(EtherUnit.ether);
+      if (_balance != bal) notifyListeners();
+      _balance = bal;
+      return _balance;
+    } catch (err) {
+      return 0;
+    }
   }
 
   Future<EthereumAddress> getAddress() async {
