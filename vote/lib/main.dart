@@ -7,6 +7,7 @@ import 'package:vote/pages/admin.dart';
 import 'package:vote/components/results.dart';
 import 'package:vote/classes/contract_linker.dart';
 import 'package:vote/pages/splashscreen.dart';
+import 'pages/login.dart';
 
 void main() {
   runApp(const App());
@@ -20,17 +21,11 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
-  late ContractLinker linker;
+  // late ContractLinker linker;
   @override
   void initState() {
     super.initState();
-    init();
-  }
-
-  void init() async {
-    // await Preferences.init();
-    linker = ContractLinker();
-    linker.init(cond: Preferences.init());
+    // init();
   }
 
   // This widget is the root of your application.
@@ -38,21 +33,18 @@ class _AppState extends State<App> {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Vote Chain',
-      initialRoute: 'home',
+      initialRoute: 'login',
       routes: {
         'home': (context) => SplashScreen(
             function: () async {
               await Timer(Duration(seconds: 20), () => {});
             },
-            widget: MyAppBar(body: Home(linker: linker))),
+            widget: MyAppBar(body: Home())),
         'admin': (context) => MyAppBar(body: Admin()),
+        'login': (context) => Login(),
       },
-      home: MyAppBar(
-        body: Home(
-          linker: linker,
-        ),
-      ),
       debugShowCheckedModeBanner: false,
+      theme: ThemeData(fontFamily: 'Poppins'),
     );
   }
 }

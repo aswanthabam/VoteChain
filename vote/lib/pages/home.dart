@@ -8,16 +8,30 @@ import 'package:web3dart/web3dart.dart';
 import '../Election.g.dart';
 import 'package:vote/classes/contract_linker.dart';
 import 'package:vote/components/voteform.dart';
+import '../classes/preferences.dart';
 
 class Home extends StatefulWidget {
-  Home({super.key, required this.linker});
+  Home({super.key});
 
-  ContractLinker linker;
   @override
   State<Home> createState() => _HomeState();
 }
 
 class _HomeState extends State<Home> {
+  late ContractLinker linker;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    init();
+  }
+
+  void init() async {
+    // await Preferences.init();
+    linker = ContractLinker();
+    linker.init(cond: Preferences.init());
+  }
+
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -30,14 +44,14 @@ class _HomeState extends State<Home> {
             height: 20,
           ),
           VoteForm(
-            linker: widget.linker,
+            linker: linker,
           ),
           SizedBox(
             height: 10,
           ),
-          Results(linker: widget.linker),
+          Results(linker: linker),
           ChangeNotifierProvider<ContractLinker>(
-            create: (context) => widget.linker,
+            create: (context) => linker,
             child: Consumer<ContractLinker>(
               builder: (context, linker, _) => Info(linker: linker),
             ),

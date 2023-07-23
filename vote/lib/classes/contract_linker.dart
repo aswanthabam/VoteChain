@@ -138,7 +138,18 @@ class ContractLinker extends ChangeNotifier {
     } catch (err) {
       print("Unable to fund account");
       showDialog(
-          context: context, builder: (builder) => Text("Error getting ethers"));
+          context: context,
+          builder: (builder) => Dialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20)),
+              backgroundColor: Colors.white,
+              child: Padding(
+                  padding: EdgeInsets.all(16),
+                  // height: 100,
+                  // decoration: BoxDecoration(color: Colors.white),
+                  child: Column(mainAxisSize: MainAxisSize.min, children: [
+                    Center(child: Text("Error getting ethers"))
+                  ]))));
     }
     print("Account balance : " + (await getBalance()).toString() + " ETH");
     notifyListeners();
@@ -170,14 +181,14 @@ class ContractLinker extends ChangeNotifier {
       showDialog(
           context: context,
           builder: (builder) {
-            return SizedBox(
-                height: 100,
-                child: Container(
-                    width: double.infinity,
-                    height: 100,
-                    decoration: BoxDecoration(color: Colors.white),
-                    padding: EdgeInsets.all(10),
-                    child: Text("Err: " + err.toString())));
+            return Dialog(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20)),
+                child: Padding(
+                    padding: EdgeInsets.all(20),
+                    child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [Text("Error Votting: " + err.toString())])));
           });
       return "NULL";
     }
