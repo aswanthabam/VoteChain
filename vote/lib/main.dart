@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:vote/classes/preferences.dart';
 import 'package:vote/pages/home.dart';
 import 'package:vote/pages/admin.dart';
 import 'package:vote/components/results.dart';
 import 'package:vote/classes/contract_linker.dart';
+import 'package:vote/pages/splashscreen.dart';
 
 void main() {
   runApp(const App());
@@ -37,7 +40,11 @@ class _AppState extends State<App> {
       title: 'Vote Chain',
       initialRoute: 'home',
       routes: {
-        'home': (context) => MyAppBar(body: Home(linker: linker)),
+        'home': (context) => SplashScreen(
+            function: () async {
+              await Timer(Duration(seconds: 20), () => {});
+            },
+            widget: MyAppBar(body: Home(linker: linker))),
         'admin': (context) => MyAppBar(body: Admin()),
       },
       home: MyAppBar(

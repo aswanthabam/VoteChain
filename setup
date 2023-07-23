@@ -82,7 +82,7 @@ then
   cd blockchain && truffle compile
 elif [ "$opt" -eq 5 ]
 then 
-  cd blockchain && truffle migrate --reset && cp build/contracts/Election.json ../client/src/Election.json
+  cd blockchain && truffle migrate --reset && cp build/contracts/Election.json ../client/src/Election.json && cp build/contracts/Election.json ../vote/src/artifacts/Election.json
 elif [ "$opt" -eq 10 ]
 then 
   startDev
