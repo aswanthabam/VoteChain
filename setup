@@ -20,7 +20,7 @@ read val;
   echo "Starting Helper Server"
   openTerminal "cd helper && nodemon" "Helper Server "
   echo "Starting helper server"
-  openTerminal "ganache -g 0 -d -e 300 --database.dbPath=ganache.db -l 0xa460f -p 7545" "Ganache"
+  openTerminal "ganache -g 0 -d -e 300 --database.dbPath=ganache.db -l 0xa460f -p 7545 -h 0.0.0.0" "Ganache"
 }
   
 printSecondMenu() {
@@ -97,7 +97,7 @@ then
 elif [ "$opt" -eq 7 ]
 then
   echo "Starting ganache..."
-  ganache -g 0 -d -e 300 --database.dbPath=ganache.db -l 0xa460f -p 7545
+  ganache -g 0 -d -e 300 --database.dbPath=ganache.db -l 0xa460f -p 7545 -h 0.0.0.0
 else 
   echo "Invalid option"
 fi

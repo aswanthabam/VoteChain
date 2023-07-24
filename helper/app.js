@@ -8,9 +8,12 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const Tx = require('ethereumjs-tx').Transaction;
+var mongoose = require("mongoose");
 
 const senderAddress= env.BLOCKCHAIN_SENDER_ADDRESS || "0x23b0438547a478A4a32501961137Dd0E1E8C36FE";
 const senderPrivateKey= env.BLOCKCHAIN_SENDER_PRIVATE_KEY || "0x411dfacefaff8672907b8c0163485422cdc9d63b80f5414825ecc2dadab7f11e";
+
+const publicRouter = require("./routes/api/public.js");
 
 app.use(cors());
 app.use(logger('dev'));
@@ -36,6 +39,7 @@ app.use((req,res,next) => {
   next();
 });
 
+app.use("/api/public/", publicRouter);
 app.post('/allocateEthersForRegistration',async (req,res) => {
   var {address} = req.body;
   var {web3} = req;
@@ -79,7 +83,16 @@ app.post('/allocateEthersForRegistration',async (req,res) => {
 
   }
 });
-
+const uri = "mongodb+srv://avctech:avctech@cluster0.4wxlu7g.mongodb.net/votechain?retryWrites=true&w=majority"; 
+ mongoose.connect(uri,{ useNewUrlParser: true, useUnifiedTopology: true}) 
+   .then((result) =>{ 
+     console.log("CONNECTED TO DB"); 
+   }) 
+   .catch((err) => { 
+     console.log("CANT CONNECT TO DB"); 
+     console.log(err); 
+ }); 
+ 
 app.listen(env.PORT || 3131,()=>{
   console.log("Server started !");
 })
