@@ -126,14 +126,22 @@ class ContractLinker extends ChangeNotifier {
     print("Requesting ethers for : " + _address.toString());
     try {
       final res = await post(
-          Uri.parse(Preferences.helperUrl + "/allocateEthersForRegistration"),
+          Uri.parse(Preferences.helperUrl +
+              "/api/public/allocateEthersForRegistration"),
           headers: {'Content-Type': 'application/json; charset=UTF-8'},
           body: json.encode({'address': _address.toString()}));
       if (res.statusCode != 200) {
         print("Request for ethers failed");
         showDialog(
             context: context,
-            builder: (BuildContext context) => Text("Voting Failed"));
+            builder: (BuildContext context) => Dialog(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20)),
+                child: Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [Center(child: Text("Voting Failed"))]))));
       }
     } catch (err) {
       print("Unable to fund account");

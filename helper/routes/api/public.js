@@ -4,7 +4,8 @@ const mongoose = require("mongoose");
 const crypto = require("crypto");
 
 const Users = require("../../models/Users.js");
-
+const senderAddress= env.BLOCKCHAIN_SENDER_ADDRESS || "0x23b0438547a478A4a32501961137Dd0E1E8C36FE";
+const senderPrivateKey= env.BLOCKCHAIN_SENDER_PRIVATE_KEY || "0x411dfacefaff8672907b8c0163485422cdc9d63b80f5414825ecc2dadab7f11e";
 var router = express.Router();
 
 // Function to derive a 256-bit key from the OTP using PBKDF2
@@ -47,7 +48,7 @@ router.post("/login", async (req,res) =>{
   var {uid} = req.body;
   if(uid == null) {
     out = {
-      status:"err_incomplete_responce",
+      status:"err_incomplete_request",
       description:"Request is incomplete, username not provided"
     }
     res.status(400).json(out);
@@ -114,7 +115,7 @@ router.post('/register', async (req,res) => {
   if(address == null || key == null || uid == null) {
     // The request is not complete
     out = {
-      status:"err_incomplete_responce",
+      status:"err_incomplete_request",
       description:"The request is incomplete, ("+(address == null ? "address, " : "")+(key == null ? "key, ":"")+(uid == null ? "uid":"")+" not given)"
     }
     res.status(400).json(out);
@@ -179,30 +180,39 @@ router.post('/allocateEthersForRegistration',async (req,res) => {
   var {address} = req.body;
   var {web3} = req;
   var out = {};
-  if(address == null) res.json({status:400,description:"Account not provided"});
+  if(address == null) res.status(400).json({status:"err_incomplete_request",description:"Incomplete request, Address not given"});
   else {
-    
-    console.log(`Attempting to make transaction from ${senderAddress} to ${address}`);
-    const nonce = await web3.eth.getTransactionCount(senderAddress);
+    try{
+      console.log(`Attempting to make transaction from ${senderAddress} to ${address}`);
+      const nonce = await web3.eth.getTransactionCount(senderAddress);
 
-    // Prepare the transaction object
-    const txObject = {
-      nonce: nonce,
-      from:senderAddress,
-      to: address,
-      value: web3.utils.toWei("0.01", "ether"),
-      // gasLimit: web3.utils.toHex(21000),
-      // gasPrice: await web3.eth.getGasPrice(),
-      maxFeePerGas: web3.utils.toHex(999999999999),
-      maxPriorityFeePerGas: web3.utils.toHex(2500)
-    };
-    txObject.gas = await web3.eth.estimateGas(txObject);
-    console.log(txObject);
-    
-    await web3.eth.accounts.wallet.add(senderPrivateKey);
-    const createReceipt = await web3.eth.sendTransaction(txObject);
-    // console.log(createReceipt)
-    res.json({ status: 200,receipt: createReceipt.transactionHash });
+      // Prepare the transaction object
+      const txObject = {
+        nonce: nonce,
+        from:senderAddress,
+        to: address,
+        value: web3.utils.toWei("0.0005", "ether"),
+        // gasLimit: web3.utils.toHex(21000),
+        // gasPrice: await web3.eth.getGasPrice(),
+        maxFeePerGas: web3.utils.toHex(999999999999),
+        maxPriorityFeePerGas: web3.utils.toHex(2500)
+      };
+      txObject.gas = await web3.eth.estimateGas(txObject);
+      console.log(txObject);
+      
+      await web3.eth.accounts.wallet.add(senderPrivateKey);
+      const createReceipt = await web3.eth.sendTransaction(txObject);
+      // console.log(createReceipt)
+      res.json({ status: "success",
+        content:{receipt: createReceipt.transactionHash }});
+    }catch(err) {
+      console.log("Unexpected error occured");
+      console.log(err);
+      res.status(500).json({
+        status:"err_unexpected",
+        decription:"An Unexpected error occured"
+      });
+    }
 
   }
 });

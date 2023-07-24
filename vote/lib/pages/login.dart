@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../components/keyboard.dart';
+import '../components/valueDisplayer.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -9,216 +11,134 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  String enteredValue = "";
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-    ));
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
+  }
+
+  void addValue(String val) {
+    setState(() {
+      if (val == "clr") {
+        enteredValue = "";
+      } else if (val == "bck") {
+        if (enteredValue.length > 0) {
+          enteredValue = enteredValue.substring(0, enteredValue.length - 1);
+        }
+      } else {
+        enteredValue += val;
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        padding: EdgeInsets.zero,
-        margin: EdgeInsets.zero,
-        child: Stack(
-          children: [
-            Image.asset(
-              'src/images/login_bg.png',
-              width: double.infinity,
-              height: MediaQuery.of(context).size.height / 2.5,
-              fit: BoxFit.cover,
-            ),
-            Positioned(
-                top: MediaQuery.of(context).size.height / 2.5 - 100,
-                right: -90,
-                child: Image.asset(
-                  'src/images/asset/ellipse_green.png',
-                  width: 200,
-                )),
-            Positioned(
-                bottom: -50,
-                left: -50,
-                child: Image.asset(
-                  'src/images/asset/ellipse_blue.png',
-                  width: 200,
-                )),
-            Positioned(
-                top: MediaQuery.of(context).size.height / 2.5,
-                // width: dou,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                        padding: EdgeInsets.only(left: 50, top: 30),
-                        child: const Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SizedBox(
-                              height: 36,
-                              child: Text("Welcome to",
-                                  style: TextStyle(
-                                    color: Color(0xFF666B6A),
-                                    fontSize: 27,
-                                    fontWeight: FontWeight.w700,
-                                  )),
-                            ),
-                            SizedBox(
-                              height: 53,
-                              child: Text("VoteChain,",
-                                  style: TextStyle(
-                                    color: Color(0xFF1BA68D),
-                                    fontSize: 40,
-                                    fontWeight: FontWeight.w700,
-                                  )),
-                            )
-                          ],
-                        )),
-                    Container(
-                        padding: EdgeInsets.only(top: 60),
-                        width: MediaQuery.of(context).size.width,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            TextButton(
-                              onPressed: () {
-                                print("PRessed");
-                              },
-                              child: Container(
-                                width: 250,
-                                height: 50,
-                                child: Stack(
-                                  children: [
-                                    Positioned(
-                                      left: 0,
-                                      top: 0,
-                                      child: Container(
-                                        width: 250,
-                                        height: 50,
-                                        decoration: ShapeDecoration(
-                                          shape: RoundedRectangleBorder(
-                                            side: BorderSide(
-                                                width: 2,
-                                                color: Color(0xFF54CFF6)),
-                                            borderRadius:
-                                                BorderRadius.circular(30),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    Positioned(
-                                      left: 0,
-                                      top: 0,
-                                      child: Container(
-                                        width: 250,
-                                        height: 50,
-                                        decoration: ShapeDecoration(
-                                          gradient: const LinearGradient(
-                                            begin: Alignment(1.00, -0.06),
-                                            end: Alignment(-1, 0.06),
-                                            colors: [
-                                              Color(0xFF31C6E7),
-                                              Color(0xFF67EACA)
-                                            ],
-                                          ),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(30),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    const Positioned(
-                                      left: 87,
-                                      top: 10,
-                                      child: Text(
-                                        'Register',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 20,
-                                          fontFamily: 'Poppins',
-                                          fontWeight: FontWeight.w400,
-                                          letterSpacing: 0.20,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            TextButton(
-                                onPressed: () {
-                                  Navigator.pushReplacementNamed(
-                                      context, 'home');
-                                },
-                                child: Container(
-                                  width: 250,
-                                  height: 50,
-                                  child: Stack(
-                                    children: [
-                                      Positioned(
-                                        left: 0,
-                                        top: 0,
-                                        child: Container(
-                                          width: 250,
-                                          height: 50,
-                                          decoration: ShapeDecoration(
-                                            shape: RoundedRectangleBorder(
-                                              side: const BorderSide(
-                                                  width: 2,
-                                                  color: Color(0xFF54CFF6)),
-                                              borderRadius:
-                                                  BorderRadius.circular(30),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      const Positioned(
-                                        left: 98,
-                                        top: 10,
-                                        child: Text(
-                                          'Login',
-                                          style: TextStyle(
-                                            color: Color(0xFF54CFF6),
-                                            fontSize: 20,
-                                            fontFamily: 'Poppins',
-                                            fontWeight: FontWeight.w400,
-                                            letterSpacing: 0.20,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ))
-                          ],
-                        )),
-                  ],
-                )),
-            Positioned(
-                bottom: 50,
-                child: Container(
-                  width: MediaQuery.of(context).size.width,
-                  child: const Center(
+        body: Stack(
+      children: [
+        Positioned(
+            top: -100,
+            right: -100,
+            child: Image.asset(
+              'src/images/asset/ellipse_green.png',
+              width: 200,
+            )),
+        Positioned(
+            left: 20,
+            top: 30,
+            child: IconButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                icon: Icon(Icons.arrow_back_ios))),
+        Positioned(
+            right: 20,
+            top: 30,
+            child: IconButton(
+                onPressed: () {}, icon: Icon(Icons.help_outline_outlined))),
+        Positioned(
+            top: 100,
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              child: Column(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(left: 20),
                     child: Text(
-                      "“Your Trusted Blockchain E-Voting Platform”",
+                      'Enter Your Unique Identification Number',
                       style: TextStyle(
-                        color: Color(0xFF4D4D4D),
-                        fontSize: 14,
+                        color: Colors.black,
+                        fontSize: 24,
                         fontFamily: 'Poppins',
-                        fontWeight: FontWeight.w400,
-                        letterSpacing: 0.14,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: 0.12,
                       ),
                     ),
                   ),
-                ))
-          ],
-        ),
-      ),
-    );
+                  Padding(
+                    padding: EdgeInsets.all(20),
+                    child: Text(
+                      'A code will be sent to your registered mobile number',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 15,
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w400,
+                        letterSpacing: 0.07,
+                      ),
+                    ),
+                  ),
+                  ValueDisplayer(
+                      value: enteredValue,
+                      length: 12,
+                      divide: [4, 4, 4],
+                      fill: '0'),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Container(
+                    height: 50,
+                    width: MediaQuery.of(context).size.width - 30,
+                    padding: EdgeInsets.all(15),
+                    decoration: BoxDecoration(
+                        color: enteredValue.length == 12
+                            ? Color(0xff1CA78E)
+                            : Color.fromARGB(170, 208, 255, 247),
+                        borderRadius: BorderRadius.circular(30)),
+                    child: Stack(
+                      children: [
+                        Expanded(
+                            child: Center(
+                          child: Text(
+                            "Next",
+                            style: TextStyle(
+                              color: enteredValue.length == 12
+                                  ? Color(0xffffffff)
+                                  : Color(0x7C1E1E1E),
+                              fontSize: 16,
+                              fontFamily: 'Poppins',
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: 0.16,
+                            ),
+                          ),
+                        ))
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            )),
+        Positioned(
+            bottom: 0,
+            child: KeyBoard(
+              onPressed: (val) {
+                addValue(val);
+              },
+              length: 12,
+            ))
+      ],
+    ));
   }
 }

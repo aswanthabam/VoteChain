@@ -7,7 +7,9 @@ import 'package:vote/pages/admin.dart';
 import 'package:vote/components/results.dart';
 import 'package:vote/classes/contract_linker.dart';
 import 'package:vote/pages/splashscreen.dart';
+import 'pages/getstarted.dart';
 import 'pages/login.dart';
+import 'pages/register.dart';
 
 void main() {
   runApp(const App());
@@ -33,15 +35,14 @@ class _AppState extends State<App> {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Vote Chain',
-      initialRoute: 'login',
+      initialRoute: 'splashscreen',
       routes: {
-        'home': (context) => SplashScreen(
-            function: () async {
-              await Timer(Duration(seconds: 20), () => {});
-            },
-            widget: MyAppBar(body: Home())),
+        'home': (context) => Home(),
         'admin': (context) => MyAppBar(body: Admin()),
-        'login': (context) => Login(),
+        'getstarted': (context) => const GetStarted(),
+        'splashscreen': (context) => const SplashScreen(),
+        'login': (context) => const Login(),
+        'register': (context) => const Register()
       },
       debugShowCheckedModeBanner: false,
       theme: ThemeData(fontFamily: 'Poppins'),
