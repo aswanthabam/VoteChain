@@ -2,69 +2,78 @@
 pragma solidity ^0.5.16;
 
 contract Election {
-    constructor() public {
-        addCandidate("candidate 1");
-        addCandidate("candidate 2");
-    }
+    constructor() public {}
 
+    // STRUCTURES
+
+    // Candidate Structure
     struct Candidate {
         uint id;
         string name;
         uint voteCount;
     }
-    
+    // An Entity of election structure
     struct ElectionEntity {
-      uint id;
-      string name;
+        uint id;
+        string name;
+        Candidate[] candidates;
+        bool started;
+        bool ended;
     }
-    event UserRegisteredEvent(address _address);
+    // User structure
     struct User {
-      uint uid;
-      address _address;
-      string name;
-      bool approved;
-    }
-    mapping(address => User) public users;
-    mapping(uint => bool) private isRegistered;
-    mapping(address => bool) public approvedToVote;
-    
-    mapping(address => ElectionEntity) public allowedElections;
-    mapping(uid => Candidate[]) public candidatesOf;
-    
-    function registerUser(uint uid, string memory _name) {
-      require(users[msg.sender] == null); // The address is not used
-      require(!isRegistered[uid]); // The uid is not registered
-      users[msg.sender] = User(uid,msg.sender,_name,false);
-      isRegistered[uid] = true;
-      emit UserRegisteredEvent(msg.sender);
-    }
-    
-    event VotedEvent(address _from);
-
-    mapping(uint => Candidate) public candidates;
-
-    uint public candidatesCount;
-
-    function addCandidate(string memory _name) private returns (int) {
-        candidatesCount++;
-        candidates[candidatesCount] = Candidate(candidatesCount, _name, 0);
-        return 1;
+        uint uid;
+        address _address;
+        string name;
     }
 
-    mapping(address => bool) public voters;
+    // EVENTS
 
-    function vote(uint _candidateId) public {
-        // require that they haven't voted before
-        require(!voters[msg.sender]);
+    // Event : USER Registered
+    event UserRegisteredEvent(address _address);
 
-        // require a valid candidate
-        require(_candidateId > 0 && _candidateId <= candidatesCount);
+    // MAPPINGS
 
-        // record that voter has voted
-        voters[msg.sender] = true;
+    // User related
+    mapping(address => User) public users; // get user by the address
+    mapping(uint => bool) private isRegistered; // userId and all registered users
+    mapping(address => bool) private isAddressUsed; // for checking if an address is already registered
+    mapping(address => bool) public verified; // for checking if a user is verified
+    // election realted
+    mapping(uint => ElectionEntity) public elections; // All Election Entities
+    mapping(address => ElectionEntity[]) public allowedElections; // Get allowed election to vote of a voter
+    mapping(address => uint) public allowedElectionsCount;
 
-        // update candidate vote Count
-        candidates[_candidateId].voteCount++;
-        emit VotedEvent(msg.sender);
+    // FUNCTIONS
+
+    // Function to register  user
+    function registerUser(uint uid, string memory _name) public {
+        require(!isRegistered[uid], "Already registered"); // The uid is not registered
+        require(!isAddressUsed[msg.sender], "Address Already Used"); // The address is not used
+
+        users[msg.sender] = User(uid, msg.sender, _name);
+        isRegistered[uid] = true;
+        isAddressUsed[msg.sender] = true;
+        emit UserRegisteredEvent(msg.sender);
+    }
+
+    // verify a user
+    function verifyUser(address user, uint uid) public {
+        require(isRegistered[uid], "UID Not registered");
+        require(users[user].uid == uid, "Address Missmatch");
+
+        verified[user] = true;
+    }
+
+    // approve a user to vote on a perticular election
+    function approveToVote(address user, uint uid, uint electionId) public {
+        require(isRegistered[uid], "UID Not registered");
+        require(users[user].uid == uid, "Address Missmatch");
+        require(elections[electionId].started, "ElectionEntity doesnt exist");
+
+        allowedElections[user][allowedElectionsCount[user]] = elections[
+            electionId
+        ];
+        allowedElectionsCount[user]++;
     }
 }
