@@ -2,15 +2,15 @@
 pragma solidity ^0.5.16;
 
 contract Election {
-    // VARIABLES
-    address admin;
-    uint electionCount = 0;
-    uint candidatesCount = 0;
-    uint requestCount = 0;
-
     constructor() public {
         admin = msg.sender; // Deployer is the admin
     }
+
+    // VARIABLES
+    address admin;
+    uint public electionCount = 0;
+    uint public candidatesCount = 0;
+    uint public requestCount = 0;
 
     // STRUCTURES
 
@@ -67,8 +67,10 @@ contract Election {
     mapping(address => uint) public allowedElectionsCount; // No of allowed elections to vote of a user
     // Candidate related
     // mapping(address => Candidate) public candidates; // All candidates and their address
-    mapping(uint => Candidate[]) public candidates; // Candidates in an election entity
+    mapping(uint => mapping(uint => Candidate)) public candidates; // Candidates in an election entity
+    mapping(uint => uint) public numberOfCandidates; // The number of candidates in an election entity
     mapping(address => ParticipationRequest[]) public participationRequests; // All participation requests of a person
+    mapping(address => uint) public numberOfParticipationRequests; // The number of participation requests by a person
     mapping(uint => ParticipationRequest) public allParticipationRequests; // All participation request
 
     // MODIFIERS
@@ -161,6 +163,7 @@ contract Election {
             electionId,
             false
         );
+        numberOfParticipationRequests[msg.sender]++;
         emit ParticipationRequestEvent(requestCount);
     }
 
@@ -174,14 +177,15 @@ contract Election {
         ParticipationRequest memory request = allParticipationRequests[id];
         allParticipationRequests[id].approved = true;
         candidatesCount++;
-        candidates[request.electionId].push(
-            Candidate(
-                candidatesCount,
-                request.from,
-                request.name,
-                0,
-                request.uid
-            )
+        numberOfCandidates[request.electionId]++;
+        candidates[request.electionId][
+            numberOfCandidates[request.electionId]
+        ] = Candidate(
+            candidatesCount,
+            request.from,
+            request.name,
+            0,
+            request.uid
         );
         emit ApprovedParticipationRequest(candidatesCount);
     }
