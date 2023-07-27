@@ -54,6 +54,7 @@ contract Election {
     event CandidateAddedEvent(uint candidateId, string name);
     event ParticipationRequestEvent(uint requestId);
     event ApprovedParticipationRequest(uint candidateId);
+    event VotedEvent(address to, uint uid);
     // MAPPINGS
 
     // User related
@@ -63,15 +64,16 @@ contract Election {
     mapping(address => bool) public verified; // for checking if a user is
     // Election related
     mapping(uint => ElectionEntity) public elections; // All Election Entities
-    mapping(address => ElectionEntity[]) public allowedElections; // Get allowed election to vote of a voter
+    mapping(address => mapping(uint => ElectionEntity)) public allowedElections; // Get allowed election to vote of a voter
     mapping(address => uint) public allowedElectionsCount; // No of allowed elections to vote of a user
     // Candidate related
-    // mapping(address => Candidate) public candidates; // All candidates and their address
     mapping(uint => mapping(uint => Candidate)) public candidates; // Candidates in an election entity
     mapping(uint => uint) public numberOfCandidates; // The number of candidates in an election entity
     mapping(address => ParticipationRequest[]) public participationRequests; // All participation requests of a person
     mapping(address => uint) public numberOfParticipationRequests; // The number of participation requests by a person
     mapping(uint => ParticipationRequest) public allParticipationRequests; // All participation request
+    // Voting related
+    mapping(address => mapping(uint => bool)) isVoted;
 
     // MODIFIERS
 
@@ -94,23 +96,36 @@ contract Election {
     }
 
     // verify a user
-    function verifyUser(address user, uint uid) public {
+    function verifyUser(address user, uint uid) public onlyAdmin {
         require(isRegistered[uid], "UID Not registered");
         require(users[user].uid == uid, "Address Missmatch");
-
+        require(!verified[user]);
         verified[user] = true;
     }
 
     // approve a user to vote on a perticular election
-    function approveToVote(address user, uint uid, uint electionId) public {
+    function approveToVote(
+        address user,
+        uint uid,
+        uint electionId
+    ) public onlyAdmin {
         require(isRegistered[uid], "UID Not registered");
-        require(users[user].uid == uid, "Address Missmatch");
-        require(elections[electionId].started, "ElectionEntity doesnt exist");
+        require(users[user].uid == uid, "Address Missmatched");
+        require(elections[electionId].id != 0, "ElectionEntity doesnt exist");
+        require(verified[user], "User is not verified");
 
+        bool tmp = true;
+        for (uint i = 0; i <= allowedElectionsCount[user]; i++) {
+            if (allowedElections[user][i].id == electionId) {
+                tmp = false;
+            }
+        }
+        require(tmp, "Already allowed");
+
+        allowedElectionsCount[user]++;
         allowedElections[user][allowedElectionsCount[user]] = elections[
             electionId
         ];
-        allowedElectionsCount[user]++;
     }
 
     // add an election
@@ -188,5 +203,44 @@ contract Election {
             request.uid
         );
         emit ApprovedParticipationRequest(candidatesCount);
+    }
+
+    // vote
+    function vote(
+        uint uid,
+        uint electionId,
+        uint candidateId,
+        address candidateAddress
+    ) public {
+        require(isRegistered[uid], "UID Not registered");
+        require(users[msg.sender].uid == uid, "Address Missmatched");
+        require(elections[electionId].id != 0, "ElectionEntity doesnt exist");
+        require(verified[msg.sender], "User is not verified");
+
+        bool tmp = false;
+        for (uint i = 0; i <= allowedElectionsCount[msg.sender]; i++) {
+            if (allowedElections[msg.sender][i].id == electionId) {
+                tmp = true;
+            }
+        }
+
+        require(tmp, "Not allowed to vote in this election");
+        require(!isVoted[msg.sender][electionId], "Already voted");
+
+        tmp = false;
+        uint canId;
+        for (uint i = 0; i <= numberOfCandidates[electionId]; i++) {
+            if (
+                candidates[electionId][i].id == candidateId &&
+                candidates[electionId][i].candidateAddress == candidateAddress
+            ) {
+                tmp = true;
+                canId = i;
+            }
+        }
+        require(tmp, "Invalid Candidate Details");
+        candidates[electionId][canId].voteCount++;
+        isVoted[msg.sender][electionId] = true;
+        emit VotedEvent(candidateAddress, candidateId);
     }
 }
