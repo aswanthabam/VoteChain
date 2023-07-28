@@ -14,7 +14,7 @@ class _ResultsState extends State<Results> {
   @override
   void initState() {
     super.initState();
-    widget.linker.loadCandidates2();
+    // widget.linker.loadCandidates2();
   }
 
   @override
@@ -35,7 +35,7 @@ class _ResultsState extends State<Results> {
               IconButton(
                   onPressed: () {
                     setState(() {
-                      widget.linker.loadCandidates2();
+                      // widget.linker.loadCandidates2();
                     });
                   },
                   icon: Icon(Icons.refresh))

@@ -60,18 +60,18 @@ dev_dependencies:
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
-  image_path: "src/images/icon.png"
+  image_path: "src/images/icon_round.png"
   web:
     generate: true
-    image_path: "src/images/icon.png"
+    image_path: "src/images/icon_round.png"
     background_color: "#fff"
     theme_color: "#fff"
   windows:
     generate: true
-    image_path: "src/images/icon.png"
+    image_path: "src/images/icon_round.png"
   macos:
     generate: true
-    image_path: "src/images/icon.png"
+    image_path: "src/images/icon_round.png"
 flutter:
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

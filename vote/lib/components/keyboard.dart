@@ -2,21 +2,34 @@ import 'package:flutter/material.dart';
 
 class KeyBoard extends StatefulWidget {
   KeyBoard(
-      {super.key, required this.onPressed, this.width = 100, this.length = -1});
+      {super.key,
+      required this.onPressed,
+      this.width = 100,
+      this.length = -1,
+      this.reset = false});
   late Function(String) onPressed;
   double width = 100;
   int length;
+  bool reset;
   @override
   State<KeyBoard> createState() => _KeyBoardState();
 }
 
 class _KeyBoardState extends State<KeyBoard> {
   int charCount = 0;
+  @override
+  void didUpdateWidget(covariant KeyBoard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.reset != widget.reset) {
+      charCount = 0;
+    }
+  }
+
   void valueClicked(String val) {
     print("Char Count : $charCount");
-    if (widget.length == -1)
+    if (widget.length == -1) {
       widget.onPressed(val);
-    else {
+    } else {
       if (val == "clr") {
         charCount = 0;
         widget.onPressed(val);
@@ -38,15 +51,15 @@ class _KeyBoardState extends State<KeyBoard> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: EdgeInsets.all(15),
+        padding: const EdgeInsets.all(15),
         child: Container(
           width: MediaQuery.of(context).size.width - 30,
           decoration: ShapeDecoration(
-            color: Color(0xFFE0FFF9),
+            color: const Color(0xFFE0FFF9),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(30),
             ),
-            shadows: [
+            shadows: const [
               BoxShadow(
                 color: Color(0x542A7164),
                 blurRadius: 10,
@@ -66,7 +79,7 @@ class _KeyBoardState extends State<KeyBoard> {
                         onPressed: () {
                           valueClicked('1');
                         },
-                        child: Center(
+                        child: const Center(
                             child: Text(
                           "1",
                           style: TextStyle(
@@ -83,7 +96,7 @@ class _KeyBoardState extends State<KeyBoard> {
                         onPressed: () {
                           valueClicked('2');
                         },
-                        child: Center(
+                        child: const Center(
                             child: Text(
                           "2",
                           style: TextStyle(
@@ -100,7 +113,7 @@ class _KeyBoardState extends State<KeyBoard> {
                         onPressed: () {
                           valueClicked('3');
                         },
-                        child: Center(
+                        child: const Center(
                             child: Text(
                           "3",
                           style: TextStyle(
@@ -114,7 +127,7 @@ class _KeyBoardState extends State<KeyBoard> {
                   ),
                 ],
               ),
-              SizedBox(height: 15),
+              const SizedBox(height: 15),
               Row(
                 children: [
                   Expanded(
@@ -122,7 +135,7 @@ class _KeyBoardState extends State<KeyBoard> {
                         onPressed: () {
                           valueClicked('4');
                         },
-                        child: Center(
+                        child: const Center(
                             child: Text(
                           "4",
                           style: TextStyle(
@@ -139,7 +152,7 @@ class _KeyBoardState extends State<KeyBoard> {
                         onPressed: () {
                           valueClicked('5');
                         },
-                        child: Center(
+                        child: const Center(
                             child: Text(
                           "5",
                           style: TextStyle(
@@ -156,7 +169,7 @@ class _KeyBoardState extends State<KeyBoard> {
                         onPressed: () {
                           valueClicked('6');
                         },
-                        child: Center(
+                        child: const Center(
                             child: Text(
                           "6",
                           style: TextStyle(
@@ -170,7 +183,7 @@ class _KeyBoardState extends State<KeyBoard> {
                   ),
                 ],
               ),
-              SizedBox(height: 15),
+              const SizedBox(height: 15),
               Row(
                 children: [
                   Expanded(
@@ -178,7 +191,7 @@ class _KeyBoardState extends State<KeyBoard> {
                         onPressed: () {
                           valueClicked('7');
                         },
-                        child: Center(
+                        child: const Center(
                             child: Text(
                           "7",
                           style: TextStyle(
@@ -195,7 +208,7 @@ class _KeyBoardState extends State<KeyBoard> {
                         onPressed: () {
                           valueClicked('8');
                         },
-                        child: Center(
+                        child: const Center(
                             child: Text(
                           "8",
                           style: TextStyle(
@@ -212,7 +225,7 @@ class _KeyBoardState extends State<KeyBoard> {
                         onPressed: () {
                           valueClicked('9');
                         },
-                        child: Center(
+                        child: const Center(
                             child: Text(
                           "9",
                           style: TextStyle(
@@ -226,7 +239,7 @@ class _KeyBoardState extends State<KeyBoard> {
                   ),
                 ],
               ),
-              SizedBox(height: 15),
+              const SizedBox(height: 15),
               Row(
                 children: [
                   Expanded(
@@ -234,7 +247,7 @@ class _KeyBoardState extends State<KeyBoard> {
                         onPressed: () {
                           valueClicked('clr');
                         },
-                        child: Center(
+                        child: const Center(
                             child: Icon(
                           Icons.clear_outlined,
                           color: Colors.black,
@@ -245,7 +258,7 @@ class _KeyBoardState extends State<KeyBoard> {
                         onPressed: () {
                           valueClicked('0');
                         },
-                        child: Center(
+                        child: const Center(
                             child: Text(
                           "0",
                           style: TextStyle(
@@ -262,7 +275,7 @@ class _KeyBoardState extends State<KeyBoard> {
                         onPressed: () {
                           valueClicked('bck');
                         },
-                        child: Center(
+                        child: const Center(
                             child: Icon(
                           Icons.backspace_outlined,
                           color: Colors.black,
@@ -270,7 +283,7 @@ class _KeyBoardState extends State<KeyBoard> {
                   ),
                 ],
               ),
-              SizedBox(height: 15)
+              const SizedBox(height: 15)
             ],
           ),
         ));

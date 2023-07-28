@@ -8,12 +8,13 @@ class ValueDisplayer extends StatefulWidget {
       required this.value,
       required this.length,
       required this.divide,
+      this.spacing = 10,
       this.fill = '0',
       this.fontSize = 30,
       this.letterSpacing = 3,
       this.fontWeight = FontWeight.w500});
 
-  double fontSize, letterSpacing;
+  double fontSize, letterSpacing, spacing;
   FontWeight fontWeight;
   int length;
   List<int> divide;
@@ -34,7 +35,6 @@ class _ValueDisplayerState extends State<ValueDisplayer> {
 
   @override
   void didUpdateWidget(covariant ValueDisplayer oldWidget) {
-    // TODO: implement didUpdateWidget
     super.didUpdateWidget(oldWidget);
     if (oldWidget.value != widget.value) {
       addFormated(parseValue(widget.value));
@@ -44,10 +44,11 @@ class _ValueDisplayerState extends State<ValueDisplayer> {
   String parseValue(String val) {
     String res = "";
     for (var i = 0; i < widget.length; i++) {
-      if (i < val.length)
+      if (i < val.length) {
         res += val.characters.elementAt(i);
-      else
+      } else {
         res += widget.fill;
+      }
     }
     return res;
   }
@@ -84,7 +85,7 @@ class _ValueDisplayerState extends State<ValueDisplayer> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
-          shadows: [
+          shadows: const [
             BoxShadow(
               color: Color(0x3F000000),
               blurRadius: 4,
@@ -102,8 +103,9 @@ class _ValueDisplayerState extends State<ValueDisplayer> {
                     return Text(
                       e.keys.first,
                       style: TextStyle(
-                        color:
-                            e.values.first ? Colors.black : Color(0xBC7D7777),
+                        color: e.values.first
+                            ? Colors.black
+                            : const Color(0xBC7D7777),
                         fontSize: widget.fontSize,
                         fontFamily: 'RobotoMono',
                         fontWeight: widget.fontWeight,
@@ -112,7 +114,7 @@ class _ValueDisplayerState extends State<ValueDisplayer> {
                     );
                   }).toList(),
                 ),
-                SizedBox(width: 10)
+                SizedBox(width: widget.spacing)
               ]);
             }).toList()));
   }

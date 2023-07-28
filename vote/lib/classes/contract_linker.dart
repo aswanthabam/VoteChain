@@ -43,12 +43,10 @@ class ContractLinker extends ChangeNotifier {
       initWeb3();
       createAccount();
       contract_loaded = loadContracts();
-      loadCandidates2();
     } else {
       initWeb3();
       createAccount();
       contract_loaded = loadContracts();
-      loadCandidates2();
     }
   }
 
@@ -99,27 +97,6 @@ class ContractLinker extends ChangeNotifier {
     }
   }
 
-  Future<List<Candidates>> loadCandidates2() async {
-    notifyListeners();
-    candidates = loadCandidates();
-    return candidates;
-  }
-
-  Future<List<Candidates>> loadCandidates() async {
-    await inited;
-    await contract_loaded;
-    List<Candidates> list = [];
-    try {
-      int candidates_count = (await election.candidatesCount()).toInt();
-      for (var i = 1; i <= candidates_count; i++) {
-        list.add(await election.candidates(BigInt.from(i)));
-      }
-    } catch (err) {
-      print("Error: " + err.toString());
-    }
-    return list;
-  }
-
   Future<Map<String, dynamic>> requestEthers(context) async {
     await inited;
     Map<String, dynamic> ret = {};
@@ -137,7 +114,7 @@ class ContractLinker extends ChangeNotifier {
             builder: (BuildContext context) => Dialog(
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20)),
-                child: Padding(
+                child: const Padding(
                     padding: EdgeInsets.all(10),
                     child: Column(
                         mainAxisSize: MainAxisSize.min,
@@ -151,7 +128,7 @@ class ContractLinker extends ChangeNotifier {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20)),
               backgroundColor: Colors.white,
-              child: Padding(
+              child: const Padding(
                   padding: EdgeInsets.all(16),
                   // height: 100,
                   // decoration: BoxDecoration(color: Colors.white),
@@ -162,44 +139,6 @@ class ContractLinker extends ChangeNotifier {
     print("Account balance : " + (await getBalance()).toString() + " ETH");
     notifyListeners();
     return ret;
-  }
-
-  Future<String> voteCandidate(BigInt candidateId, context) async {
-    await inited;
-    await contract_loaded;
-    try {
-      final gasPrice = EtherAmount.inWei(
-          BigInt.from(200000000)); //await client.getGasPrice();
-      print("Gas Price : $gasPrice");
-
-      String res = await election.vote(candidateId,
-          credentials: _credentials,
-          transaction: Transaction(
-            gasPrice: gasPrice,
-            maxGas: 522677,
-            value: EtherAmount.zero(),
-          ));
-      await getBalance();
-      print("Transaction : $res");
-      notifyListeners();
-      return res;
-    } catch (err) {
-      final result = "NULL";
-      Navigator.pop(context);
-      showDialog(
-          context: context,
-          builder: (builder) {
-            return Dialog(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20)),
-                child: Padding(
-                    padding: EdgeInsets.all(20),
-                    child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [Text("Error Votting: " + err.toString())])));
-          });
-      return "NULL";
-    }
   }
 
   Future<double> getBalance() async {
