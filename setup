@@ -1,5 +1,34 @@
 #!/bin/bash
 
+compileContracts() {
+  echo "Compiling.. "
+  cd blockchain && truffle compile
+  echo "Running tests"
+  truffle test
+  echo "Migrating"
+  truffle migrate --reset
+  echo -n "Client: 
+  1) Flutter
+  2) React (x)
+  xx
+  choose: (1)"
+  read val;
+  if [ "$val" -eq 1 ]
+  then
+    echo "Copying contracts: "
+    cp build/contracts/Election.json ../vote/src/artifacts/Election.json
+    cp build/contracts/Election.json ../vote/lib/Election.abi.json
+    echo "Pub Get running"
+    cd ../vote && flutter pub get
+    echo "Running builder: This might take a while"
+    dart run build_runner build
+  elif [ "$val" -eq 2 ]
+  then
+    echo "Copying contracts: "
+    cp build/contracts/Election.json ../client/src/Election.json
+  fi
+
+}
 openTerminal() {
   gnome-terminal --tab --title="$2" -- bash -c "$1"
 }
@@ -20,7 +49,7 @@ read val;
   echo "Starting Helper Server"
   openTerminal "cd helper && nodemon" "Helper Server "
   echo "Starting helper server"
-  openTerminal "ganache -g 0 -d -e 300 --database.dbPath=ganache.db -l 0xa460f -p 7545 -h 0.0.0.0" "Ganache"
+  openTerminal "ganache -g 0 -d -e 300 --database.dbPath=ganache.db -l 6721975 -p 7545 -h 0.0.0.0" "Ganache"
 }
   
 printSecondMenu() {
@@ -82,7 +111,7 @@ then
   cd blockchain && truffle compile
 elif [ "$opt" -eq 5 ]
 then 
-  cd blockchain && truffle migrate --reset && cp build/contracts/Election.json ../client/src/Election.json && cp build/contracts/Election.json ../vote/src/artifacts/Election.json
+  compileContracts
 elif [ "$opt" -eq 10 ]
 then 
   startDev
