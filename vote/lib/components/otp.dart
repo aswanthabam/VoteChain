@@ -15,6 +15,7 @@ class _OTPState extends State<OTP> {
   @override
   void initState() {
     super.initState();
+    print("en: $enteredValue : " + widget.value);
     setState(() {
       enteredValue = widget.value;
     });

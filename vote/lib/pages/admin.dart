@@ -25,7 +25,7 @@ class _AdminState extends State<Admin> {
     super.initState();
     rpcUrl.text = Preferences.rpcUrl;
     helperUrl.text = Preferences.helperUrl;
-    contractAddress.text = Preferences.contractAddress;
+    contractAddress.text = Preferences.contractAddress ?? "";
     wsUrl.text = Preferences.wsUrl;
   }
 

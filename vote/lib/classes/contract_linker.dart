@@ -12,6 +12,7 @@ import 'package:convert/convert.dart';
 import 'package:provider/provider.dart';
 import 'preferences.dart';
 import '../components/dialog.dart';
+import 'utils.dart';
 
 class ContractLinker extends ChangeNotifier {
   late String _rpcUrl = "http://192.168.18.2:7545";
@@ -30,6 +31,7 @@ class ContractLinker extends ChangeNotifier {
   late Future<List<Candidates>> candidates;
   late Preferences pref;
   late Future<void> inited;
+  Wallet? wallet;
   // BuildContext context;
   // Functions
   // ContractLinker({BuildContext context});
@@ -81,6 +83,39 @@ class ContractLinker extends ChangeNotifier {
     print("Created : " + _address.hex);
     getBalance();
     notifyListeners();
+  }
+
+  bool saveWallet(String name, int uid, String password) {
+    try {
+      wallet = Wallet.createNew(_credentials, password, Random.secure());
+      if (Utils.secureSave(
+          key: "account", value: wallet!.toJson().toString())) {
+        print("saved");
+        return true;
+      } else {
+        print("Cant save");
+        return false;
+      }
+    } catch (err) {
+      print("Error: " + err.toString());
+      return false;
+    }
+  }
+
+  Future<bool> loadWallet(String password) async {
+    try {
+      print("Loading account ...");
+      String encoded = (await Utils.storage.read(key: "account"))!;
+      print(encoded);
+      wallet = Wallet.fromJson(encoded, password);
+      _credentials = wallet!.privateKey;
+      _address = _credentials.address;
+      print("Loaded account");
+      return true;
+    } catch (err) {
+      print("Error: " + err.toString());
+      return false;
+    }
   }
 
   Future<bool> loadContracts2() async {
@@ -147,37 +182,25 @@ class ContractLinker extends ChangeNotifier {
     return ret;
   }
 
-  Future<void> register(String name, int uid, BuildContext context) async {
+  Future<bool> register(String name, int uid, BuildContext context) async {
     await inited;
     await contract_loaded;
+    // createAccount();
+    // requestEthers(context);
     try {
       var res = await election.registerUser(BigInt.from(uid), name,
           credentials: _credentials,
           transaction: Transaction(
               maxPriorityFeePerGas: EtherAmount.fromInt(EtherUnit.ether, 0)));
-      var subscription = election
-          .userRegisteredEventEvents(
-              fromBlock: BlockNum.genesis(), toBlock: BlockNum.current())
-          .take(1)
-          .listen((event) {
-        showDialog(
-            context: context,
-            builder: ((context) => MsgDialog(
-                icon: Icons.done_rounded,
-                iconColor: Colors.green.shade400,
-                iconSize: 30,
-                text: "Created Account Successfully")));
-        // UserRegisteredEvent
-      }, onError: (err) {
-        showDialog(
-            context: context,
-            builder: ((context) => MsgDialog(
-                icon: Icons.error_outline_rounded,
-                iconColor: Colors.red,
-                iconSize: 30,
-                text: "An Unexpected error occured while creating account")));
-      });
+      // var subscription = election
+      //     .userRegisteredEventEvents(
+      //         fromBlock: BlockNum.genesis(), toBlock: BlockNum.current())
+      //     .take(1)
+      //     .listen((event) {
+      //   // UserRegisteredEvent
+      // });
       print("Transaction : " + res);
+      return true;
     } catch (err) {
       print(err);
       showDialog(
@@ -187,6 +210,7 @@ class ContractLinker extends ChangeNotifier {
               iconColor: Colors.red,
               iconSize: 30,
               text: "An Unexpected error occured while creating account")));
+      return false;
     }
   }
 

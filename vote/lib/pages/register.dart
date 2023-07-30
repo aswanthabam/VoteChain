@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../components/keyboard.dart';
+import '../components/dialog.dart';
 import '../components/uid.dart';
 import '../components/otp.dart';
+import '../components/password.dart';
 import '../classes/global.dart';
+import '../classes/api.dart';
 
 class Register extends StatefulWidget {
   const Register({super.key});
@@ -13,9 +16,10 @@ class Register extends StatefulWidget {
 }
 
 class _RegisterState extends State<Register> {
-  int step = 0, totalstep = 2;
+  int step = 0, totalstep = 3;
   String uid = "";
   String otp = "";
+  String password = "";
 
   bool displayIntKeyboard = false, keyboardReset = false;
   bool buttonEnabled = true, buttonProcessing = false;
@@ -83,6 +87,8 @@ class _RegisterState extends State<Register> {
         return uid;
       case 1:
         return otp;
+      case 2:
+        return password;
       default:
         return "";
     }
@@ -113,6 +119,11 @@ class _RegisterState extends State<Register> {
             otp = val;
           }
           break;
+        case 2:
+          if (val.isNotEmpty) {
+            password = val;
+          }
+          break;
       }
     });
   }
@@ -120,11 +131,13 @@ class _RegisterState extends State<Register> {
   Widget getCurrentWidget() {
     switch (step) {
       case 0:
+        // print("UID : $uid\nOTP : $otp\nPassword: $password");
         showNumKeyboard(12);
         return UID(
           value: uid,
         );
       case 1:
+        // print("UID : $uid\nOTP : $otp\nPassword: $password");
         hideNumKeyboard();
         return OTP(
           value: otp,
@@ -133,10 +146,45 @@ class _RegisterState extends State<Register> {
             showAlphaKeyboard(6);
           },
         );
+      case 2:
+        // print("UID : $uid\nOTP : $otp\nPassword: $password");
+        hideNumKeyboard();
+        hideAlphaKeyboard();
+        return Password(
+          onChange: (val) {
+            print(password + ",Validate : " + validate().toString());
+            setValue(val);
+          },
+        );
       default:
         return const Expanded(
           child: SizedBox(),
         );
+    }
+  }
+
+  void clearStep() {
+    print("Clear");
+    switch (step) {
+      case 0:
+        setState(() {
+          uid = "";
+          keyboardLength = 0;
+          // keyboardReset = !keyboardReset;
+        });
+      case 1:
+        setState(() {
+          otp = "";
+          keyboardLength = 12;
+          _keyboardController.text = "";
+          // keyboardReset = !keyboardReset;
+        });
+      case 2:
+        setState(() {
+          password = "";
+          keyboardLength = 6;
+          // keyboardReset = !keyboardReset;
+        });
     }
   }
 
@@ -173,6 +221,15 @@ class _RegisterState extends State<Register> {
         } else {
           return false;
         }
+      case 2:
+        if (password.length > 7 &&
+            RegExp(r'[a-z]').hasMatch(password) &&
+            RegExp(r'[A-Z]').hasMatch(password) &&
+            RegExp(r'[0-9]').hasMatch(password)) {
+          return true;
+        } else {
+          return false;
+        }
       default:
         return false;
     }
@@ -194,6 +251,7 @@ class _RegisterState extends State<Register> {
           top: 30,
           child: IconButton(
               onPressed: () {
+                clearStep();
                 if (!preStep()) Navigator.pop(context);
               },
               icon: const Icon(Icons.arrow_back_ios))),
@@ -213,13 +271,50 @@ class _RegisterState extends State<Register> {
                   if (validate()) {
                     if (step == totalstep - 1) {
                       print("Submit");
+                      hideAlphaKeyboard();
                       setState(() {
                         // buttonEnabled = false;
                         buttonProcessing = true;
                       });
                       await Global.linker.requestEthers(context);
-                      await Global.linker
+                      var st = await Global.linker
                           .register("TEst", int.parse(uid), context);
+                      if (st) {
+                        var value = await API.registerUser(
+                            (await Global.linker.getAddress()).toString(),
+                            int.parse(uid),
+                            password);
+                        if (value) {
+                          Global.linker
+                              .saveWallet("Test", int.parse(uid), password);
+                          showDialog(
+                              context: context,
+                              builder: ((context) => MsgDialog(
+                                  icon: Icons.done_rounded,
+                                  iconColor: Colors.green.shade400,
+                                  iconSize: 30,
+                                  text: "Created Account Successfully")));
+                          Navigator.pushReplacementNamed(context, 'home');
+                        } else {
+                          showDialog(
+                              context: context,
+                              builder: ((context) => MsgDialog(
+                                  icon: Icons.error_outline_rounded,
+                                  iconColor: Colors.red,
+                                  iconSize: 30,
+                                  text:
+                                      "An Unexpected error occured while creating account")));
+                        }
+                      } else {
+                        showDialog(
+                            context: context,
+                            builder: ((context) => MsgDialog(
+                                icon: Icons.error_outline_rounded,
+                                iconColor: Colors.red,
+                                iconSize: 30,
+                                text:
+                                    "An Unexpected error occured while creating account, please try again")));
+                      }
                       setState(() {
                         // buttonEnabled = false;
                         buttonProcessing = false;
@@ -293,7 +388,7 @@ class _RegisterState extends State<Register> {
                   },
                   length: keyboardLength,
                   reset: keyboardReset,
-                )
+                  curLength: getCurrentValue().length)
               : Opacity(
                   opacity: 0,
                   child: SizedBox(

@@ -3,6 +3,7 @@ import 'dart:isolate';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:vote/classes/preferences.dart';
+import 'package:vote/pages/getstarted.dart';
 import '../classes/contract_linker.dart';
 import '../classes/global.dart';
 
@@ -37,6 +38,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> setup() async {
+    String goto = "";
     // Load Wallet
     try {
       await Future.delayed(Duration(seconds: 1));
@@ -46,14 +48,19 @@ class _SplashScreenState extends State<SplashScreen> {
       Global.linker.init();
       Global.linker.loadContracts();
       await Global.linker.contract_loaded;
-      await Global.linker.createAccount();
+      if (await Global.linker.loadWallet("123456aA")) {
+        goto = "home";
+      } else {
+        await Global.linker.createAccount();
+        goto = "getstarted";
+      }
       setStatus("Getting Started");
+      await Future.delayed(Duration(milliseconds: 50));
+      Navigator.pushReplacementNamed(context, goto);
     } catch (err) {
       print("Error got");
       print(err);
     }
-    await Future.delayed(Duration(milliseconds: 50));
-    Navigator.pushReplacementNamed(context, 'getstarted');
   }
 
   void setStatus(String text) {

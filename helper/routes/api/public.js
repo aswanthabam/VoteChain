@@ -121,6 +121,7 @@ router.post('/register', async (req,res) => {
     res.status(400).json(out);
     return;
   }
+  console.log("Request from : "+uid+" : "+address+" : password("+key+")");
   var out = {};
   try{
     // Check if an account was already created or not

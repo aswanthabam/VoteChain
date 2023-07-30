@@ -6,10 +6,11 @@ class KeyBoard extends StatefulWidget {
       required this.onPressed,
       this.width = 100,
       this.length = -1,
-      this.reset = false});
+      this.reset = false,
+      this.curLength = 0});
   late Function(String) onPressed;
   double width = 100;
-  int length;
+  int length, curLength;
   bool reset;
   @override
   State<KeyBoard> createState() => _KeyBoardState();
@@ -17,6 +18,12 @@ class KeyBoard extends StatefulWidget {
 
 class _KeyBoardState extends State<KeyBoard> {
   int charCount = 0;
+  @override
+  void initState() {
+    super.initState();
+    charCount = widget.curLength;
+  }
+
   @override
   void didUpdateWidget(covariant KeyBoard oldWidget) {
     super.didUpdateWidget(oldWidget);

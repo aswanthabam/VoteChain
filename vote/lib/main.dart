@@ -37,7 +37,7 @@ class _AppState extends State<App> {
       title: 'Vote Chain',
       initialRoute: 'splashscreen',
       routes: {
-        'home': (context) => Home(),
+        'home': (context) => MyAppBar(body: Home()),
         'admin': (context) => MyAppBar(body: Admin()),
         'getstarted': (context) => const GetStarted(),
         'splashscreen': (context) => const SplashScreen(),

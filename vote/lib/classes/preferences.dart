@@ -4,7 +4,7 @@ class Preferences {
   static late SharedPreferences pref;
   static late String rpcUrl;
   static late String helperUrl;
-  static late String contractAddress;
+  static late String? contractAddress;
   static late String wsUrl;
 
   static String RPC_KEY = "rpcUrl";
@@ -17,8 +17,8 @@ class Preferences {
     // pref.clear();
     rpcUrl = pref.getString(RPC_KEY) ?? "http://192.168.18.2:7545";
     helperUrl = pref.getString(HELPER_KEY) ?? "http://192.168.18.2:3131";
-    contractAddress = pref.getString(CONTRACT_KEY) ??
-        "0x1aBE68277AE236083947f2551FEe8b885efCA8f5";
+    contractAddress = pref.getString(CONTRACT_KEY); // ??
+    //"0x1aBE68277AE236083947f2551FEe8b885efCA8f5";
     wsUrl = pref.getString(WS_URL) ?? "ws://192.168.18.2:7545";
   }
 
