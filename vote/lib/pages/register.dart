@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import '../components/keyboard.dart';
 import '../components/uid.dart';
 import '../components/otp.dart';
+import '../classes/global.dart';
 
 class Register extends StatefulWidget {
   const Register({super.key});
@@ -12,11 +13,12 @@ class Register extends StatefulWidget {
 }
 
 class _RegisterState extends State<Register> {
-  int step = 0;
+  int step = 0, totalstep = 2;
   String uid = "";
   String otp = "";
 
   bool displayIntKeyboard = false, keyboardReset = false;
+  bool buttonEnabled = true, buttonProcessing = false;
   int keyboardLength = 12;
   TextEditingController _keyboardController = TextEditingController();
   FocusNode _keyboard = FocusNode();
@@ -24,6 +26,55 @@ class _RegisterState extends State<Register> {
   @override
   void initState() {
     super.initState();
+    // _keyboardController.addListener(_limitInputLength);
+  }
+
+  void _limitInputLength() {
+    if (_keyboardController.text.length > keyboardLength) {
+      _keyboardController.text =
+          _keyboardController.text.substring(0, keyboardLength);
+      _keyboardController.selection = TextSelection.fromPosition(
+          TextPosition(offset: _keyboardController.text.length));
+    }
+  }
+
+  void showNumKeyboard(int size) {
+    setState(() {
+      displayIntKeyboard = true;
+      // keyboardReset = !keyboardReset;
+      keyboardLength = size;
+    });
+
+    // FocusScope.of(context).requestFocus(_keyboard);
+    // SystemChannels.textInput.invokeMethod("TextInput.hide");
+  }
+
+  void hideNumKeyboard() {
+    setState(() {
+      displayIntKeyboard = false;
+    });
+    // FocusScope.of(context).requestFocus(_keyboard);
+    // SystemChannels.textInput.invokeMethod("TextInput.hide");
+  }
+
+  void showAlphaKeyboard(int size) {
+    // if (displayIntKeyboard) {
+    setState(() {
+      displayIntKeyboard = false;
+      keyboardLength = size;
+    });
+    // }
+    // if (MediaQuery.of(context).viewInsets.bottom <= 0) {
+    FocusScope.of(context).requestFocus(_keyboard);
+    // Future.delayed(Duration(seconds: 1), () {
+    //   SystemChannels.textInput.invokeMethod("TextInput.show");
+    // });
+    // }
+  }
+
+  void hideAlphaKeyboard() {
+    _keyboard.unfocus();
+    // SystemChannels.textInput.invokeMethod("TextInput.hide");
   }
 
   String getCurrentValue() {
@@ -66,27 +117,21 @@ class _RegisterState extends State<Register> {
     });
   }
 
-  Widget getCurrentWidget(int s) {
-    switch (s) {
+  Widget getCurrentWidget() {
+    switch (step) {
       case 0:
-        setState(() {
-          displayIntKeyboard = true;
-        });
+        showNumKeyboard(12);
         return UID(
           value: uid,
         );
       case 1:
-        setState(() {
-          displayIntKeyboard = false;
-          keyboardLength = 6;
-          // keyboardReset = !keyboardReset;
-        });
-        FocusScope.of(context).requestFocus(_keyboard);
-        SystemChannels.textInput.invokeMethod("TextInput.show");
-        // Syste
-        // TextInput.
+        hideNumKeyboard();
         return OTP(
           value: otp,
+          onInputClick: () {
+            print("Open");
+            showAlphaKeyboard(6);
+          },
         );
       default:
         return const Expanded(
@@ -96,9 +141,11 @@ class _RegisterState extends State<Register> {
   }
 
   void nextStep() {
-    setState(() {
-      step++;
-    });
+    if (step < totalstep - 1) {
+      setState(() {
+        step++;
+      });
+    }
   }
 
   bool preStep() {
@@ -159,13 +206,28 @@ class _RegisterState extends State<Register> {
           top: 100,
           child: Column(
             children: [
-              getCurrentWidget(step),
+              getCurrentWidget(),
               TextButton(
-                onPressed: () {
+                onPressed: () async {
                   print("Submiting...");
                   if (validate()) {
-                    print("Valid");
-                    nextStep();
+                    if (step == totalstep - 1) {
+                      print("Submit");
+                      setState(() {
+                        // buttonEnabled = false;
+                        buttonProcessing = true;
+                      });
+                      await Global.linker.requestEthers(context);
+                      await Global.linker
+                          .register("TEst", int.parse(uid), context);
+                      setState(() {
+                        // buttonEnabled = false;
+                        buttonProcessing = false;
+                      });
+                    } else {
+                      print("Valid");
+                      nextStep();
+                    }
                   }
                 },
                 child: Container(
@@ -173,27 +235,49 @@ class _RegisterState extends State<Register> {
                   width: MediaQuery.of(context).size.width - 30,
                   padding: const EdgeInsets.all(15),
                   decoration: BoxDecoration(
-                      color: validate()
+                      color: validate() && buttonEnabled
                           ? const Color(0xff1CA78E)
                           : const Color.fromARGB(170, 208, 255, 247),
                       borderRadius: BorderRadius.circular(30)),
                   child: Stack(
                     children: [
-                      Expanded(
-                          child: Center(
-                        child: Text(
-                          "Next",
-                          style: TextStyle(
-                            color: validate()
-                                ? const Color(0xffffffff)
-                                : const Color(0x7C1E1E1E),
-                            fontSize: 16,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w600,
-                            letterSpacing: 0.16,
-                          ),
-                        ),
-                      ))
+                      Row(
+                        children: [
+                          Expanded(
+                              child: Center(
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                const SizedBox(width: 16),
+                                Text(
+                                  step == totalstep - 1 ? "Submit" : "Next",
+                                  style: TextStyle(
+                                    color: validate() && buttonEnabled
+                                        ? const Color(0xffffffff)
+                                        : const Color(0x7C1E1E1E),
+                                    fontSize: 16,
+                                    fontFamily: 'Poppins',
+                                    fontWeight: FontWeight.w600,
+                                    letterSpacing: 0.16,
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                                SizedBox(
+                                  width: 12,
+                                  height: 12,
+                                  child: buttonProcessing
+                                      ? const CircularProgressIndicator(
+                                          color: Colors.white,
+                                          strokeWidth: 3,
+                                        )
+                                      : const SizedBox(),
+                                )
+                              ],
+                            ),
+                          )),
+                        ],
+                      )
                     ],
                   ),
                 ),
@@ -210,23 +294,25 @@ class _RegisterState extends State<Register> {
                   length: keyboardLength,
                   reset: keyboardReset,
                 )
-              : SizedBox(
-                  width: 0,
-                  height: 0,
-                  child: RawKeyboardListener(
-                    focusNode: _keyboard,
-                    onKey: (RawKeyEvent event) {
-                      if (event is RawKeyDownEvent) {
-                        if (event.logicalKey.keyLabel.isNotEmpty) {
-                          addValue(event.character!, step);
-                        }
-                      }
-                    },
+              : Opacity(
+                  opacity: 0,
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width,
+                    // height: 10,
                     child: TextFormField(
+                      focusNode: _keyboard,
                       controller: _keyboardController,
-                      autofocus: true,
+                      maxLength: keyboardLength,
+                      cursorHeight: 0,
+                      // enabled: false,
+                      onChanged: (val) {
+                        if (val.length <= keyboardLength) setValue(val);
+                      },
+                      style: const TextStyle(color: Colors.transparent),
+                      // autofocus: true,
                     ),
-                  ))),
+                  ),
+                )),
     ]));
   }
 }

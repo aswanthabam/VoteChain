@@ -9,6 +9,7 @@ import '../Election.g.dart';
 import 'package:vote/classes/contract_linker.dart';
 import 'package:vote/components/voteform.dart';
 import '../classes/preferences.dart';
+import '../classes/global.dart';
 
 class Home extends StatefulWidget {
   Home({super.key});
@@ -28,7 +29,7 @@ class _HomeState extends State<Home> {
 
   void init() async {
     // await Preferences.init();
-    linker = ContractLinker();
+    linker = Global.linker;
     linker.init(cond: Preferences.init());
   }
 

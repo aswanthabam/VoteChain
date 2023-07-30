@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import '../components/valueDisplayer.dart';
 
 class OTP extends StatefulWidget {
-  OTP({super.key, required this.value});
+  OTP({super.key, required this.value, required this.onInputClick});
   String value;
+  late void Function() onInputClick;
   @override
   State<OTP> createState() => _OTPState();
 }
@@ -63,16 +64,38 @@ class _OTPState extends State<OTP> {
             ),
           ),
           Center(
-              child: ValueDisplayer(
-                  value: enteredValue,
-                  length: 6,
-                  divide: const <int>[3, 3],
-                  letterSpacing: 30,
-                  spacing: 0,
-                  fill: '_')),
-          const SizedBox(
-            height: 20,
-          ),
+              child: GestureDetector(
+            onTap: widget.onInputClick,
+            child: ValueDisplayer(
+                value: enteredValue,
+                length: 6,
+                divide: const <int>[3, 3],
+                letterSpacing: 30,
+                spacing: 0,
+                fill: '_'),
+          )),
+          const Padding(
+              padding: EdgeInsets.all(20),
+              child: Row(
+                children: [
+                  Text(
+                    "Trying to autocapture ",
+                    style: TextStyle(
+                        fontSize: 12,
+                        color: Color.fromARGB(255, 189, 189, 189)),
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  SizedBox(
+                      width: 10,
+                      height: 10,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Color.fromARGB(136, 129, 199, 132),
+                      ))
+                ],
+              )),
         ],
       ),
     );

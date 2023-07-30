@@ -117,21 +117,25 @@ class _LoginState extends State<Login> {
                       borderRadius: BorderRadius.circular(30)),
                   child: Stack(
                     children: [
-                      Expanded(
-                          child: Center(
-                        child: Text(
-                          "Next",
-                          style: TextStyle(
-                            color: validate()
-                                ? const Color(0xffffffff)
-                                : const Color(0x7C1E1E1E),
-                            fontSize: 16,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w600,
-                            letterSpacing: 0.16,
-                          ),
-                        ),
-                      ))
+                      Row(
+                        children: [
+                          Expanded(
+                              child: Center(
+                            child: Text(
+                              "Next",
+                              style: TextStyle(
+                                color: validate()
+                                    ? const Color(0xffffffff)
+                                    : const Color(0x7C1E1E1E),
+                                fontSize: 16,
+                                fontFamily: 'Poppins',
+                                fontWeight: FontWeight.w600,
+                                letterSpacing: 0.16,
+                              ),
+                            ),
+                          )),
+                        ],
+                      )
                     ],
                   ),
                 ),

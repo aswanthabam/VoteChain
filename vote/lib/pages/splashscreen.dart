@@ -1,4 +1,10 @@
+import 'dart:isolate';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:vote/classes/preferences.dart';
+import '../classes/contract_linker.dart';
+import '../classes/global.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen(
@@ -11,6 +17,7 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   String statusText = 'Loading';
+  // static ContractLinker linker = ContractLinker();
   @override
   void initState() {
     // TODO: implement initState
@@ -19,16 +26,33 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void init() async {
-    setup();
+    setup().then((value) {
+      print("DONE INIT");
+    });
+  }
+
+  void run(m) {
+    // If wallet doesnt exists, show getstarted
+    return;
   }
 
   Future<void> setup() async {
     // Load Wallet
-    setStatus("Loading Account");
+    try {
+      await Future.delayed(Duration(seconds: 1));
+      await Preferences.init();
+      setStatus("Loading Account");
+      Global.linker = ContractLinker();
+      Global.linker.init();
+      Global.linker.loadContracts();
+      await Global.linker.contract_loaded;
+      await Global.linker.createAccount();
+      setStatus("Getting Started");
+    } catch (err) {
+      print("Error got");
+      print(err);
+    }
     await Future.delayed(Duration(milliseconds: 50));
-    setStatus("Getting Started");
-    await Future.delayed(Duration(milliseconds: 50));
-    // If wallet doesnt exists, show getstarted page
     Navigator.pushReplacementNamed(context, 'getstarted');
   }
 

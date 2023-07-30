@@ -11,6 +11,7 @@ import 'dart:typed_data';
 import 'package:convert/convert.dart';
 import 'package:provider/provider.dart';
 import 'preferences.dart';
+import '../components/dialog.dart';
 
 class ContractLinker extends ChangeNotifier {
   late String _rpcUrl = "http://192.168.18.2:7545";
@@ -29,11 +30,15 @@ class ContractLinker extends ChangeNotifier {
   late Future<List<Candidates>> candidates;
   late Preferences pref;
   late Future<void> inited;
+  // BuildContext context;
   // Functions
-  ContractLinker() {}
-  Future<void> init({cond}) async {
+  // ContractLinker({BuildContext context});
+  void init({cond}) {
     inited = init2(cond: cond);
-    return inited;
+  }
+
+  void loadContracts() {
+    contract_loaded = loadContracts2();
   }
 
   Future<void> init2({cond}) async {
@@ -41,12 +46,12 @@ class ContractLinker extends ChangeNotifier {
       cond = cond as Future<void>;
       await cond;
       initWeb3();
-      createAccount();
-      contract_loaded = loadContracts();
+      // createAccount();
+      // contract_loaded = loadContracts();
     } else {
       initWeb3();
-      createAccount();
-      contract_loaded = loadContracts();
+      // createAccount();
+      // contract_loaded = loadContracts();
     }
   }
 
@@ -61,6 +66,7 @@ class ContractLinker extends ChangeNotifier {
       });
       return true;
     } catch (err) {
+      print(err);
       print("Error initializing web3 client");
       return false;
     }
@@ -77,7 +83,7 @@ class ContractLinker extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<bool> loadContracts() async {
+  Future<bool> loadContracts2() async {
     await inited;
     print("Loading Contracts ...");
     try {
@@ -141,6 +147,50 @@ class ContractLinker extends ChangeNotifier {
     return ret;
   }
 
+  Future<void> register(String name, int uid, BuildContext context) async {
+    await inited;
+    await contract_loaded;
+    try {
+      var res = await election.registerUser(BigInt.from(uid), name,
+          credentials: _credentials,
+          transaction: Transaction(
+              maxPriorityFeePerGas: EtherAmount.fromInt(EtherUnit.ether, 0)));
+      var subscription = election
+          .userRegisteredEventEvents(
+              fromBlock: BlockNum.genesis(), toBlock: BlockNum.current())
+          .take(1)
+          .listen((event) {
+        showDialog(
+            context: context,
+            builder: ((context) => MsgDialog(
+                icon: Icons.done_rounded,
+                iconColor: Colors.green.shade400,
+                iconSize: 30,
+                text: "Created Account Successfully")));
+        // UserRegisteredEvent
+      }, onError: (err) {
+        showDialog(
+            context: context,
+            builder: ((context) => MsgDialog(
+                icon: Icons.error_outline_rounded,
+                iconColor: Colors.red,
+                iconSize: 30,
+                text: "An Unexpected error occured while creating account")));
+      });
+      print("Transaction : " + res);
+    } catch (err) {
+      print(err);
+      showDialog(
+          context: context,
+          builder: ((context) => MsgDialog(
+              icon: Icons.error_outline,
+              iconColor: Colors.red,
+              iconSize: 30,
+              text: "An Unexpected error occured while creating account")));
+    }
+  }
+
+  // GET BALANCEE
   Future<double> getBalance() async {
     await inited;
     try {

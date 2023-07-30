@@ -107,7 +107,7 @@ class _ValueDisplayerState extends State<ValueDisplayer> {
                             ? Colors.black
                             : const Color(0xBC7D7777),
                         fontSize: widget.fontSize,
-                        fontFamily: 'RobotoMono',
+                        fontFamily: 'Monospace',
                         fontWeight: widget.fontWeight,
                         letterSpacing: widget.letterSpacing,
                       ),

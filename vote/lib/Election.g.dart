@@ -434,7 +434,7 @@ class Election extends _i1.GeneratedContract {
     );
     return client.events(filter).map((_i1.FilterEvent result) {
       final decoded = event.decodeResults(
-        result.topics! as List<String>,
+        result.topics!.cast(),
         result.data!,
       );
       return ApprovedParticipationRequest(
@@ -458,7 +458,7 @@ class Election extends _i1.GeneratedContract {
     );
     return client.events(filter).map((_i1.FilterEvent result) {
       final decoded = event.decodeResults(
-        result.topics! as List<String>,
+        result.topics!.cast(),
         result.data!,
       );
       return CandidateAddedEvent(
@@ -482,7 +482,7 @@ class Election extends _i1.GeneratedContract {
     );
     return client.events(filter).map((_i1.FilterEvent result) {
       final decoded = event.decodeResults(
-        result.topics! as List<String>,
+        result.topics!.cast(),
         result.data!,
       );
       return ElectionCreatedEvent(
@@ -506,7 +506,7 @@ class Election extends _i1.GeneratedContract {
     );
     return client.events(filter).map((_i1.FilterEvent result) {
       final decoded = event.decodeResults(
-        result.topics! as List<String>,
+        result.topics!.cast(),
         result.data!,
       );
       return ParticipationRequestEvent(
@@ -530,7 +530,7 @@ class Election extends _i1.GeneratedContract {
     );
     return client.events(filter).map((_i1.FilterEvent result) {
       final decoded = event.decodeResults(
-        result.topics! as List<String>,
+        result.topics!.cast(),
         result.data!,
       );
       return UserRegisteredEvent(
@@ -554,7 +554,7 @@ class Election extends _i1.GeneratedContract {
     );
     return client.events(filter).map((_i1.FilterEvent result) {
       final decoded = event.decodeResults(
-        result.topics! as List<String>,
+        result.topics!.cast(),
         result.data!,
       );
       return VotedEvent(
