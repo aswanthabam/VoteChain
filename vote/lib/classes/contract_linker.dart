@@ -214,6 +214,23 @@ class ContractLinker extends ChangeNotifier {
     }
   }
 
+  Future<bool> isVerified() async {
+    await inited;
+    await contract_loaded;
+    // try {
+    // election.self.function('verified');
+    print(await client.call(
+        contract: election.self,
+        function: election.self.function('verified'),
+        params: [_address]));
+    return true;
+    // return (await election.verified(_address));
+    // } catch (err) {
+    // throw err;
+    // return false;
+    // }
+  }
+
   // GET BALANCEE
   Future<double> getBalance() async {
     await inited;

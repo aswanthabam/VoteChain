@@ -1,11 +1,6 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:vote/classes/preferences.dart';
 import 'package:vote/pages/home.dart';
 import 'package:vote/pages/admin.dart';
-import 'package:vote/components/results.dart';
-import 'package:vote/classes/contract_linker.dart';
 import 'package:vote/pages/splashscreen.dart';
 import 'pages/getstarted.dart';
 import 'pages/login.dart';
@@ -37,8 +32,8 @@ class _AppState extends State<App> {
       title: 'Vote Chain',
       initialRoute: 'splashscreen',
       routes: {
-        'home': (context) => MyAppBar(body: Home()),
-        'admin': (context) => MyAppBar(body: Admin()),
+        'home': (context) => const Home(),
+        'admin': (context) => const Admin(),
         'getstarted': (context) => const GetStarted(),
         'splashscreen': (context) => const SplashScreen(),
         'login': (context) => const Login(),
@@ -46,38 +41,6 @@ class _AppState extends State<App> {
       },
       debugShowCheckedModeBanner: false,
       theme: ThemeData(fontFamily: 'Poppins'),
-    );
-  }
-}
-
-class MyAppBar extends StatelessWidget {
-  MyAppBar({super.key, required this.body});
-
-  Widget body;
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        // leading: IconButton(onPressed: () {}, icon: Icon(Icons.menu)),
-        automaticallyImplyLeading: true,
-        actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.pushNamed(context, 'admin');
-            },
-            icon: Icon(Icons.settings),
-            tooltip: "Settings (Admin)",
-          )
-        ],
-        title: Text("Vote Chain"),
-        backgroundColor: Colors.blue.shade300.withAlpha(180),
-        centerTitle: true,
-        titleTextStyle: TextStyle(
-            color: Color.fromARGB(255, 255, 255, 255),
-            fontSize: 20,
-            fontWeight: FontWeight.bold),
-      ),
-      body: this.body,
     );
   }
 }
