@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../Election.g.dart';
 import 'package:vote/classes/contract_linker.dart';
 import 'package:provider/provider.dart';
 
@@ -26,7 +25,7 @@ class _ResultsState extends State<Results> {
         child: Column(
           children: [
             Row(children: [
-              Expanded(
+              const Expanded(
                   child: Text("Results",
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
@@ -38,9 +37,9 @@ class _ResultsState extends State<Results> {
                       // widget.linker.loadCandidates2();
                     });
                   },
-                  icon: Icon(Icons.refresh))
+                  icon: const Icon(Icons.refresh))
             ]),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             Consumer<ContractLinker>(
@@ -50,8 +49,8 @@ class _ResultsState extends State<Results> {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return Column(
                       children: [
-                        Text("Loading"),
-                        SizedBox(
+                        const Text("Loading"),
+                        const SizedBox(
                           height: 10,
                         ),
                         Center(
@@ -62,13 +61,13 @@ class _ResultsState extends State<Results> {
                       ],
                     );
                   } else if (snapshot.hasError) {
-                    return Text("Error Loading");
+                    return const Text("Error Loading");
                   } else {
                     return SizedBox(
                         // height: 300,
                         child: Table(
                             border: TableBorder.all(),
-                            defaultColumnWidth: FlexColumnWidth(),
+                            defaultColumnWidth: const FlexColumnWidth(),
                             children: () {
                               var m = [
                                 TableRow(
@@ -78,7 +77,7 @@ class _ResultsState extends State<Results> {
                                             color: Colors.grey.withAlpha(100)),
                                         height: 30,
                                         alignment: Alignment.center,
-                                        child: Text(
+                                        child: const Text(
                                             style: TextStyle(
                                                 color: Colors.black,
                                                 fontWeight: FontWeight.bold),
@@ -88,7 +87,7 @@ class _ResultsState extends State<Results> {
                                             color: Colors.grey.withAlpha(100)),
                                         height: 30,
                                         alignment: Alignment.center,
-                                        child: Text(
+                                        child: const Text(
                                             style: TextStyle(
                                                 color: Colors.black,
                                                 fontWeight: FontWeight.bold),
@@ -115,7 +114,7 @@ class _ResultsState extends State<Results> {
                 },
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 20,
             )
           ],

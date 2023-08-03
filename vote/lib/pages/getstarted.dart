@@ -12,7 +12,6 @@ class GetStarted extends StatefulWidget {
 class _GetStartedState extends State<GetStarted> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
@@ -56,7 +55,7 @@ class _GetStartedState extends State<GetStarted> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                        padding: EdgeInsets.only(left: 50, top: 30),
+                        padding: const EdgeInsets.only(left: 50, top: 30),
                         child: const Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -81,18 +80,18 @@ class _GetStartedState extends State<GetStarted> {
                           ],
                         )),
                     Container(
-                        padding: EdgeInsets.only(top: 60),
+                        padding: const EdgeInsets.only(top: 60),
                         width: MediaQuery.of(context).size.width,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             TextButton(
                               onPressed: () {
-                                print("PRessed");
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: ((context) => Register())));
+                                        builder: ((context) =>
+                                            const Register())));
                               },
                               child: Container(
                                 width: 250,
@@ -107,7 +106,7 @@ class _GetStartedState extends State<GetStarted> {
                                         height: 50,
                                         decoration: ShapeDecoration(
                                           shape: RoundedRectangleBorder(
-                                            side: BorderSide(
+                                            side: const BorderSide(
                                                 width: 2,
                                                 color: Color(0xFF54CFF6)),
                                             borderRadius:

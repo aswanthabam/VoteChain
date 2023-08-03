@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Preferences {
@@ -14,7 +16,6 @@ class Preferences {
 
   static Future<void> init() async {
     pref = await SharedPreferences.getInstance();
-    // pref.clear();
     rpcUrl = pref.getString(RPC_KEY) ?? "http://192.168.18.5:7545";
     helperUrl = pref.getString(HELPER_KEY) ?? "http://192.168.18.5:3131";
     contractAddress = pref.getString(CONTRACT_KEY); // ??

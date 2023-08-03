@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import '../components/keyboard.dart';
 import '../components/uid.dart';
 
@@ -34,9 +33,9 @@ class _LoginState extends State<Login> {
           value: uid,
         );
       case 1:
-        return Text("NEXT");
+        return const Text("NEXT");
       default:
-        return Placeholder();
+        return const Placeholder();
     }
   }
 
@@ -100,9 +99,7 @@ class _LoginState extends State<Login> {
               getCurrentWidget(step),
               TextButton(
                 onPressed: () {
-                  print("Submiting...");
                   if (validate()) {
-                    print("Valid");
                     nextStep();
                   }
                 },

@@ -27,10 +27,8 @@ class _ValueDisplayerState extends State<ValueDisplayer> {
   List<List<Map<String, bool>>> value = [];
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     value = [];
-    print("Val : " + parseValue(widget.value));
     addFormated(parseValue(widget.value));
   }
 

@@ -1,53 +1,51 @@
-import 'dart:isolate';
+// ignore_for_file: use_build_context_synchronously
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:vote/classes/preferences.dart';
-import 'package:vote/pages/getstarted.dart';
+import 'package:vote/components/dialog.dart';
 import '../classes/contract_linker.dart';
 import '../classes/global.dart';
 
 class SplashScreen extends StatefulWidget {
-  const SplashScreen(
-      {super.key}); //, required this.function, required this.widget});
-  // Function function;
-  // Widget widget;
+  const SplashScreen({super.key});
   @override
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
 class _SplashScreenState extends State<SplashScreen> {
   String statusText = 'Loading';
-  // static ContractLinker linker = ContractLinker();
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     Future.delayed(Duration.zero, init);
   }
 
   void init() async {
-    setup().then((value) {
-      print("DONE INIT");
-    });
+    setup().then((value) {});
   }
 
-  void run(m) {
-    // If wallet doesnt exists, show getstarted
-    return;
-  }
-
+  /* Setup function 
+    Used to initialize the app */
   Future<void> setup() async {
     String goto = "";
-    // Load Wallet
     try {
-      await Future.delayed(Duration(seconds: 1));
+      await Future.delayed(const Duration(seconds: 1));
       await Preferences.init();
       setStatus("Loading Account");
       Global.linker = ContractLinker();
       Global.linker.init();
       Global.linker.loadContracts();
       await Global.linker.contract_loaded;
+      setStatus("Connecting to blockchain");
+      if (!await Global.linker.checkAlive()) {
+        showDialog(
+            context: context,
+            builder: (context) => MsgDialog(
+                  text: "The Server is not alive now",
+                  icon: Icons.wifi_tethering_error,
+                ));
+        return;
+      }
       if (await Global.linker.loadWallet("123456aA")) {
         goto = "home";
       } else {
@@ -55,14 +53,14 @@ class _SplashScreenState extends State<SplashScreen> {
         goto = "getstarted";
       }
       setStatus("Getting Started");
-      await Future.delayed(Duration(milliseconds: 50));
+      await Future.delayed(const Duration(milliseconds: 50));
       Navigator.pushReplacementNamed(context, goto);
     } catch (err) {
-      print("Error got");
-      print(err);
+      Global.logger.e("An error occured when setting up app : $err");
     }
   }
 
+  // Set the status text
   void setStatus(String text) {
     setState(() {
       statusText = text;
@@ -72,7 +70,6 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        // decoration: BoxDecoration(color: Colors.white),
         body: Stack(
       children: [
         Positioned(
@@ -107,7 +104,7 @@ class _SplashScreenState extends State<SplashScreen> {
                     const SizedBox(
                       height: 20,
                     ),
-                    Text("VoteChain",
+                    const Text("VoteChain",
                         style: TextStyle(
                             fontSize: 20,
                             fontFamily: 'Poppins',

@@ -25,11 +25,11 @@ class _HomeState extends State<Home> {
       setState(() {
         balance = value.toString();
       });
-      // Global.linker.isVerified().then((value) {
-      // setState(() {
-      // isVerified = value;
-      // });
-      // });
+      Global.linker.isVerified().then((value) {
+        setState(() {
+          isVerified = value;
+        });
+      });
     });
   }
 

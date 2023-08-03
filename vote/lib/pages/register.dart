@@ -1,5 +1,6 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import '../components/keyboard.dart';
 import '../components/dialog.dart';
 import '../components/uid.dart';
@@ -24,63 +25,44 @@ class _RegisterState extends State<Register> {
   bool displayIntKeyboard = false, keyboardReset = false;
   bool buttonEnabled = true, buttonProcessing = false;
   int keyboardLength = 12;
-  TextEditingController _keyboardController = TextEditingController();
-  FocusNode _keyboard = FocusNode();
-  // final FocusNode _keyboardFocusNode = FocusNode();
+  final TextEditingController _keyboardController = TextEditingController();
+  final FocusNode _keyboard = FocusNode();
+
   @override
   void initState() {
     super.initState();
-    // _keyboardController.addListener(_limitInputLength);
   }
 
-  void _limitInputLength() {
-    if (_keyboardController.text.length > keyboardLength) {
-      _keyboardController.text =
-          _keyboardController.text.substring(0, keyboardLength);
-      _keyboardController.selection = TextSelection.fromPosition(
-          TextPosition(offset: _keyboardController.text.length));
-    }
-  }
-
+  /* Show the numeric keyboard */
   void showNumKeyboard(int size) {
     setState(() {
       displayIntKeyboard = true;
-      // keyboardReset = !keyboardReset;
       keyboardLength = size;
     });
-
-    // FocusScope.of(context).requestFocus(_keyboard);
-    // SystemChannels.textInput.invokeMethod("TextInput.hide");
   }
 
+  /* Hide the numeric keyboard */
   void hideNumKeyboard() {
     setState(() {
       displayIntKeyboard = false;
     });
-    // FocusScope.of(context).requestFocus(_keyboard);
-    // SystemChannels.textInput.invokeMethod("TextInput.hide");
   }
 
+  /* Show the alpha numeric keyboard */
   void showAlphaKeyboard(int size) {
-    // if (displayIntKeyboard) {
     setState(() {
       displayIntKeyboard = false;
       keyboardLength = size;
     });
-    // }
-    // if (MediaQuery.of(context).viewInsets.bottom <= 0) {
     FocusScope.of(context).requestFocus(_keyboard);
-    // Future.delayed(Duration(seconds: 1), () {
-    //   SystemChannels.textInput.invokeMethod("TextInput.show");
-    // });
-    // }
   }
 
+  /* Hide alpha numeric keyboard */
   void hideAlphaKeyboard() {
     _keyboard.unfocus();
-    // SystemChannels.textInput.invokeMethod("TextInput.hide");
   }
 
+  /* Get the current value entered by the user (Eg : otp if user is entering otp) */
   String getCurrentValue() {
     switch (step) {
       case 0:
@@ -94,6 +76,8 @@ class _RegisterState extends State<Register> {
     }
   }
 
+  /* Add value to the current value 
+    Character by character adding */
   void addValue(String val, int step) {
     String tmp = getCurrentValue();
     if (val == "clr") {
@@ -108,6 +92,7 @@ class _RegisterState extends State<Register> {
     setValue(tmp);
   }
 
+  /* Set the value of current entering value directly */
   void setValue(String val) {
     setState(() {
       switch (step) {
@@ -128,31 +113,28 @@ class _RegisterState extends State<Register> {
     });
   }
 
+  /* Get the current widget
+    Eg : OTP widget if in the otp entering step */
   Widget getCurrentWidget() {
     switch (step) {
       case 0:
-        // print("UID : $uid\nOTP : $otp\nPassword: $password");
         showNumKeyboard(12);
         return UID(
           value: uid,
         );
       case 1:
-        // print("UID : $uid\nOTP : $otp\nPassword: $password");
         hideNumKeyboard();
         return OTP(
           value: otp,
           onInputClick: () {
-            print("Open");
             showAlphaKeyboard(6);
           },
         );
       case 2:
-        // print("UID : $uid\nOTP : $otp\nPassword: $password");
         hideNumKeyboard();
         hideAlphaKeyboard();
         return Password(
           onChange: (val) {
-            print(password + ",Validate : " + validate().toString());
             setValue(val);
           },
         );
@@ -163,31 +145,30 @@ class _RegisterState extends State<Register> {
     }
   }
 
+  /* Clear the value of the current step */
   void clearStep() {
-    print("Clear");
     switch (step) {
       case 0:
         setState(() {
           uid = "";
           keyboardLength = 0;
-          // keyboardReset = !keyboardReset;
         });
       case 1:
         setState(() {
           otp = "";
           keyboardLength = 12;
           _keyboardController.text = "";
-          // keyboardReset = !keyboardReset;
         });
       case 2:
         setState(() {
           password = "";
           keyboardLength = 6;
-          // keyboardReset = !keyboardReset;
         });
     }
   }
 
+  /* Go to te next step 
+    just increment the step value the view will be automatically re rendered */
   void nextStep() {
     if (step < totalstep - 1) {
       setState(() {
@@ -196,6 +177,7 @@ class _RegisterState extends State<Register> {
     }
   }
 
+  /* Go to previous step */
   bool preStep() {
     if (step > 0) {
       setState(() {
@@ -207,6 +189,8 @@ class _RegisterState extends State<Register> {
     }
   }
 
+  /* Validate the entered value 
+    Validate using the current step on which the user is on */
   bool validate() {
     switch (step) {
       case 0:
@@ -267,18 +251,41 @@ class _RegisterState extends State<Register> {
               getCurrentWidget(),
               TextButton(
                 onPressed: () async {
-                  print("Submiting...");
                   if (validate()) {
                     if (step == totalstep - 1) {
-                      print("Submit");
                       hideAlphaKeyboard();
                       setState(() {
                         // buttonEnabled = false;
                         buttonProcessing = true;
                       });
-                      await Global.linker.requestEthers(context);
+                      await Global.linker.requestEthers(
+                          onSuccess: (val) {
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext context) => Dialog(
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(20)),
+                                    child: Padding(
+                                        padding: const EdgeInsets.all(10),
+                                        child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Center(child: Text(val))
+                                            ]))));
+                          },
+                          onError: (val) {});
                       var st = await Global.linker
-                          .register("TEst", int.parse(uid), context);
+                          .register("TEst", int.parse(uid), onError: (val) {
+                        showDialog(
+                            context: context,
+                            builder: ((context) => MsgDialog(
+                                icon: Icons.error_outline,
+                                iconColor: Colors.red,
+                                iconSize: 30,
+                                text:
+                                    "An Unexpected error occured while creating account")));
+                      });
                       if (st) {
                         var value = await API.registerUser(
                             (await Global.linker.getAddress()).toString(),
@@ -320,7 +327,6 @@ class _RegisterState extends State<Register> {
                         buttonProcessing = false;
                       });
                     } else {
-                      print("Valid");
                       nextStep();
                     }
                   }

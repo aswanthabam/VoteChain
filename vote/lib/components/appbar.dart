@@ -52,14 +52,14 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
           //       Icons.refresh_rounded,
           //       color: Color(0xFF1BA68D),
           //     )),
-          // IconButton(
-          //     onPressed: () {
-          //       Navigator.pushNamed(context, 'admin');
-          //     },
-          //     icon: const Icon(
-          //       Icons.settings,
-          //       color: Color(0xFF1BA68D),
-          //     )),
+          IconButton(
+              onPressed: () {
+                Navigator.pushNamed(context, 'admin');
+              },
+              icon: const Icon(
+                Icons.settings,
+                color: Color(0xFF1BA68D),
+              )),
         ],
       ),
     );

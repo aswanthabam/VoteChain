@@ -16,7 +16,7 @@ class MsgDialog extends StatelessWidget {
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       child: Container(
-        padding: EdgeInsets.all(20),
+        padding: const EdgeInsets.all(20),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
@@ -30,7 +30,7 @@ class MsgDialog extends StatelessWidget {
                 size: iconSize,
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             Column(

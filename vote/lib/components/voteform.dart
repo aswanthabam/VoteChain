@@ -33,7 +33,7 @@ class _VoteFormState extends State<VoteForm> {
             },
             style: TextButton.styleFrom(
                 backgroundColor: Colors.green.shade300,
-                padding: EdgeInsets.all(10),
+                padding: const EdgeInsets.all(10),
                 iconColor: Colors.white),
             child: const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
