@@ -6,4 +6,6 @@ class Global {
   static late ContractLinker
       linker; // Contract Linker for connection and communication b/w the blockchain
   static Logger logger = Logger(); // Logger for loggin purpose
+  static String? userName; // The name of the user
+  static int? userId; // The name of the user id (UID)
 }

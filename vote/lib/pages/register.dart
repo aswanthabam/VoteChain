@@ -292,8 +292,8 @@ class _RegisterState extends State<Register> {
                             int.parse(uid),
                             password);
                         if (value) {
-                          Global.linker
-                              .saveWallet("Test", int.parse(uid), password);
+                          Global.linker.saveWallet(
+                              "Aswanth V C", int.parse(uid), password);
                           showDialog(
                               context: context,
                               builder: ((context) => MsgDialog(

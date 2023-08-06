@@ -81,7 +81,11 @@ class ContractLinker extends ChangeNotifier {
     try {
       wallet = Wallet.createNew(_credentials, password, Random.secure());
       if (Utils.secureSave(
-          key: "account", value: wallet!.toJson().toString())) {
+          key: "account",
+          value: json.encode(
+              {"wallet": wallet!.toJson(), "name": name, "uid": uid}))) {
+        Global.userName = name;
+        Global.userId = uid;
         Global.logger.i("Saved the wallet");
         return true;
       } else {
@@ -102,8 +106,11 @@ class ContractLinker extends ChangeNotifier {
   */
   Future<bool> loadWallet(String password) async {
     try {
-      String encoded = (await Utils.storage.read(key: "account"))!;
-      wallet = Wallet.fromJson(encoded, password);
+      Map<String, dynamic> encoded =
+          json.decode((await Utils.storage.read(key: "account"))!);
+      Global.userId = encoded["uid"];
+      Global.userName = encoded["name"];
+      wallet = Wallet.fromJson(encoded["wallet"].toString(), password);
       _credentials = wallet!.privateKey;
       _address = _credentials.address;
       Global.logger.i("Loaded wallet from saved");
@@ -112,6 +119,18 @@ class ContractLinker extends ChangeNotifier {
       Global.logger.e(
         "An unexpected error occured while loading the wallet : $err",
       );
+      return false;
+    }
+  }
+
+  Future<bool> logOut() async {
+    try {
+      await Utils.storage.deleteAll();
+      Global.userId = null;
+      Global.userName = null;
+      return true;
+    } catch (err) {
+      Global.logger.e("An unexpected error occured while logging out : $err");
       return false;
     }
   }

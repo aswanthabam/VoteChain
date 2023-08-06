@@ -19,6 +19,14 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.max,
         children: [
+          IconButton(
+              onPressed: () {
+                Navigator.pushNamed(context, 'admin');
+              },
+              icon: const Icon(
+                Icons.supervised_user_circle_outlined,
+                color: Color(0xFF1BA68D),
+              )),
           const Spacer(),
           SizedBox(
             width: 25,
@@ -44,20 +52,12 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
                 fontFamily: 'Poppins'),
           ),
           const Spacer(),
-          // IconButton(
-          //     onPressed: () {
-          //       Navigator.pushNamed(context, 'admin');
-          //     },
-          //     icon: const Icon(
-          //       Icons.refresh_rounded,
-          //       color: Color(0xFF1BA68D),
-          //     )),
           IconButton(
               onPressed: () {
                 Navigator.pushNamed(context, 'admin');
               },
               icon: const Icon(
-                Icons.settings,
+                Icons.settings_outlined,
                 color: Color(0xFF1BA68D),
               )),
         ],
