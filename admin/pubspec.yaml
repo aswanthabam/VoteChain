@@ -1,4 +1,4 @@
-name: VoteChain
+name: admin
 description: A new Flutter project.
 publish_to: "none"
 version: 0.1.0
@@ -9,6 +9,15 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  cupertino_icons: ^1.0.2
+  web3dart: ^2.7.0
+  http: ^1.1.0
+  provider: ^6.0.5
+  web_socket_channel: ^2.4.0
+  shared_preferences: ^2.2.0
+  google_fonts: ^5.1.0
+  # flutter_secure_storage: ^8.0.0
+  logger: ^2.0.1
 
 dev_dependencies:
   flutter_test:
@@ -17,3 +26,7 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - src/artifacts/Election.json
+    - src/images/
+    - src/images/asset/
