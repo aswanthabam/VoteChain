@@ -41,7 +41,7 @@ app.use((req,res,next) => {
 
 app.use("/api/public/", publicRouter);
 
-const uri = "mongodb+srv://avctech:avctech@cluster0.4wxlu7g.mongodb.net/votechain?retryWrites=true&w=majority"; 
+const uri = env.DB_URL; 
  mongoose.connect(uri,{ useNewUrlParser: true, useUnifiedTopology: true}) 
    .then((result) =>{ 
      console.log("CONNECTED TO DB"); 
