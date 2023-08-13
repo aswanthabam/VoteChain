@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 class SideMenu extends StatefulWidget {
-  const SideMenu({super.key});
-
+  SideMenu({super.key, required this.selected});
+  String selected;
   @override
   State<SideMenu> createState() => _SideMenuState();
 }
@@ -44,24 +44,38 @@ class _SideMenuState extends State<SideMenu> {
             ),
           ),
           SideMenuButton(
-            onClicked: () {},
+            selected: widget.selected == "home",
+            onClicked: () {
+              Navigator.pushReplacementNamed(context, "home");
+            },
             icon: Icons.home_rounded,
             text: "Home",
           ),
           SideMenuButton(
+            selected: widget.selected == "elections",
             onClicked: () {},
             icon: Icons.poll_rounded,
             text: "Elections",
           ),
           SideMenuButton(
+            selected: widget.selected == "candidates",
             onClicked: () {},
             icon: Icons.person,
             text: "Candidates",
           ),
           SideMenuButton(
+            selected: widget.selected == "voters",
             onClicked: () {},
             icon: Icons.people_alt_rounded,
             text: "Voters",
+          ),
+          SideMenuButton(
+            selected: widget.selected == "admin",
+            onClicked: () {
+              Navigator.pushReplacementNamed(context, "admin");
+            },
+            icon: Icons.settings,
+            text: "Settings",
           ),
           const Spacer(),
           Center(
@@ -82,31 +96,34 @@ class SideMenuButton extends StatelessWidget {
       {super.key,
       required this.onClicked,
       required this.icon,
-      required this.text});
+      required this.text,
+      this.selected = false});
   Function()? onClicked;
   IconData? icon;
   String? text;
+  bool selected = false;
   @override
   Widget build(BuildContext context) {
     return TextButton(
       onPressed: onClicked,
-      child: Padding(
-        padding: const EdgeInsets.all(10),
-        child: Row(
-          children: [
-            Icon(
-              icon,
-              color: Colors.white,
-            ),
-            const SizedBox(
-              width: 10,
-            ),
-            Text(
-              text!,
-              style: TextStyle(color: Colors.white),
-            )
-          ],
-        ),
+      style: TextButton.styleFrom(
+          padding: EdgeInsets.all(20),
+          backgroundColor: selected ? Colors.white : Colors.transparent),
+      child: Row(
+        children: [
+          Icon(
+            icon,
+            color: selected ? Colors.purple[800] : Colors.white,
+          ),
+          const SizedBox(
+            width: 10,
+          ),
+          Text(
+            text!,
+            style:
+                TextStyle(color: selected ? Colors.purple[800] : Colors.white),
+          )
+        ],
       ),
     );
   }

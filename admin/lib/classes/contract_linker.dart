@@ -209,6 +209,36 @@ class ContractLinker extends ChangeNotifier {
     }
   }
 
+  Future<List<Elections>> getElections({Function? onError}) async {
+    List<Elections> elecs = [];
+    try {
+      var elecCount = await election.electionCount();
+      for (var i = 1; i <= elecCount.toInt(); i++) {
+        elecs.add(await election.elections(elecCount));
+      }
+    } catch (err) {
+      onError!();
+      Global.logger
+          .e("An Error occured while fetching elections : ${err.toString()}");
+    }
+    return elecs;
+  }
+
+  Future<bool> addElection(String name, {Function? onError}) async {
+    try {
+      await election.addElectionEntity(name,
+          credentials: _admin_credentials,
+          transaction: Transaction(
+              maxPriorityFeePerGas: EtherAmount.fromInt(EtherUnit.ether, 0)));
+      Global.logger.i("Added new election");
+      return true;
+    } catch (err) {
+      onError!();
+      Global.logger.e("Error occured while adding election : $err");
+      return false;
+    }
+  }
+
   // GET BALANCEE
   Future<double> getBalance(EthereumAddress address) async {
     await inited;

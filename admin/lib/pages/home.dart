@@ -1,4 +1,10 @@
+import 'package:admin/main.dart';
 import 'package:flutter/material.dart';
+import '../classes/contract_linker.dart';
+import '../components/dialog.dart';
+import '../classes/global.dart';
+import '../Election.g.dart';
+import 'startElection.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -8,11 +14,30 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  int electionCount = 0;
+  List<Elections> elections = [];
+  @override
+  void initState() {
+    super.initState();
+    Global.linker.getElections(onError: () {
+      showDialog(
+          context: context,
+          builder: (context) =>
+              MsgDialog(text: "An error occure while fetching elections"));
+    }).then((value) {
+      setState(() {
+        elections = value;
+        electionCount = value.length;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(20),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Row(
             children: [
@@ -35,14 +60,46 @@ class _HomeState extends State<Home> {
           const SizedBox(
             height: 20,
           ),
-          Row(
-            children: [
-              QuickButton(
-                  onPressed: () {},
-                  text: "Voter Approval",
-                  icon: Icons.approval_rounded)
-            ],
-          )
+          SizedBox(
+              height: 100,
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                children: [
+                  QuickButton(
+                      onPressed: () {},
+                      text: "Voter Approval",
+                      icon: Icons.approval_rounded),
+                  const SizedBox(
+                    width: 20,
+                  ),
+                  QuickButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => MainApp(
+                                    child: StartElection(), selected: "home")));
+                      },
+                      text: "Start Election",
+                      icon: Icons.add),
+                  const SizedBox(
+                    width: 20,
+                  ),
+                  QuickButton(
+                      onPressed: () {},
+                      text: "Statistics",
+                      icon: Icons.auto_graph_rounded),
+                  const SizedBox(
+                    width: 20,
+                  ),
+                  QuickButton(
+                      onPressed: () {},
+                      text: "Queries",
+                      icon: Icons.help_outline),
+                ],
+              )),
+          const SizedBox(height: 20),
+          Text("Election count : ${electionCount}")
         ],
       ),
     );
@@ -55,7 +112,7 @@ class QuickButton extends StatefulWidget {
       required this.onPressed,
       required this.text,
       required this.icon});
-  Function onPressed;
+  void Function() onPressed;
   String text;
   IconData icon;
   @override
@@ -65,19 +122,25 @@ class QuickButton extends StatefulWidget {
 class _QuickButtonState extends State<QuickButton> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-        padding: EdgeInsets.all(10),
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(width: 1)),
-        width: 100,
-        height: 100,
-        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          Icon(widget.icon),
-          Text(
-            widget.text,
-            textAlign: TextAlign.center,
-          )
-        ]));
+    return TextButton(
+        onPressed: widget.onPressed,
+        child: Container(
+            padding: EdgeInsets.all(10),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(width: 1)),
+            width: 100,
+            height: 100,
+            child:
+                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+              Icon(widget.icon),
+              const SizedBox(
+                height: 10,
+              ),
+              Text(
+                widget.text,
+                textAlign: TextAlign.center,
+              )
+            ])));
   }
 }
