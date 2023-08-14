@@ -209,12 +209,47 @@ class ContractLinker extends ChangeNotifier {
     }
   }
 
+  Future<bool> approveToVote(
+      EthereumAddress address, BigInt uid, BigInt electionId) async {
+    try {
+      await election.approveToVote(address, uid, electionId,
+          credentials: _admin_credentials);
+      return true;
+    } catch (err) {
+      Global.logger
+          .e("An error occured while approving a voter to vote : $err");
+      return false;
+    }
+  }
+
+  Future<bool> verifyUser(EthereumAddress address, BigInt uid) async {
+    try {
+      await election.verifyUser(address, uid, credentials: _admin_credentials);
+      return true;
+    } catch (err) {
+      Global.logger.e("An error occured while verifying a user : $err");
+      return false;
+    }
+  }
+
+  Future<List<Users>> getVotersToVerify({Function? onError}) async {
+    List<Users> voters = [];
+    try {
+      // here give all voters that want to be verified by the admin
+      // election.users($param11)
+    } catch (err) {
+      Global.logger.e("An error occured while getting voters ; $err");
+      onError!();
+    }
+    return voters;
+  }
+
   Future<List<Elections>> getElections({Function? onError}) async {
     List<Elections> elecs = [];
     try {
       var elecCount = await election.electionCount();
       for (var i = 1; i <= elecCount.toInt(); i++) {
-        elecs.add(await election.elections(elecCount));
+        elecs.add(await election.elections(BigInt.from(i)));
       }
     } catch (err) {
       onError!();

@@ -53,19 +53,25 @@ class _SideMenuState extends State<SideMenu> {
           ),
           SideMenuButton(
             selected: widget.selected == "elections",
-            onClicked: () {},
+            onClicked: () {
+              Navigator.pushReplacementNamed(context, "elections");
+            },
             icon: Icons.poll_rounded,
             text: "Elections",
           ),
           SideMenuButton(
             selected: widget.selected == "candidates",
-            onClicked: () {},
+            onClicked: () {
+              Navigator.pushReplacementNamed(context, "candidates");
+            },
             icon: Icons.person,
             text: "Candidates",
           ),
           SideMenuButton(
             selected: widget.selected == "voters",
-            onClicked: () {},
+            onClicked: () {
+              Navigator.pushReplacementNamed(context, "voters");
+            },
             icon: Icons.people_alt_rounded,
             text: "Voters",
           ),

@@ -3,6 +3,9 @@ import 'components/sidemenu.dart';
 import 'pages/home.dart';
 import 'pages/splashscreen.dart';
 import 'pages/admin.dart';
+import 'pages/elections.dart';
+import 'pages/candidates.dart';
+import 'pages/voters.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -14,6 +17,11 @@ void main() {
             child: Home(),
             selected: "home",
           ),
+      "elections": (context) =>
+          MainApp(child: ElectionsWidget(), selected: "elections"),
+      "candidates": (context) =>
+          MainApp(child: CandidatesWidget(), selected: "candidates"),
+      "voters": (context) => MainApp(child: VotersWidget(), selected: "voters"),
       "splashscreen": (context) => SplashScreen(),
       "admin": (context) => MainApp(
             child: Admin(),

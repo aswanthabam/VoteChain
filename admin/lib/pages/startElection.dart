@@ -27,7 +27,7 @@ class StartElection extends StatelessWidget {
           ),
           TextButton(
               onPressed: () {
-                Global.linker.addElection("MyElection1", onError: () {
+                Global.linker.addElection(nameController.text, onError: () {
                   showDialog(
                       context: context,
                       builder: (context) => MsgDialog(
