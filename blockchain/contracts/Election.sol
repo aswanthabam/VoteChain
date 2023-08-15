@@ -78,7 +78,11 @@ contract Election {
     event ElectionEndedEvent(uint electionId, string name);
     event ElectionStartedAcceptingCandidateRequestsEvent(uint uid, string name);
     event ElectionRemovedEvent(uint uid, string name);
-    event UserElectionParticipationRequestedEvent(uint uid, uint electioId);
+    event UserElectionParticipationRequestedEvent(
+        uint uid,
+        uint electioId,
+        uint requestId
+    );
     event UserReviewedParticipationRequestEvent(
         uint uid,
         uint election,
@@ -105,6 +109,9 @@ contract Election {
     mapping(address => NominationRequest[]) public nominationRequests; // All participation requests of a person
     mapping(address => uint) public numberOfNominationRequests; // The number of participation requests by a person
     mapping(uint => NominationRequest) public allNominationRequests; // All participation request
+    mapping(uint => uint) public nominationRequestCountOfElection; // All election count filtered by electionId
+    mapping(uint => mapping(uint => NominationRequest))
+        public allNominationRequestOfElection; // All participation requests filtered by electionId
     // Voting related
     mapping(address => mapping(uint => bool)) isVoted;
 
@@ -116,6 +123,17 @@ contract Election {
     }
 
     // FUNCTIONS
+    function addElement(
+        uint[] memory oldArray,
+        uint value
+    ) private pure returns (uint[] memory) {
+        uint[] memory newArray = new uint[](oldArray.length + 1);
+        for (uint i = 0; i < oldArray.length; i++) {
+            newArray[i] = oldArray[i];
+        }
+        newArray[oldArray.length] = value;
+        return newArray;
+    }
 
     //Function to get user participation requestes
     function getUserParticipationRequests()
@@ -125,15 +143,14 @@ contract Election {
         returns (uint[] memory)
     {
         uint count = userParticipationRequestCount;
-        uint[] memory req;
-        uint c = 0;
+        uint[] memory req = new uint[](0);
+        // uint c = 0;
         for (uint i = 1; i <= count; i++) {
             if (
                 !userParticipationRequests[i].accepted &&
                 !userParticipationRequests[i].rejected
             ) {
-                req[c] = i;
-                c++;
+                req = addElement(req, i);
             }
         }
         return req;
@@ -147,22 +164,21 @@ contract Election {
         returns (uint[] memory)
     {
         uint count = userCount;
-        uint[] memory req;
-        uint c = 0;
+        uint[] memory req = new uint[](0);
+        // uint c = 0;
         for (uint i = 1; i <= count; i++) {
             if (
                 !userVerificationRequests[i].verified &&
                 !userVerificationRequests[i].rejected
             ) {
-                req[c] = i;
-                c++;
+                req = addElement(req, i);
             }
         }
         return req;
     }
 
     // Function to register  user
-    function registerUser(string memory _name) public returns (uint) {
+    function registerUser(string memory _name) public {
         // require(!isRegistered[uid], "Already registered"); // The uid is not registered
         require(!isAddressUsed[msg.sender], "Address Already Used"); // The address is not used
         userCount++;
@@ -177,7 +193,6 @@ contract Election {
         isRegistered[uid] = true;
         isAddressUsed[msg.sender] = true;
         emit UserRegisteredEvent(msg.sender, uid);
-        return uid;
     }
 
     // verify a user
@@ -205,10 +220,7 @@ contract Election {
         emit UserVerifiedEvent(uid, status, status_text);
     }
 
-    function requestToParticipate(
-        uint uid,
-        uint electionId
-    ) public returns (uint) {
+    function requestToParticipate(uint uid, uint electionId) public {
         require(isRegistered[uid], "UID Not registered");
         require(users[msg.sender].uid == uid, "Address Missmatched");
         require(elections[electionId].id != 0, "ElectionEntity doesnt exist");
@@ -230,8 +242,11 @@ contract Election {
         userParticipationRequests[
             userParticipationRequestCount
         ] = UserElectionParticipationRequest(uid, electionId, false, false, "");
-        emit UserElectionParticipationRequestedEvent(uid, electionId);
-        return userParticipationRequestCount;
+        emit UserElectionParticipationRequestedEvent(
+            uid,
+            electionId,
+            userParticipationRequestCount
+        );
     }
 
     // approve a user to vote on a perticular election
@@ -326,9 +341,7 @@ contract Election {
     }
 
     // add an election
-    function addElectionEntity(
-        string memory name
-    ) public onlyAdmin returns (uint) {
+    function addElectionEntity(string memory name) public onlyAdmin {
         electionCount++;
         elections[electionCount] = ElectionEntity(
             electionCount,
@@ -339,7 +352,6 @@ contract Election {
             false
         );
         emit ElectionCreatedEvent(electionCount, name);
-        return electionCount;
     }
 
     // Function to request to participate in an election
@@ -347,7 +359,7 @@ contract Election {
         uint electionId,
         uint uid,
         string memory name
-    ) public returns (uint) {
+    ) public {
         require(elections[electionId].id != 0, "Election doesnt exist");
         require(
             !elections[electionId].removed_election,
@@ -367,6 +379,7 @@ contract Election {
         }
         require(tmp, "Already requested to participate in that election");
         nominationRequestCount++;
+        nominationRequestCountOfElection[electionId]++;
         nominationRequests[msg.sender].push(
             NominationRequest(
                 nominationRequestCount,
@@ -385,13 +398,22 @@ contract Election {
             electionId,
             false
         );
+        allNominationRequestOfElection[electionId][
+            nominationRequestCountOfElection[electionId]
+        ] = NominationRequest(
+            nominationRequestCount,
+            msg.sender,
+            name,
+            uid,
+            electionId,
+            false
+        );
         numberOfNominationRequests[msg.sender]++;
         emit NominationRequestEvent(nominationRequestCount);
-        return nominationRequestCount;
     }
 
     // Approve a participation request
-    function approveNominationRequest(uint id) public onlyAdmin returns (uint) {
+    function approveNominationRequest(uint id) public onlyAdmin {
         require(allNominationRequests[id].id != 0, "Request Not found");
         require(
             !allNominationRequests[id].approved,
@@ -411,7 +433,6 @@ contract Election {
             request.uid
         );
         emit ApprovedNominationRequest(candidatesCount);
-        return candidatesCount;
     }
 
     // vote
@@ -430,6 +451,10 @@ contract Election {
         );
         require(verified[msg.sender], "User is not verified");
 
+        require(!isVoted[msg.sender][electionId], "Already voted");
+        require(elections[electionId].started, "Election not started");
+        require(!elections[electionId].ended, "Election ended");
+
         bool tmp = false;
         for (uint i = 0; i <= allowedElectionsCount[msg.sender]; i++) {
             if (allowedElections[msg.sender][i].id == electionId) {
@@ -438,7 +463,6 @@ contract Election {
         }
 
         require(tmp, "Not allowed to vote in this election");
-        require(!isVoted[msg.sender][electionId], "Already voted");
 
         tmp = false;
         uint canId;
