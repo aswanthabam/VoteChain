@@ -5,6 +5,7 @@ import 'package:vote/pages/splashscreen.dart';
 import 'pages/getstarted.dart';
 import 'pages/login.dart';
 import 'pages/register.dart';
+import 'pages/profile.dart';
 
 void main() {
   runApp(const App());
@@ -37,7 +38,8 @@ class _AppState extends State<App> {
         'getstarted': (context) => const GetStarted(),
         'splashscreen': (context) => const SplashScreen(),
         'login': (context) => const Login(),
-        'register': (context) => const Register()
+        'register': (context) => const Register(),
+        'profile': (context) => const Profile(),
       },
       debugShowCheckedModeBanner: false,
       theme: ThemeData(fontFamily: 'Poppins'),

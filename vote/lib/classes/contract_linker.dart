@@ -198,7 +198,7 @@ class ContractLinker extends ChangeNotifier {
     if (!await inited) return false;
     if (!await contract_loaded) return false;
     try {
-      await election.registerUser(BigInt.from(uid), name,
+      await election.registerUser(name,
           credentials: _credentials,
           transaction: Transaction(
               maxPriorityFeePerGas: EtherAmount.fromInt(EtherUnit.ether, 0)));

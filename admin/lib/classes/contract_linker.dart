@@ -224,7 +224,10 @@ class ContractLinker extends ChangeNotifier {
 
   Future<bool> verifyUser(EthereumAddress address, BigInt uid) async {
     try {
-      await election.verifyUser(address, uid, credentials: _admin_credentials);
+      await election.verifyUser(address, uid, true, "Approved",
+          credentials: _admin_credentials,
+          transaction: Transaction(
+              maxPriorityFeePerGas: EtherAmount.fromInt(EtherUnit.ether, 0)));
       return true;
     } catch (err) {
       Global.logger.e("An error occured while verifying a user : $err");
@@ -232,11 +235,18 @@ class ContractLinker extends ChangeNotifier {
     }
   }
 
-  Future<List<Users>> getVotersToVerify({Function? onError}) async {
-    List<Users> voters = [];
+  Future<List<UserVerificationRequests>> getVotersToVerify(
+      {Function? onError}) async {
+    List<UserVerificationRequests> voters = [];
     try {
       // here give all voters that want to be verified by the admin
-      // election.users($param11)
+      for (var i in (await client.call(
+          contract: election.self,
+          function: election.self.abi.functions[17],
+          params: [],
+          sender: _admin_address))[0]) {
+        voters.add(await election.userVerificationRequests(i));
+      }
     } catch (err) {
       Global.logger.e("An error occured while getting voters ; $err");
       onError!();

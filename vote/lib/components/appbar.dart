@@ -21,7 +21,7 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
         children: [
           IconButton(
               onPressed: () {
-                Navigator.pushNamed(context, 'admin');
+                Navigator.pushNamed(context, 'profile');
               },
               icon: const Icon(
                 Icons.supervised_user_circle_outlined,
