@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vote/classes/global.dart';
 import 'package:vote/components/appbar.dart';
+import '../Election.g.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -13,24 +14,36 @@ class _HomeState extends State<Home> {
   String address = "";
   String balance = "";
   bool isVerified = false;
+  List<Elections> elections = [];
   @override
   void initState() {
     super.initState();
-    Global.linker.getAddress().then((value) {
+    init();
+  }
+
+  Future<void> init() async {
+    await (Global.linker.getAddress().then((value) {
       setState(() {
         address = value.toString();
       });
-    });
-    Global.linker.getBalance().then((value) {
-      setState(() {
-        balance = value.toString();
-      });
-      Global.linker.isVerified().then((value) {
+      Global.linker.getBalance().then((value) {
         setState(() {
-          isVerified = value;
+          balance = value.toString();
+        });
+        Global.linker.isVerified().then((value) {
+          setState(() {
+            isVerified = value;
+          });
+          Global.linker.getElections().then((value) {
+            Global.logger.i("HERE: ${value.length}");
+            // print(e.toString());
+            setState(() {
+              elections = value;
+            });
+          });
         });
       });
-    });
+    }));
   }
 
   @override
@@ -76,6 +89,8 @@ class _HomeState extends State<Home> {
                         isVerified: isVerified,
                         address: address,
                       ),
+                      const SizedBox(height: 20),
+                      ElectionsSelector(elections: elections),
                       const SizedBox(
                         height: 10,
                       ),
@@ -175,5 +190,27 @@ class IdentityCard extends StatelessWidget {
             ),
           ],
         ));
+  }
+}
+
+class ElectionsSelector extends StatefulWidget {
+  ElectionsSelector({super.key, required this.elections});
+  List<Elections> elections = [];
+  @override
+  State<ElectionsSelector> createState() => _ElectionsSelectorState();
+}
+
+class _ElectionsSelectorState extends State<ElectionsSelector> {
+  // List<Elections> elections = [];
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(children: [
+      SizedBox(
+          height: 200,
+          child: ListView(
+            children: widget.elections.map((e) => Text(e.name)).toList(),
+          ))
+    ]);
   }
 }

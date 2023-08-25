@@ -213,6 +213,19 @@ class ContractLinker extends ChangeNotifier {
     }
   }
 
+  Future<List<Elections>> getElections() async {
+    await contract_loaded;
+    List<Elections> elec = [];
+    try {
+      for (var i = 1; i <= (await election.electionCount()).toInt(); i++) {
+        elec.add(await election.elections(BigInt.from(i)));
+      }
+    } catch (err) {
+      Global.logger.e("Error while getting elections : $err");
+    }
+    return elec;
+  }
+
   /*
     Method used to check if a user is verified or not 
   */
