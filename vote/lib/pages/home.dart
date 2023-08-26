@@ -75,7 +75,7 @@ class _HomeState extends State<Home> {
                                   fontSize: 20, fontWeight: FontWeight.w400),
                             ),
                             Text(
-                              "${Global.userName!}, ",
+                              "${Global.userName == null ? "" : Global.userName}, ",
                               style: const TextStyle(
                                   fontSize: 30, fontWeight: FontWeight.w500),
                             )
@@ -202,15 +202,48 @@ class ElectionsSelector extends StatefulWidget {
 
 class _ElectionsSelectorState extends State<ElectionsSelector> {
   // List<Elections> elections = [];
-
+  int selected = -1;
   @override
   Widget build(BuildContext context) {
     return Column(children: [
+      Text(
+        "Send Request to participate in elections",
+        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+      ),
       SizedBox(
-          height: 200,
-          child: ListView(
-            children: widget.elections.map((e) => Text(e.name)).toList(),
-          ))
+          child: DropdownButton(
+              hint: Text(selected == -1
+                  ? "Select Election"
+                  : widget.elections[selected - 1].name),
+              items: () {
+                List<DropdownMenuItem> items = [
+                  // DropdownMenuItem(
+                  //   child: Text("Select Item"),
+                  //   value: 0,
+                  // )
+                ];
+                items.addAll(widget.elections.map((e) => DropdownMenuItem(
+                      child: Text(e.name),
+                      value: e.id.toInt(),
+                    )));
+                return items;
+              }(),
+              onChanged: (value) {
+                if (selected != value) {
+                  setState(() {
+                    selected = value;
+                  });
+                }
+              })),
+      TextButton(
+          onPressed: () {
+            if (selected != -1) {
+              Global.linker.requestToParticipate(3, selected);
+            }
+          },
+          child: Text((selected == -1)
+              ? "Choose election"
+              : "Request to participate in ${widget.elections[selected - 1].name}"))
     ]);
   }
 }

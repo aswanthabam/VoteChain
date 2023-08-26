@@ -209,6 +209,24 @@ class ContractLinker extends ChangeNotifier {
     }
   }
 
+  Future<List<UserParticipationRequests>> getUserParticipationRequests(
+      {onError}) async {
+    List<UserParticipationRequests> req = [];
+    try {
+      for (var r in (await client.call(
+          contract: election.self,
+          function: election.self.function("getUserParticipationRequests"),
+          params: [],
+          sender: _admin_address))[0]) {
+        req.add(await election.userParticipationRequests(r));
+      }
+    } catch (err) {
+      onError!();
+      Global.logger.e("Error getting user participation requests : $err");
+    }
+    return req;
+  }
+
   Future<bool> approveToVote(
       EthereumAddress address, BigInt uid, BigInt electionId) async {
     try {

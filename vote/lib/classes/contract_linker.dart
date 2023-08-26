@@ -213,6 +213,33 @@ class ContractLinker extends ChangeNotifier {
     }
   }
 
+  Future<bool> requestToParticipate(int uid, int electionId) async {
+    try {
+      int from = await client.getBlockNumber();
+
+      String hash = await election.requestToParticipate(
+          BigInt.from(uid), BigInt.from(electionId),
+          credentials: _credentials,
+          transaction: Transaction(
+              maxPriorityFeePerGas: EtherAmount.fromInt(EtherUnit.ether, 0)));
+
+      BlockNum block = (await client.getTransactionByHash(hash))!.blockNumber;
+      election
+          .userElectionParticipationRequestedEventEvents(
+              fromBlock: block, toBlock: block)
+          .listen((event) {
+        print("UID: ${event.uid}");
+        print("ElectionId: ${event.electioId}");
+        print("Request ID: ${event.requestId}");
+      });
+      int to = await client.getBlockNumber();
+      return true;
+    } catch (err) {
+      Global.logger.e("Error requesting to participate in election : $err");
+      return false;
+    }
+  }
+
   Future<List<Elections>> getElections() async {
     await contract_loaded;
     List<Elections> elec = [];
