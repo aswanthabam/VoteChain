@@ -1,6 +1,0 @@
-- ganache-evotting.db
-Election : 0x2C1Be55091Bc0B93515049813Cb28A7Beab8740e
-
--ganache.db
-  - Address : 0xCfEB869F69431e42cdB54A4F4f105C19C080A601
-  - deterministic : true
