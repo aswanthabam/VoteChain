@@ -4,7 +4,7 @@ import 'package:vote/pages/admin.dart';
 import 'package:vote/pages/splashscreen.dart';
 import 'pages/getstarted.dart';
 import 'pages/login.dart';
-import 'pages/register.dart';
+import 'pages/register/register.dart';
 import 'pages/profile.dart';
 
 void main() {

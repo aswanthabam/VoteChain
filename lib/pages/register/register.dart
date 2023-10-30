@@ -1,7 +1,8 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
-import '../components/buttons/async_button.dart';
+import 'package:vote/utils/paginated_views.dart';
+import '../../components/buttons/async_button.dart';
 
 class Register extends StatefulWidget {
   const Register({super.key});
@@ -15,7 +16,7 @@ class _RegisterState extends State<Register> {
   String uid = "";
   String otp = "";
   String password = "";
-
+  Pagination pagination = Pagination(pages: [SampleWidget(), SampleWidget()]);
   @override
   void initState() {
     super.initState();
@@ -84,9 +85,12 @@ class _RegisterState extends State<Register> {
           height: MediaQuery.of(context).size.height - 100,
           child: Column(
             children: [
-              getCurrentWidget(),
+              Expanded(child: pagination.widget),
               getPrimaryAsyncButton(context, () async {
                 await Future.delayed(Duration(seconds: 2));
+                setState(() {
+                  pagination.next();
+                });
                 return true;
               }, "Continue", "Loading", "Failed", "Success",
                   MediaQuery.of(context).size.width - 20)
