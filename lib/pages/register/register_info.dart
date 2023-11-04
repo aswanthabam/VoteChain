@@ -43,8 +43,21 @@ class _RegisterInfoWidgetState extends State<RegisterInfoWidget> {
             ContentDropdown(
               heading: "Personal Details",
               contents: [
-                TextContent(content: "My Content"),
-                ListContent(list: ["Name", "Residential Address"])
+                TextContent(
+                    content:
+                        "NB : You can fetch these details from AAdhar or enter details manually"),
+                TextContent(
+                    content: "You want to enter the following details:"),
+                ListContent(list: [
+                  "Name",
+                  "Residential Address",
+                  "Date of birth",
+                  "Aadhar Number",
+                  "Parent Details",
+                  "Marial Status",
+                  "Phone Number",
+                  "Email ID"
+                ])
               ],
               height: 130,
             ),
@@ -53,6 +66,16 @@ class _RegisterInfoWidgetState extends State<RegisterInfoWidget> {
             ),
             ContentDropdown(
               heading: "Election Details",
+              contents: [],
+              height: 100,
+            ),
+            ContentDropdown(
+              heading: "Document Uploadation",
+              contents: [],
+              height: 100,
+            ),
+            ContentDropdown(
+              heading: "Face Registaration",
               contents: [],
               height: 100,
             ),
