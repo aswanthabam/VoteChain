@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:vote/pages/register/register.dart';
 
 class Pagination extends PaginationContext {
   Pagination({List<Page>? pages}) {
@@ -129,7 +128,7 @@ abstract class Page extends PageState {
 
 class PageState {
   final Map<String, dynamic> __state = {};
-  Function(Function)? stateFunction;
+  void Function(void Function())? stateFunction;
   bool widgetBinded = false;
 
   T? getState<T>(String key) {
@@ -151,7 +150,7 @@ class PageState {
     }
   }
 
-  void bindWidgetState(Function(Function) binder) {
+  void bindWidgetState(void Function(void Function()) binder) {
     stateFunction = binder;
     widgetBinded = true;
   }

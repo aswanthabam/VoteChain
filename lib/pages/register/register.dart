@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
+import 'package:vote/pages/register/register_info.dart';
 import 'package:vote/utils/paginated_views.dart';
 import '../../components/buttons/async_button.dart';
 
@@ -16,7 +17,8 @@ class _RegisterState extends State<Register> {
   String uid = "";
   String otp = "";
   String password = "";
-  Pagination pagination = Pagination(pages: [SampleWidget(), SampleWidget()]);
+  Pagination pagination =
+      Pagination(pages: [RegisterInfoPage(), SampleWidget()]);
   @override
   void initState() {
     super.initState();
