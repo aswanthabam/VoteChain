@@ -3,7 +3,7 @@ import 'dart:ffi';
 import 'package:flutter/material.dart';
 
 class ValueDisplayer extends StatefulWidget {
-  ValueDisplayer(
+  const ValueDisplayer(
       {super.key,
       required this.value,
       required this.length,
@@ -14,11 +14,11 @@ class ValueDisplayer extends StatefulWidget {
       this.letterSpacing = 3,
       this.fontWeight = FontWeight.w500});
 
-  double fontSize, letterSpacing, spacing;
-  FontWeight fontWeight;
-  int length;
-  List<int> divide;
-  String value = "", fill = "0";
+  final double fontSize, letterSpacing, spacing;
+  final FontWeight fontWeight;
+  final int length;
+  final List<int> divide;
+  final String value, fill;
   @override
   State<ValueDisplayer> createState() => _ValueDisplayerState();
 }

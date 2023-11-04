@@ -93,7 +93,7 @@ class _GetStartedState extends State<GetStarted> {
                                         builder: ((context) =>
                                             const Register())));
                               },
-                              child: Container(
+                              child: SizedBox(
                                 width: 250,
                                 height: 50,
                                 child: Stack(
@@ -159,7 +159,7 @@ class _GetStartedState extends State<GetStarted> {
                                 onPressed: () {
                                   Navigator.pushNamed(context, 'login');
                                 },
-                                child: Container(
+                                child: SizedBox(
                                   width: 250,
                                   height: 50,
                                   child: Stack(
@@ -204,7 +204,7 @@ class _GetStartedState extends State<GetStarted> {
                 )),
             Positioned(
                 bottom: 50,
-                child: Container(
+                child: SizedBox(
                   width: MediaQuery.of(context).size.width,
                   child: const Center(
                     child: Text(

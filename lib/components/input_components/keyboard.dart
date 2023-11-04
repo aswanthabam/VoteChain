@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 
 class KeyBoard extends StatefulWidget {
-  KeyBoard(
+  const KeyBoard(
       {super.key,
       required this.onPressed,
       this.width = 100,
       this.length = -1,
       this.reset = false,
       this.curLength = 0});
-  late Function(String) onPressed;
-  double width = 100;
-  int length, curLength;
-  bool reset;
+  final Function(String) onPressed;
+  final double width;
+  final int length, curLength;
+  final bool reset;
   @override
   State<KeyBoard> createState() => _KeyBoardState();
 }
@@ -33,7 +33,7 @@ class _KeyBoardState extends State<KeyBoard> {
   }
 
   void valueClicked(String val) {
-    print("Char Count : $charCount");
+    // print("Char Count : $charCount");
     if (widget.length == -1) {
       widget.onPressed(val);
     } else {
@@ -52,7 +52,7 @@ class _KeyBoardState extends State<KeyBoard> {
         }
       }
     }
-    print("Char Count After : $charCount");
+    // print("Char Count After : $charCount");
   }
 
   @override
@@ -78,7 +78,7 @@ class _KeyBoardState extends State<KeyBoard> {
           padding: const EdgeInsets.all(20),
           child: Column(
             children: [
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               Row(
                 children: [
                   Expanded(

@@ -24,7 +24,7 @@ class _VoteFormState extends State<VoteForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       child: Column(
         children: [
           TextButton(

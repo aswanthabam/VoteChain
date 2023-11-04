@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class BackBar extends StatelessWidget implements PreferredSizeWidget {
-  BackBar(
+  const BackBar(
       {super.key,
       required this.onPressed,
       this.icon,
@@ -11,8 +11,8 @@ class BackBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Size get preferredSize => Size.fromHeight(height);
 
-  Function() onPressed;
-  IconData? icon;
+  final Function() onPressed;
+  final IconData? icon;
   @override
   Widget build(BuildContext context) {
     return Padding(

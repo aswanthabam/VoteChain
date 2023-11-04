@@ -20,7 +20,7 @@ class _ResultsState extends State<Results> {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<ContractLinker>(
       create: (context) => widget.linker,
-      child: Container(
+      child: SizedBox(
         width: double.infinity,
         child: Column(
           children: [

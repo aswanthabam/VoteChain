@@ -89,7 +89,7 @@ class _RegisterState extends State<Register> {
             children: [
               Expanded(child: pagination.widget),
               getPrimaryAsyncButton(context, () async {
-                await Future.delayed(Duration(seconds: 2));
+                await Future.delayed(const Duration(seconds: 2));
                 setState(() {
                   pagination.next();
                 });

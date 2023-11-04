@@ -215,7 +215,7 @@ class ContractLinker extends ChangeNotifier {
 
   Future<bool> requestToParticipate(int uid, int electionId) async {
     try {
-      int from = await client.getBlockNumber();
+      // int from = await client.getBlockNumber();
 
       String hash = await election.requestToParticipate(
           BigInt.from(uid), BigInt.from(electionId),
@@ -232,7 +232,7 @@ class ContractLinker extends ChangeNotifier {
         print("ElectionId: ${event.electioId}");
         print("Request ID: ${event.requestId}");
       });
-      int to = await client.getBlockNumber();
+      // int to = await client.getBlockNumber();
       return true;
     } catch (err) {
       Global.logger.e("Error requesting to participate in election : $err");

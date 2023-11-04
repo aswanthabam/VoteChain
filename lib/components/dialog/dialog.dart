@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 
 class MsgDialog extends StatelessWidget {
-  MsgDialog(
+  const MsgDialog(
       {super.key,
       required this.text,
       this.icon,
       this.iconColor,
       this.iconSize});
-  String text;
-  IconData? icon;
-  Color? iconColor;
-  double? iconSize;
+  final String text;
+  final IconData? icon;
+  final Color? iconColor;
+  final double? iconSize;
   @override
   Widget build(BuildContext context) {
     return Dialog(

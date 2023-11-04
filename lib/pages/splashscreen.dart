@@ -74,7 +74,7 @@ class _SplashScreenState extends State<SplashScreen> {
       children: [
         Positioned(
             top: 40,
-            child: Container(
+            child: SizedBox(
               width: MediaQuery.of(context).size.width,
               child: Column(
                 children: [
@@ -117,7 +117,7 @@ class _SplashScreenState extends State<SplashScreen> {
         ),
         Positioned(
             top: MediaQuery.of(context).size.height / 1.6,
-            child: Container(
+            child: SizedBox(
                 width: MediaQuery.of(context).size.width,
                 child: const Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -126,7 +126,7 @@ class _SplashScreenState extends State<SplashScreen> {
                     ]))),
         Positioned(
             bottom: 50,
-            child: Container(
+            child: SizedBox(
               width: MediaQuery.of(context).size.width,
               child: const Center(
                 child: Text(

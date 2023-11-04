@@ -25,7 +25,7 @@ class ListContent extends ContentType {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: list
             .map<Widget>((e) => Row(
-                  children: [Text(" * "), Text(e)],
+                  children: [const Text(" * "), Text(e)],
                 ))
             .toList(),
       )
@@ -34,14 +34,14 @@ class ListContent extends ContentType {
 }
 
 class ContentDropdown extends StatefulWidget {
-  ContentDropdown(
+  const ContentDropdown(
       {super.key,
       required this.heading,
       required this.contents,
       required this.height});
-  String heading;
-  List<ContentType> contents;
-  double height;
+  final String heading;
+  final List<ContentType> contents;
+  final double height;
   @override
   State<ContentDropdown> createState() => _ContentDropdownState();
 }
@@ -63,7 +63,7 @@ class _ContentDropdownState extends State<ContentDropdown> {
                           spreadRadius: 10,
                           color: Colors.grey.shade200)
                     ],
-                    color: Color.fromARGB(255, 235, 248, 235),
+                    color: const Color.fromARGB(255, 235, 248, 235),
                     borderRadius: BorderRadius.circular(20)),
                 child: Column(children: [
                   GestureDetector(
@@ -94,7 +94,7 @@ class _ContentDropdownState extends State<ContentDropdown> {
                           padding: const EdgeInsets.all(10),
                           height: widget.height,
                           decoration: BoxDecoration(
-                              color: Color.fromARGB(255, 213, 245, 215),
+                              color: const Color.fromARGB(255, 213, 245, 215),
                               borderRadius: BorderRadius.circular(10)),
                           child: SingleChildScrollView(
                               child: Column(
@@ -107,14 +107,14 @@ class _ContentDropdownState extends State<ContentDropdown> {
                                                   CrossAxisAlignment.start,
                                               children: [
                                             e.build(),
-                                            SizedBox(
+                                            const SizedBox(
                                               height: 10,
                                             )
                                           ]))
                                     ]))
                                 .toList(),
                           )))
-                      : SizedBox(
+                      : const SizedBox(
                           height: 0,
                         ))
                 ])))

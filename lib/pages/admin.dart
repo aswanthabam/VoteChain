@@ -33,63 +33,63 @@ class _AdminState extends State<Admin> {
     return Scaffold(
         appBar: MyAppBar(),
         body: Padding(
-          padding: EdgeInsets.all(20),
+          padding: const EdgeInsets.all(20),
           child: Column(
             children: [
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               TextField(
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                     labelText: "RPC Url",
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10)),
                     )),
                 controller: rpcUrl,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               TextField(
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                     labelText: "WebSocket Url",
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10)),
                     )),
                 controller: wsUrl,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               TextField(
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                     labelText: "Helper Server Url",
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10)),
                     )),
                 controller: helperUrl,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               TextField(
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                     labelText: "Contract Address",
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10)),
                     )),
                 controller: contractAddress,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               Row(
@@ -105,8 +105,8 @@ class _AdminState extends State<Admin> {
                               });
                         });
                       },
-                      child: Text("Reset")),
-                  Spacer(),
+                      child: const Text("Reset")),
+                  const Spacer(),
                   ElevatedButton(
                       onPressed: () {
                         Preferences.setRpcUrl(rpcUrl.text);
@@ -115,7 +115,7 @@ class _AdminState extends State<Admin> {
                         Preferences.setWsUrl(wsUrl.text);
                         print("Saved");
                       },
-                      child: Text("Save"))
+                      child: const Text("Save"))
                 ],
               )
             ],

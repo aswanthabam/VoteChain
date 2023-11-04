@@ -10,9 +10,9 @@ class RegisterInfoPage extends paging.Page {
 }
 
 class RegisterInfoWidget extends StatefulWidget {
-  RegisterInfoWidget({super.key, required this.pageState});
+  const RegisterInfoWidget({super.key, required this.pageState});
 
-  paging.PageState pageState;
+  final paging.PageState pageState;
   @override
   State<RegisterInfoWidget> createState() => _RegisterInfoWidgetState();
 }
@@ -33,9 +33,9 @@ class _RegisterInfoWidgetState extends State<RegisterInfoWidget> {
           padding: const EdgeInsets.all(10),
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text("Welcome to"),
-            Text("VoteChain"),
-            Text(
+            const Text("Welcome to"),
+            const Text("VoteChain"),
+            const Text(
                 "For Registeing to VoteChain you want to give the following details"),
             const SizedBox(
               height: 10,
@@ -61,22 +61,22 @@ class _RegisterInfoWidgetState extends State<RegisterInfoWidget> {
               ],
               height: 130,
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             ContentDropdown(
               heading: "Election Details",
-              contents: [],
+              contents: const [],
               height: 100,
             ),
             ContentDropdown(
               heading: "Document Uploadation",
-              contents: [],
+              contents: const [],
               height: 100,
             ),
             ContentDropdown(
               heading: "Face Registaration",
-              contents: [],
+              contents: const [],
               height: 100,
             ),
           ]))

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'valueDisplayer.dart';
 
 class UID extends StatefulWidget {
-  UID({super.key, required this.value});
-  String value;
+  const UID({super.key, required this.value});
+  final String value;
   @override
   State<UID> createState() => _UIDState();
 }

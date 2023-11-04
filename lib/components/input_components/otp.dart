@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'valueDisplayer.dart';
 
 class OTP extends StatefulWidget {
-  OTP({super.key, required this.value, required this.onInputClick});
-  String value;
-  late void Function() onInputClick;
+  const OTP({super.key, required this.value, required this.onInputClick});
+  final String value;
+  final void Function() onInputClick;
   @override
   State<OTP> createState() => _OTPState();
 }
@@ -15,7 +15,7 @@ class _OTPState extends State<OTP> {
   @override
   void initState() {
     super.initState();
-    print("en: $enteredValue : " + widget.value);
+    // print("en: $enteredValue : " + widget.value);
     setState(() {
       enteredValue = widget.value;
     });

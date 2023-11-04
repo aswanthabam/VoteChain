@@ -75,7 +75,7 @@ class _HomeState extends State<Home> {
                                   fontSize: 20, fontWeight: FontWeight.w400),
                             ),
                             Text(
-                              "${Global.userName == null ? "" : Global.userName}, ",
+                              "${Global.userName ?? ""}, ",
                               style: const TextStyle(
                                   fontSize: 30, fontWeight: FontWeight.w500),
                             )
@@ -106,9 +106,10 @@ class _HomeState extends State<Home> {
 
 // stful
 class IdentityCard extends StatelessWidget {
-  IdentityCard({super.key, required this.isVerified, required this.address});
-  bool isVerified;
-  String address;
+  const IdentityCard(
+      {super.key, required this.isVerified, required this.address});
+  final bool isVerified;
+  final String address;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -132,34 +133,34 @@ class IdentityCard extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Center(
+            const Center(
                 child: Text("Indian Digital Identity Card",
                     style: TextStyle(color: Colors.white, fontSize: 12))),
             const SizedBox(height: 10),
             Container(
-                decoration: BoxDecoration(color: Colors.white),
+                decoration: const BoxDecoration(color: Colors.white),
                 height: 1,
                 width: double.infinity),
             const SizedBox(height: 10),
             Row(children: [
-              SizedBox(width: 15),
-              Text("NAME: ",
+              const SizedBox(width: 15),
+              const Text("NAME: ",
                   style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.w700,
                       fontSize: 12)),
               Text(Global.userName!,
-                  style: TextStyle(
+                  style: const TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.w400,
                       fontSize: 12)),
               const Spacer(),
-              Text("DOB: ",
+              const Text("DOB: ",
                   style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.w700,
                       fontSize: 12)),
-              Text("13/06/2004",
+              const Text("13/06/2004",
                   style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.w400,
@@ -178,10 +179,10 @@ class IdentityCard extends StatelessWidget {
             Center(
                 child: Text(
                     isVerified ? "Digitaly Verified" : "Pending Verification",
-                    style: TextStyle(color: Colors.grey, fontSize: 12))),
+                    style: const TextStyle(color: Colors.grey, fontSize: 12))),
             const SizedBox(height: 5),
             SelectableText(
-              "$address",
+              address,
               maxLines: 1,
               style: const TextStyle(
                   color: Colors.white60,
@@ -194,8 +195,8 @@ class IdentityCard extends StatelessWidget {
 }
 
 class ElectionsSelector extends StatefulWidget {
-  ElectionsSelector({super.key, required this.elections});
-  List<Elections> elections = [];
+  const ElectionsSelector({super.key, required this.elections});
+  final List<Elections> elections;
   @override
   State<ElectionsSelector> createState() => _ElectionsSelectorState();
 }
@@ -206,7 +207,7 @@ class _ElectionsSelectorState extends State<ElectionsSelector> {
   @override
   Widget build(BuildContext context) {
     return Column(children: [
-      Text(
+      const Text(
         "Send Request to participate in elections",
         style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
       ),
@@ -223,8 +224,8 @@ class _ElectionsSelectorState extends State<ElectionsSelector> {
                   // )
                 ];
                 items.addAll(widget.elections.map((e) => DropdownMenuItem(
-                      child: Text(e.name),
                       value: e.id.toInt(),
+                      child: Text(e.name),
                     )));
                 return items;
               }(),

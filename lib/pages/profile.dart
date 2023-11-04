@@ -17,7 +17,7 @@ class _ProfileState extends State<Profile> {
         Navigator.pop(context);
       }),
       body: Padding(
-          padding: EdgeInsets.all(10),
+          padding: const EdgeInsets.all(10),
           child: SingleChildScrollView(
             child: Column(children: [
               Row(
@@ -31,7 +31,7 @@ class _ProfileState extends State<Profile> {
                         Global.linker.logOut();
                         Navigator.pushReplacementNamed(context, "getstarted");
                       },
-                      child: Text("LogOut"))
+                      child: const Text("LogOut"))
                 ],
               )
             ]),
