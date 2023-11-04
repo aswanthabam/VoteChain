@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../components/valueDisplayer.dart';
+import 'valueDisplayer.dart';
 
 class UID extends StatefulWidget {
   UID({super.key, required this.value});

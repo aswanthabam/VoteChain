@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:vote/classes/preferences.dart';
-import 'package:vote/components/dialog.dart';
+import 'package:vote/components/dialog/dialog.dart';
 import '../classes/contract_linker.dart';
 import '../classes/global.dart';
 

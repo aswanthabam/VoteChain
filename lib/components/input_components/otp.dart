@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../components/valueDisplayer.dart';
+import 'valueDisplayer.dart';
 
 class OTP extends StatefulWidget {
   OTP({super.key, required this.value, required this.onInputClick});

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../components/keyboard.dart';
-import '../components/uid.dart';
+import '../components/input_components/keyboard.dart';
+import '../components/input_components/uid.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});

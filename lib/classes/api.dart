@@ -4,7 +4,7 @@ import 'package:http/http.dart';
 import 'package:flutter/material.dart';
 import 'package:vote/classes/global.dart';
 import 'preferences.dart';
-import '../components/dialog.dart';
+import '../components/dialog/dialog.dart';
 import 'dart:convert';
 
 class API {

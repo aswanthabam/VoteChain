@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vote/classes/global.dart';
-import 'package:vote/components/appbar.dart';
+import '../components/appbars/appbar.dart';
 import '../Election.g.dart';
 
 class Home extends StatefulWidget {
