@@ -42,7 +42,11 @@ class _RegisterInfoWidgetState extends State<RegisterInfoWidget> {
             ),
             ContentDropdown(
               heading: "Personal Details",
-              contents: [TextContent(content: "My Content")],
+              contents: [
+                TextContent(content: "My Content"),
+                ListContent(list: ["Name", "Residential Address"])
+              ],
+              height: 130,
             ),
             SizedBox(
               height: 10,
@@ -50,6 +54,7 @@ class _RegisterInfoWidgetState extends State<RegisterInfoWidget> {
             ContentDropdown(
               heading: "Election Details",
               contents: [],
+              height: 100,
             ),
           ]))
     ]));

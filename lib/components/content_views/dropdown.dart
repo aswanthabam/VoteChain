@@ -15,15 +15,39 @@ class TextContent extends ContentType {
   }
 }
 
+class ListContent extends ContentType {
+  ListContent({required this.list});
+  List<String> list;
+  @override
+  Widget build() {
+    return Row(mainAxisSize: MainAxisSize.max, children: [
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: list
+            .map<Widget>((e) => Row(
+                  children: [Text(" * "), Text(e)],
+                ))
+            .toList(),
+      )
+    ]);
+  }
+}
+
 class ContentDropdown extends StatefulWidget {
-  ContentDropdown({super.key, required this.heading, required this.contents});
+  ContentDropdown(
+      {super.key,
+      required this.heading,
+      required this.contents,
+      required this.height});
   String heading;
   List<ContentType> contents;
+  double height;
   @override
   State<ContentDropdown> createState() => _ContentDropdownState();
 }
 
 class _ContentDropdownState extends State<ContentDropdown> {
+  bool expanded = false;
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -41,23 +65,59 @@ class _ContentDropdownState extends State<ContentDropdown> {
                     ],
                     color: Color.fromARGB(255, 235, 248, 235),
                     borderRadius: BorderRadius.circular(20)),
-                child: GestureDetector(
-                    onTap: () {
-                      print("Tapped");
-                    },
-                    child: Row(children: [
-                      Text(
-                        widget.heading,
-                        style: TextStyle(
-                            fontSize: 15, fontWeight: FontWeight.w600),
-                      ),
-                      const Spacer(),
-                      Icon(
-                        Icons.keyboard_arrow_down_sharp,
-                        size: 35,
-                        color: Colors.grey,
-                      )
-                    ]))))
+                child: Column(children: [
+                  GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          expanded = !expanded;
+                        });
+                        print("Tapped");
+                      },
+                      child: Row(children: [
+                        Text(
+                          widget.heading,
+                          style: const TextStyle(
+                              fontSize: 15, fontWeight: FontWeight.w600),
+                        ),
+                        const Spacer(),
+                        const Icon(
+                          Icons.keyboard_arrow_down_sharp,
+                          size: 35,
+                          color: Colors.grey,
+                        )
+                      ])),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  (expanded
+                      ? Container(
+                          padding: const EdgeInsets.all(10),
+                          height: widget.height,
+                          decoration: BoxDecoration(
+                              color: Color.fromARGB(255, 213, 245, 215),
+                              borderRadius: BorderRadius.circular(10)),
+                          child: SingleChildScrollView(
+                              child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: widget.contents
+                                .map<Widget>((e) => Row(children: [
+                                      Expanded(
+                                          child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                            e.build(),
+                                            SizedBox(
+                                              height: 10,
+                                            )
+                                          ]))
+                                    ]))
+                                .toList(),
+                          )))
+                      : SizedBox(
+                          height: 0,
+                        ))
+                ])))
       ],
     );
   }
