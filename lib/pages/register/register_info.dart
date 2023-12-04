@@ -33,8 +33,15 @@ class _RegisterInfoWidgetState extends State<RegisterInfoWidget> {
           padding: const EdgeInsets.all(10),
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            const Text("Welcome to"),
-            const Text("VoteChain"),
+            const Text("Welcome to",
+                style: TextStyle(
+                  fontSize: 20,
+                  fontFamily: 'Poppins',
+                  letterSpacing: 2.5,
+                  fontWeight: FontWeight.w700,
+                )),
+            const Text("VoteChain",
+                style: TextStyle(fontSize: 30, color: Colors.green)),
             const Text(
                 "For Registeing to VoteChain you want to give the following details"),
             const SizedBox(

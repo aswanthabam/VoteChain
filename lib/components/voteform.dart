@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import '../classes/contract_linker.dart';
 
 class VoteForm extends StatefulWidget {
-  VoteForm({super.key, required this.linker});
-  ContractLinker linker;
+  const VoteForm({super.key, required this.linker});
+  final ContractLinker linker;
   @override
   State<VoteForm> createState() => _VoteFormState();
 }

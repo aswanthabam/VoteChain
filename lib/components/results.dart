@@ -3,8 +3,8 @@ import 'package:vote/classes/contract_linker.dart';
 import 'package:provider/provider.dart';
 
 class Results extends StatefulWidget {
-  Results({super.key, required this.linker});
-  ContractLinker linker;
+  const Results({super.key, required this.linker});
+  final ContractLinker linker;
   @override
   State<Results> createState() => _ResultsState();
 }
