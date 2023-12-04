@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:vote/classes/contract_linker.dart';
+import 'package:vote/services/blockchain/contract_linker.dart';
 import 'package:provider/provider.dart';
 
 class Results extends StatefulWidget {

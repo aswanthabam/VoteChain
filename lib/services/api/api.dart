@@ -1,8 +1,8 @@
 // Class for intracting with the API Server
 
 import 'package:http/http.dart';
-import 'package:vote/classes/global.dart';
-import 'preferences.dart';
+import 'package:vote/services/global.dart';
+import '../preferences.dart';
 import 'dart:convert';
 
 class API {

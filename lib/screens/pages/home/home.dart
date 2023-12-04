@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:vote/classes/global.dart';
-import '../components/appbars/appbar.dart';
-import '../Election.g.dart';
+import 'package:vote/screens/widgets/appbars/appbar.dart';
+import 'package:vote/services/global.dart';
+import '../../../Election.g.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});

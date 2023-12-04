@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../classes/contract_linker.dart';
+import 'package:vote/services/blockchain/contract_linker.dart';
 
 class VoteForm extends StatefulWidget {
   const VoteForm({super.key, required this.linker});

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'register/register.dart';
+import '../register/register.dart';
 
 class GetStarted extends StatefulWidget {
   const GetStarted({super.key});
