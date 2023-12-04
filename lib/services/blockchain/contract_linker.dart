@@ -4,11 +4,11 @@ import 'package:http/http.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:flutter/services.dart';
 import 'dart:convert';
-import '../Election.g.dart';
-import '../classes/global.dart';
+import '../../Election.g.dart';
+import '../global.dart';
 import 'package:flutter/material.dart';
-import 'preferences.dart';
-import 'utils.dart';
+import '../preferences.dart';
+import '../utils.dart';
 
 // Class that contains nessasary methods to communicate with the blockchain
 class ContractLinker extends ChangeNotifier {

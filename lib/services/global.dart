@@ -1,5 +1,5 @@
 // Global variables that are accessed and used accross the app
-import 'package:vote/classes/contract_linker.dart';
+import 'package:vote/services/blockchain/contract_linker.dart';
 import 'package:logger/logger.dart';
 
 class Global {

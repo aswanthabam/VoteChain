@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:vote/classes/preferences.dart';
-import '../components/appbars/appbar.dart';
+import 'package:vote/screens/widgets/appbars/appbar.dart';
+import 'package:vote/services/preferences.dart';
 
 class Admin extends StatefulWidget {
   const Admin({super.key});

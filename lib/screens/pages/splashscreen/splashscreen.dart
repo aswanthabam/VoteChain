@@ -1,10 +1,10 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
-import 'package:vote/classes/preferences.dart';
-import 'package:vote/components/dialog/dialog.dart';
-import '../classes/contract_linker.dart';
-import '../classes/global.dart';
+import 'package:vote/screens/widgets/dialog/dialog.dart';
+import 'package:vote/services/preferences.dart';
+import '../../../services/blockchain/contract_linker.dart';
+import '../../../services/global.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -40,7 +40,7 @@ class _SplashScreenState extends State<SplashScreen> {
       if (!await Global.linker.checkAlive()) {
         showDialog(
             context: context,
-            builder: (context) => MsgDialog(
+            builder: (context) => const MsgDialog(
                   text: "The Server is not alive now",
                   icon: Icons.wifi_tethering_error,
                 ));

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:vote/pages/home.dart';
-import 'package:vote/pages/admin.dart';
-import 'package:vote/pages/splashscreen.dart';
-import 'pages/getstarted.dart';
-import 'pages/login.dart';
-import 'pages/register/register.dart';
-import 'pages/profile.dart';
+import 'package:vote/screens/pages/home/home.dart';
+import 'package:vote/screens/pages/admin/admin.dart';
+import 'package:vote/screens/pages/splashscreen/splashscreen.dart';
+import 'screens/pages/getstarted/getstarted.dart';
+import 'screens/pages/login/login.dart';
+import 'screens/pages/register/register.dart';
+import 'screens/pages/profile/profile.dart';
 
 void main() {
   runApp(const App());
@@ -31,7 +31,7 @@ class _AppState extends State<App> {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Vote Chain',
-      initialRoute: 'splashscreen',
+      initialRoute: 'register',
       routes: {
         'home': (context) => const Home(),
         'admin': (context) => const Admin(),

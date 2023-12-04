@@ -1,9 +1,9 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
-import 'package:vote/pages/register/register_info.dart';
-import 'package:vote/utils/paginated_views.dart';
-import '../../components/buttons/async_button.dart';
+import 'package:vote/screens/pages/register/register_info.dart';
+import 'package:vote/screens/widgets/buttons/async_button.dart';
+import 'package:vote/screens/widgets/paginated_views/paginated_views.dart';
 
 class Register extends StatefulWidget {
   const Register({super.key});

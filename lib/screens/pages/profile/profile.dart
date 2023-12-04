@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../classes/global.dart';
-import '../components/appbars/backbar.dart';
+import 'package:vote/screens/widgets/appbars/backbar.dart';
+import '../../../services/global.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});

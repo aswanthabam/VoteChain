@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:vote/components/content_views/dropdown.dart';
-import '../../utils/paginated_views.dart' as paging;
+import 'package:vote/screens/widgets/content_views/dropdown.dart';
+import '../../widgets/paginated_views/paginated_views.dart' as paging;
 
 class RegisterInfoPage extends paging.Page {
   @override
@@ -33,8 +33,15 @@ class _RegisterInfoWidgetState extends State<RegisterInfoWidget> {
           padding: const EdgeInsets.all(10),
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            const Text("Welcome to"),
-            const Text("VoteChain"),
+            const Text("Welcome to",
+                style: TextStyle(
+                  fontSize: 20,
+                  fontFamily: 'Poppins',
+                  letterSpacing: 2.5,
+                  fontWeight: FontWeight.w700,
+                )),
+            const Text("VoteChain",
+                style: TextStyle(fontSize: 30, color: Colors.green)),
             const Text(
                 "For Registeing to VoteChain you want to give the following details"),
             const SizedBox(
@@ -64,19 +71,19 @@ class _RegisterInfoWidgetState extends State<RegisterInfoWidget> {
             const SizedBox(
               height: 10,
             ),
-            ContentDropdown(
+            const ContentDropdown(
               heading: "Election Details",
-              contents: const [],
+              contents: [],
               height: 100,
             ),
-            ContentDropdown(
+            const ContentDropdown(
               heading: "Document Uploadation",
-              contents: const [],
+              contents: [],
               height: 100,
             ),
-            ContentDropdown(
+            const ContentDropdown(
               heading: "Face Registaration",
-              contents: const [],
+              contents: [],
               height: 100,
             ),
           ]))
