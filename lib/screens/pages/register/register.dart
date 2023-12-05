@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
+import 'package:vote/screens/pages/register/personal_information/personal_one.dart';
 import 'package:vote/screens/pages/register/register_info.dart';
 import 'package:vote/screens/widgets/buttons/async_button.dart';
 import 'package:vote/screens/widgets/paginated_views/paginated_views.dart';
@@ -18,43 +19,10 @@ class _RegisterState extends State<Register> {
   String otp = "";
   String password = "";
   Pagination pagination =
-      Pagination(pages: [RegisterInfoPage(), SampleWidget()]);
+      Pagination(pages: [RegisterInfoPage(), RegisterPersonalInfoOnePage()]);
   @override
   void initState() {
     super.initState();
-  }
-
-  /* Get the current widget
-    Eg : OTP widget if in the otp entering step */
-  Widget getCurrentWidget() {
-    switch (step) {
-      default:
-        return const Expanded(
-          child: SizedBox(),
-        );
-    }
-  }
-
-  /* Go to te next step 
-    just increment the step value the view will be automatically re rendered */
-  void nextStep() {
-    if (step < totalstep - 1) {
-      setState(() {
-        step++;
-      });
-    }
-  }
-
-  /* Go to previous step */
-  bool preStep() {
-    if (step > 0) {
-      setState(() {
-        step--;
-      });
-      return true;
-    } else {
-      return false;
-    }
   }
 
   @override
@@ -74,7 +42,11 @@ class _RegisterState extends State<Register> {
           child: IconButton(
               onPressed: () {
                 // clearStep();
-                if (!preStep()) Navigator.pop(context);
+                setState(() {
+                  pagination.prev();
+                });
+                // pagination.prev();
+                // if (!preStep()) Navigator.pop(context);
               },
               icon: const Icon(Icons.arrow_back_ios))),
       Positioned(
@@ -89,12 +61,12 @@ class _RegisterState extends State<Register> {
             children: [
               Expanded(child: pagination.widget),
               getPrimaryAsyncButton(context, () async {
-                await Future.delayed(const Duration(seconds: 2));
+                // await Future.delayed(const Duration(seconds: 2));
                 setState(() {
                   pagination.next();
                 });
                 return true;
-              }, "Continue", "Loading", "Failed", "Success",
+              }, "Continue", "Loading", "An Error Occured", "Continue",
                   MediaQuery.of(context).size.width - 20)
             ],
           )),
