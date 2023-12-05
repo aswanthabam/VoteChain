@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 
 class InputFieldHandler {
-  InputFieldHandler({required this.inputField});
-  final TextEditingController controller = TextEditingController();
+  late final TextEditingController controller;
+  InputFieldHandler({required label}) {
+    controller = TextEditingController();
+    inputField = InputField(label: label, controller: controller);
+  }
   String get text => controller.text;
   set text(String value) => controller.text = value;
-  InputField inputField;
+  late InputField inputField;
 
   void clear() {
     controller.clear();
@@ -15,8 +18,9 @@ class InputFieldHandler {
 }
 
 class InputField extends StatefulWidget {
-  const InputField({super.key, required this.label});
+  const InputField({super.key, required this.label, required this.controller});
   final String label;
+  final TextEditingController controller;
   @override
   State<InputField> createState() => _InputFieldState();
 }
@@ -26,9 +30,10 @@ class _InputFieldState extends State<InputField> {
   Widget build(BuildContext context) {
     return Container(
         decoration: BoxDecoration(
-            color: Color.fromARGB(68, 27, 166, 141),
+            color: const Color.fromARGB(68, 27, 166, 141),
             borderRadius: BorderRadius.circular(20)),
         child: TextField(
+          controller: widget.controller,
           decoration: InputDecoration(
               contentPadding: const EdgeInsets.only(
                   left: 20, right: 20, top: 10, bottom: 10),

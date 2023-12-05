@@ -23,22 +23,17 @@ class RegisterPersonalInfoOneWidget extends StatefulWidget {
 
 class _RegisterPersonalInfoOneWidgetState
     extends State<RegisterPersonalInfoOneWidget> {
-  InputFieldHandler firstName =
-      InputFieldHandler(inputField: InputField(label: "First Name"));
-  InputFieldHandler middleName =
-      InputFieldHandler(inputField: InputField(label: "Middle Name"));
-  InputFieldHandler lastName =
-      InputFieldHandler(inputField: InputField(label: "Last Name"));
-  InputFieldHandler phoneNumber =
-      InputFieldHandler(inputField: InputField(label: "Phone Number"));
-  InputFieldHandler email =
-      InputFieldHandler(inputField: InputField(label: "Email"));
+  InputFieldHandler firstName = InputFieldHandler(label: "First Name");
+  InputFieldHandler middleName = InputFieldHandler(label: "Middle Name");
+  InputFieldHandler lastName = InputFieldHandler(label: "Last Name");
+  InputFieldHandler phoneNumber = InputFieldHandler(label: "Phone Number");
+  InputFieldHandler email = InputFieldHandler(label: "Email");
 
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
         child: Padding(
-            padding: EdgeInsets.all(20),
+            padding: const EdgeInsets.all(20),
             child: Column(
                 mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.start,

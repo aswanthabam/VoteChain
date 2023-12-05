@@ -1,7 +1,8 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
-import 'package:vote/screens/pages/register/personal_information/personal_one.dart';
+import 'package:vote/screens/pages/register/personal_information/one_personal.dart';
+import 'package:vote/screens/pages/register/personal_information/two_personal.dart';
 import 'package:vote/screens/pages/register/register_info.dart';
 import 'package:vote/screens/widgets/buttons/async_button.dart';
 import 'package:vote/screens/widgets/paginated_views/paginated_views.dart';
@@ -18,8 +19,11 @@ class _RegisterState extends State<Register> {
   String uid = "";
   String otp = "";
   String password = "";
-  Pagination pagination =
-      Pagination(pages: [RegisterInfoPage(), RegisterPersonalInfoOnePage()]);
+  Pagination pagination = Pagination(pages: [
+    RegisterInfoPage(),
+    RegisterPersonalInfoOnePage(),
+    RegisterPersonalInfoTwoPage()
+  ]);
   @override
   void initState() {
     super.initState();
@@ -61,7 +65,6 @@ class _RegisterState extends State<Register> {
             children: [
               Expanded(child: pagination.widget),
               getPrimaryAsyncButton(context, () async {
-                // await Future.delayed(const Duration(seconds: 2));
                 setState(() {
                   pagination.next();
                 });
