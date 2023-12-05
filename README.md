@@ -23,6 +23,16 @@ This repo contains the code for the client side mobile app of VoteChain (Blockch
 
 > Note that this project is under development and **doesnt accept any contributions** until an initial implementation of the project is done.
 
+## Folder structure
+
+The main folder `lib` contains these subfolders and follow this folder structure.
+
+| Folder  | Description                                                                                                                                                             |
+| ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| screens | All the UI components are enclosed within this folder, this folder contains two sub folders pages (for all the display pages) and widgets ( for all the global widgets) |
+| service | all the services, to connect with the backend, like blockchain api etc.                                                                                                 |
+| bloc    | all the BLoC (Bussiness login component) files contains different sub folders of different logics and states                                                            |
+
 ## Project Structure
 
 This project is splitted into multiple repos for ease of maintainance. some of them are private due to security concerns.
