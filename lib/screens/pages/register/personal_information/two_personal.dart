@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:vote/screens/widgets/content_views/underlined_text/underlined_text.dart';
-import 'package:vote/screens/widgets/input_components/input_field/date_field.dart';
 import 'package:vote/screens/widgets/input_components/input_field/grouped_input_field.dart';
 import 'package:vote/screens/widgets/input_components/input_field/input_field.dart';
 import 'package:vote/screens/widgets/status_bar/status_bar.dart';
@@ -52,7 +51,7 @@ class _RegisterPersonalInfoTwoWidgetState
 
   @override
   void initState() {
-    // TODO: implement initState
+    super.initState();
     address = GroupedInputFieldHandler(
         inputFields: [state, district, locality, ward], columnCount: 2);
   }

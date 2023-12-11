@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:vote/screens/pages/register/personal_information/one_personal.dart';
+import 'package:vote/screens/pages/register/personal_information/three_personal.dart';
 import 'package:vote/screens/pages/register/personal_information/two_personal.dart';
 import 'package:vote/screens/pages/register/register_info.dart';
 import 'package:vote/screens/widgets/buttons/async_button.dart';
@@ -22,7 +23,8 @@ class _RegisterState extends State<Register> {
   Pagination pagination = Pagination(pages: [
     RegisterInfoPage(),
     RegisterPersonalInfoOnePage(),
-    RegisterPersonalInfoTwoPage()
+    RegisterPersonalInfoTwoPage(),
+    RegisterPersonalInfoThreePage()
   ]);
   @override
   void initState() {
