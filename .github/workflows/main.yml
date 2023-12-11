@@ -1,5 +1,13 @@
-on: push
 name: Test, Build and Release apk
+on:
+  # Enable manual run
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Tag to create (e.g. v2.10.0). Must include 'v' and must match pubspec"
+        required: true
+        default: "v2.10.0"
+        type: string
 jobs:
   build:
     name: Build APK
@@ -20,4 +28,5 @@ jobs:
       uses: ncipollo/release-action@v1
       with:
         artifacts: "build/app/outputs/apk/debug/*.apk"
+        tag: ${{ github.event.inputs.version }}
         token: ${{ secrets.GITHUB_TOKEN }}
