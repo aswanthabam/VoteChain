@@ -1,7 +1,7 @@
 name: Build Production Release apk
 "on": push
 jobs:
-  build_and_preview:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -18,17 +18,16 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v2
-
-    - name: Create Release
-      id: create_release
-      uses: softprops/action-gh-release@v1
-      with:
-        files: build/app/outputs/flutter-apk/app-release.apk
-        token: ${{ secrets.GITHUB_TOKEN }}
-        body: |
-          Automated release created by github workflow
-
-    - name: Display Release URL
-      run: echo "Release URL: ${{ steps.create_release.outputs.upload_url }}"
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+  
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: build/app/outputs/flutter-apk/app-release.apk
+          token: ${{ secrets.GITHUB_TOKEN }}
+          body: |
+            Automated release created by github workflow
+      # - name: Display Release URL
+      #   run: echo "Release URL: ${{ steps.create_release.outputs.upload_url }}"
