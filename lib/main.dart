@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:vote/screens/pages/home/home.dart';
 import 'package:vote/screens/pages/admin/admin.dart';
 import 'package:vote/screens/pages/splashscreen/splashscreen.dart';
+import 'package:vote/screens/pages/testscreen/test.dart';
 import 'screens/pages/getstarted/getstarted.dart';
 import 'screens/pages/login/login.dart';
 import 'screens/pages/register/register.dart';
@@ -31,7 +32,7 @@ class _AppState extends State<App> {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Vote Chain',
-      initialRoute: 'register',
+      initialRoute: 'profile',
       routes: {
         'home': (context) => const Home(),
         'admin': (context) => const Admin(),
@@ -40,6 +41,7 @@ class _AppState extends State<App> {
         'login': (context) => const Login(),
         'register': (context) => const Register(),
         'profile': (context) => const Profile(),
+        'test': (context) => const TestWidget(),
       },
       debugShowCheckedModeBanner: false,
       theme: ThemeData(fontFamily: 'Poppins'),
