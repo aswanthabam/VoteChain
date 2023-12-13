@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:vote/screens/widgets/appbars/backbar.dart';
+import 'package:vote/screens/widgets/content_views/card/card.dart';
+import 'package:vote/screens/widgets/dialog/dialog.dart';
+import 'package:vote/screens/widgets/dialog/TextPopup/TextPopup.dart';
 import '../../../services/global.dart';
 
 class Profile extends StatefulWidget {
@@ -20,6 +23,7 @@ class _ProfileState extends State<Profile> {
           padding: const EdgeInsets.all(10),
           child: SingleChildScrollView(
             child: Column(children: [
+              CardWidget(),
               Row(
                 children: [Text("Name : ${Global.userName}")],
               ),
@@ -31,7 +35,16 @@ class _ProfileState extends State<Profile> {
                         Global.linker.logOut();
                         Navigator.pushReplacementNamed(context, "getstarted");
                       },
-                      child: const Text("LogOut"))
+                      child: TextButton(
+                        child: Text("LogOut"),
+                        onPressed: () {
+                          showDialog(
+                              context: context,
+                              builder: (context) => TextPopup(
+                                  message:
+                                      "Are You sure you want to logout? You want to login with your credentials again to relogin."));
+                        },
+                      ))
                 ],
               )
             ]),
