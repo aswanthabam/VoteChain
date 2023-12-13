@@ -47,7 +47,7 @@ class _RegisterPersonalInfoThreeWidgetState
                   SizedBox(
                     width: MediaQuery.of(context).size.width - 40,
                     child:
-                        const StatusBar(fractions: 4, current: 2, padding: 0),
+                        const StatusBar(fractions: 4, current: 3, padding: 0),
                   ),
                   SizedBox(
                     width: MediaQuery.of(context).size.width - 40,
