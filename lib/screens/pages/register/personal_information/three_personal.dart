@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vote/screens/widgets/buttons/icon_button/icon_button.dart';
 import 'package:vote/screens/widgets/content_views/underlined_text/underlined_text.dart';
-import 'package:vote/screens/widgets/input_components/input_field/grouped_input_field.dart';
-import 'package:vote/screens/widgets/input_components/input_field/input_field.dart';
 import 'package:vote/screens/widgets/status_bar/status_bar.dart';
 import '../../../widgets/paginated_views/paginated_views.dart' as paging;
 
