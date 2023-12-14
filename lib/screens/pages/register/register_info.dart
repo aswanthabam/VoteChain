@@ -71,19 +71,49 @@ class _RegisterInfoWidgetState extends State<RegisterInfoWidget> {
             const SizedBox(
               height: 10,
             ),
-            const ContentDropdown(
+            ContentDropdown(
               heading: "Election Details",
-              contents: [],
+              contents: [
+                TextContent(
+                    content:
+                        "Here you want to enter the details about your election constituency and other details."),
+                ListContent(list: [
+                  "Constituency",
+                  "Assembly Constituency",
+                ])
+              ],
               height: 100,
             ),
-            const ContentDropdown(
+            ContentDropdown(
               heading: "Document Uploadation",
-              contents: [],
+              contents: [
+                TextContent(
+                    content:
+                        "Here you want to upload the nessesary documents for the verification process."),
+                TextContent(
+                    content:
+                        "NB : You can skip this step by verifying your account by linking with aadhar or other valid documents."),
+                ListContent(list: [
+                  "Identity Proof",
+                  "Address Proof",
+                  "Age Proof",
+                  "Other Documents"
+                ])
+              ],
               height: 100,
             ),
-            const ContentDropdown(
+            ContentDropdown(
               heading: "Face Registaration",
-              contents: [],
+              contents: [
+                TextContent(
+                    content:
+                        "In this step you want to register your face for face verification. This is a one time process. Make sure that you are in a well lit room and your face is clearly visible. Below are the criteria for a valid face registration."),
+                ListContent(list: [
+                  "Face should be clearly visible",
+                  "Face should be in the center of the frame",
+                  "Diffenrent angles of your face should be visible",
+                ])
+              ],
               height: 100,
             ),
           ]))

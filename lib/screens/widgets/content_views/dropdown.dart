@@ -25,7 +25,13 @@ class ListContent extends ContentType {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: list
             .map<Widget>((e) => Row(
-                  children: [const Text(" * "), Text(e)],
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      " * " + e,
+                      softWrap: true,
+                    )
+                  ],
                 ))
             .toList(),
       )

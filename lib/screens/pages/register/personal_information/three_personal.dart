@@ -58,9 +58,17 @@ class _RegisterPersonalInfoThreeWidgetState
                           height: 20,
                         ),
                         const UnderlinedText(
-                          heading: "Father Details",
+                          heading: "Parental Details",
                           fontSize: 18,
                           color: Color.fromARGB(255, 38, 38, 38),
+                          underlineColor: Color(0xff1CA78E),
+                          underlineWidth: 50,
+                          underlineHeight: 3,
+                        ),
+                        const UnderlinedText(
+                          heading: "Father Details",
+                          fontSize: 15,
+                          color: Color.fromARGB(255, 117, 115, 115),
                           underlineColor: Color(0xff1CA78E),
                           underlineWidth: 50,
                           underlineHeight: 3,
@@ -85,8 +93,8 @@ class _RegisterPersonalInfoThreeWidgetState
                         ),
                         const UnderlinedText(
                           heading: "Mother Details",
-                          fontSize: 18,
-                          color: Color.fromARGB(255, 38, 38, 38),
+                          fontSize: 15,
+                          color: Color.fromARGB(255, 117, 115, 115),
                           underlineColor: Color(0xff1CA78E),
                           underlineWidth: 50,
                           underlineHeight: 3,
@@ -97,6 +105,32 @@ class _RegisterPersonalInfoThreeWidgetState
                         IconButtonWidget(
                             icon: Icons.qr_code,
                             text: "Link Mother Account with VoteChain QR",
+                            onClick: () => {}),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        const Center(
+                            child: Text(
+                          "Or, continue enter manualy",
+                          style: TextStyle(fontSize: 13),
+                        )),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        const UnderlinedText(
+                          heading: "Spouse Details",
+                          fontSize: 18,
+                          color: Color.fromARGB(255, 38, 38, 38),
+                          underlineColor: Color(0xff1CA78E),
+                          underlineWidth: 50,
+                          underlineHeight: 3,
+                        ),
+                        const Text(
+                            "Enter details of your spouse by connecting your spouse VoteChain account or enter and upload documents manually."),
+                        const SizedBox(height: 20),
+                        IconButtonWidget(
+                            icon: Icons.qr_code,
+                            text: "Link Spouse Account with VoteChain QR",
                             onClick: () => {}),
                         const SizedBox(
                           height: 10,
