@@ -8,6 +8,10 @@ import 'package:vote/screens/pages/register/personal_information/two_personal.da
 import 'package:vote/screens/pages/register/register_info.dart';
 import 'package:vote/screens/widgets/buttons/async_button.dart';
 import 'package:vote/screens/widgets/paginated_views/paginated_views.dart';
+import 'package:vote/services/blockchain/VoterHelper.dart';
+import 'package:vote/services/blockchain/contract_linker.dart';
+import 'package:vote/services/preferences.dart';
+import 'package:web3dart/web3dart.dart';
 
 class Register extends StatefulWidget {
   const Register({super.key});
@@ -28,6 +32,21 @@ class _RegisterState extends State<Register> {
     RegisterPersonalInfoThreePage(),
     RegisterElectionDetailsOnePage(),
   ]);
+
+  void submitRegister() async {
+    ContractLinker linker = ContractLinker();
+    await Preferences.init();
+    linker.init();
+    await linker.inited;
+    await linker.createAccount();
+    Credentials cred = await linker.getCredentials();
+    VoterHelper helper = VoterHelper(
+        EthereumAddress.fromHex('0xE4B293636F4b10c9cBD8E798B80A75bba71a90cE'),
+        linker.client,
+        cred);
+    await helper.registerVoter();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -69,10 +88,15 @@ class _RegisterState extends State<Register> {
             children: [
               Expanded(child: pagination.widget),
               getPrimaryAsyncButton(context, () async {
-                setState(() {
-                  pagination.next();
-                });
-                return true;
+                if (pagination.hasNext()) {
+                  setState(() {
+                    pagination.next();
+                  });
+                  return true;
+                } else {
+                  submitRegister();
+                  return true;
+                }
               }, "Continue", "Loading", "An Error Occured", "Continue",
                   MediaQuery.of(context).size.width - 20)
             ],

@@ -12,8 +12,8 @@ import '../utils.dart';
 
 // Class that contains nessasary methods to communicate with the blockchain
 class ContractLinker extends ChangeNotifier {
-  // late String _rpcUrl = "http://192.168.18.2:7545";
-  // late String _wsUrl = 'ws://192.168.18.2:7545';
+  late String _rpcUrl = "http://127.0.0.1:7545";
+  late String _wsUrl = 'ws://127.0.0.1:7545';
   // late String _privateKey = "null";
 
   late Web3Client client;

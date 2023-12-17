@@ -16,11 +16,11 @@ class Preferences {
 
   static Future<void> init() async {
     pref = await SharedPreferences.getInstance();
-    rpcUrl = pref.getString(RPC_KEY) ?? "http://192.168.18.5:7545";
-    helperUrl = pref.getString(HELPER_KEY) ?? "http://192.168.18.5:3131";
+    rpcUrl = pref.getString(RPC_KEY) ?? "http://localhost:7545";
+    helperUrl = pref.getString(HELPER_KEY) ?? "http://localhost:3131";
     contractAddress = pref.getString(CONTRACT_KEY); // ??
     //"0x1aBE68277AE236083947f2551FEe8b885efCA8f5";
-    wsUrl = pref.getString(WS_URL) ?? "ws://192.168.18.5:7545";
+    wsUrl = pref.getString(WS_URL) ?? "ws://localhost:7545";
   }
 
   static void setRpcUrl(String val) {

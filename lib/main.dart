@@ -32,7 +32,7 @@ class _AppState extends State<App> {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Vote Chain',
-      initialRoute: 'profile',
+      initialRoute: 'getstarted',
       routes: {
         'home': (context) => const Home(),
         'admin': (context) => const Admin(),
