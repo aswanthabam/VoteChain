@@ -34,17 +34,17 @@ class _RegisterState extends State<Register> {
   ]);
 
   void submitRegister() async {
-    ContractLinker linker = ContractLinker();
-    await Preferences.init();
-    linker.init();
-    await linker.inited;
-    await linker.createAccount();
-    Credentials cred = await linker.getCredentials();
-    VoterHelper helper = VoterHelper(
-        EthereumAddress.fromHex('0xE4B293636F4b10c9cBD8E798B80A75bba71a90cE'),
-        linker.client,
-        cred);
-    await helper.registerVoter();
+    // ContractLinker linker = ContractLinker();
+    // await Preferences.init();
+    // linker.init();
+    // await linker.inited;
+    // await linker.createAccount();
+    // Credentials cred = await linker.getCredentials();
+    // VoterHelper helper = VoterHelper(
+    //     EthereumAddress.fromHex('0xE4B293636F4b10c9cBD8E798B80A75bba71a90cE'),
+    //     linker.client,
+    //     cred);
+    // await helper.registerVoter();
   }
 
   @override

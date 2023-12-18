@@ -1,7 +1,10 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
+import 'package:vote/VoteChain.g.dart';
 import 'package:vote/screens/widgets/dialog/dialog.dart';
+import 'package:vote/screens/widgets/input_components/password.dart';
+import 'package:vote/services/blockchain/wallet.dart';
 import 'package:vote/services/preferences.dart';
 import '../../../services/blockchain/contract_linker.dart';
 import '../../../services/global.dart';
@@ -32,28 +35,51 @@ class _SplashScreenState extends State<SplashScreen> {
       await Future.delayed(const Duration(seconds: 1));
       await Preferences.init();
       setStatus("Loading Account");
-      Global.linker = ContractLinker();
-      Global.linker.init();
-      Global.linker.loadContracts();
-      await Global.linker.contract_loaded;
-      setStatus("Connecting to blockchain");
-      if (!await Global.linker.checkAlive()) {
+      VoteChainWallet.init("password");
+      VoteChainWalletStatus status = await VoteChainWallet.inited!;
+      showDialog(
+          context: context,
+          builder: (context) => MsgDialog(
+                text: status.description,
+                icon: Icons.lock,
+              ));
+      if (status == VoteChainWalletStatus.createdNew) {
+        goto = "getstarted";
+        VoteChainWallet.saveWallet("password");
+      } else if (status == VoteChainWalletStatus.loadedSaved) {
+        goto = "profile";
+      } else {
         showDialog(
             context: context,
-            builder: (context) => const MsgDialog(
-                  text: "The Server is not alive now",
-                  icon: Icons.wifi_tethering_error,
+            builder: (context) => MsgDialog(
+                  text: status.description,
+                  icon: Icons.lock,
                 ));
         return;
       }
-      if (await Global.linker.loadWallet("123456aA")) {
-        goto = "home";
-      } else {
-        await Global.linker.createAccount();
-        goto = "getstarted";
-      }
-      setStatus("Getting Started");
-      await Future.delayed(const Duration(milliseconds: 50));
+
+      //   setStatus("Connecting to blockchain");
+      //   Global.linker = ContractLinker();
+      //   Global.linker.init();
+      //   Global.linker.loadContracts();
+      //   await Global.linker.contract_loaded;
+      //   if (!await Global.linker.checkAlive()) {
+      //     showDialog(
+      //         context: context,
+      //         builder: (context) => const MsgDialog(
+      //               text: "The Server is not alive now",
+      //               icon: Icons.wifi_tethering_error,
+      //             ));
+      //     return;
+      //   }
+      //   if (await Global.linker.loadWallet("123456aA")) {
+      //     goto = "home";
+      //   } else {
+      //     await Global.linker.createAccount();
+      //     goto = "getstarted";
+      //   }
+      //   setStatus("Getting Started");
+      //   await Future.delayed(const Duration(milliseconds: 50));
       Navigator.pushReplacementNamed(context, goto);
     } catch (err) {
       Global.logger.e("An error occured when setting up app : $err");
