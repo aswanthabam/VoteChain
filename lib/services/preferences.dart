@@ -1,12 +1,12 @@
 // ignore_for_file: non_constant_identifier_names
 
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:vote/utils/types/contract_types.dart';
 
 class Preferences {
   static late SharedPreferences pref;
   static late String rpcUrl;
   static late String helperUrl;
-  static late String? contractAddress;
   static late String wsUrl;
 
   static String RPC_KEY = "rpcUrl";
@@ -18,8 +18,18 @@ class Preferences {
     pref = await SharedPreferences.getInstance();
     rpcUrl = pref.getString(RPC_KEY) ?? "http://localhost:7545";
     helperUrl = pref.getString(HELPER_KEY) ?? "http://localhost:3131";
-    contractAddress = pref.getString(CONTRACT_KEY); // ??
-    //"0x1aBE68277AE236083947f2551FEe8b885efCA8f5";
+    ContractAddress.voterContractAddress =
+        pref.getString("voterContractAddress") ??
+            "0x1aBE68277AE236083947f2551FEe8b885efCA8f5";
+    ContractAddress.votechainContractAddress =
+        pref.getString("votechainContractAddress") ??
+            "0x1aBE68277AE236083947f2551FEe8b885efCA8f5";
+    ContractAddress.candidateContractAddress =
+        pref.getString("candidateContractAddress") ??
+            "0x1aBE68277AE236083947f2551FEe8b885efCA8f5";
+    ContractAddress.permissionsContractAddress =
+        pref.getString("permissionsContractAddress") ??
+            "0x1aBE68277AE236083947f2551FEe8b885efCA8f5";
     wsUrl = pref.getString(WS_URL) ?? "ws://localhost:7545";
   }
 
@@ -33,9 +43,15 @@ class Preferences {
     helperUrl = val;
   }
 
-  static void setConractAddress(String val) {
-    pref.setString(CONTRACT_KEY, val);
-    contractAddress = val;
+  static void setConractAddress() {
+    pref.setString(
+        "voterContractAddress", ContractAddress.voterContractAddress ?? "");
+    pref.setString("votechainContractAddress",
+        ContractAddress.votechainContractAddress ?? "");
+    pref.setString("candidateContractAddress",
+        ContractAddress.candidateContractAddress ?? "");
+    pref.setString("permissionsContractAddress",
+        ContractAddress.permissionsContractAddress ?? "");
   }
 
   static void setWsUrl(String val) {

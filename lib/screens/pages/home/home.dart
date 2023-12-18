@@ -18,33 +18,33 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    init();
+    // init();
   }
 
-  Future<void> init() async {
-    await (Global.linker.getAddress().then((value) {
-      setState(() {
-        address = value.toString();
-      });
-      Global.linker.getBalance().then((value) {
-        setState(() {
-          balance = value.toString();
-        });
-        Global.linker.isVerified().then((value) {
-          setState(() {
-            isVerified = value;
-          });
-          Global.linker.getElections().then((value) {
-            Global.logger.i("HERE: ${value.length}");
-            // print(e.toString());
-            setState(() {
-              elections = value;
-            });
-          });
-        });
-      });
-    }));
-  }
+  // Future<void> init() async {
+  //   await (Global.linker.getAddress().then((value) {
+  //     setState(() {
+  //       address = value.toString();
+  //     });
+  //     Global.linker.getBalance().then((value) {
+  //       setState(() {
+  //         balance = value.toString();
+  //       });
+  //       Global.linker.isVerified().then((value) {
+  //         setState(() {
+  //           isVerified = value;
+  //         });
+  //         Global.linker.getElections().then((value) {
+  //           Global.logger.i("HERE: ${value.length}");
+  //           // print(e.toString());
+  //           setState(() {
+  //             elections = value;
+  //           });
+  //         });
+  //       });
+  //     });
+  //   }));
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -149,7 +149,7 @@ class IdentityCard extends StatelessWidget {
                       color: Colors.white,
                       fontWeight: FontWeight.w700,
                       fontSize: 12)),
-              Text(Global.userName!,
+              Text(Global.userName ?? "Invalid Username",
                   style: const TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.w400,
@@ -239,7 +239,7 @@ class _ElectionsSelectorState extends State<ElectionsSelector> {
       TextButton(
           onPressed: () {
             if (selected != -1) {
-              Global.linker.requestToParticipate(3, selected);
+              // Global.linker.requestToParticipate(3, selected);
             }
           },
           child: Text((selected == -1)

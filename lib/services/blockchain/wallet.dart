@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:vote/services/blockchain/blockchain_client.dart';
 import 'package:vote/services/global.dart';
 import 'package:vote/services/utils.dart';
 import 'package:web3dart/web3dart.dart';
@@ -17,8 +18,8 @@ enum VoteChainWalletStatus {
 }
 
 class VoteChainWallet {
-  static EthPrivateKey? _credentials;
-  static EthereumAddress? _address;
+  static EthPrivateKey? credentials;
+  static EthereumAddress? address;
   static Wallet? wallet;
   static Future<VoteChainWalletStatus>? inited;
 
@@ -32,7 +33,7 @@ class VoteChainWallet {
         await createAccount();
         Global.logger.i("Created a new account ");
         return VoteChainWalletStatus.createdNew;
-      } else if (password != null && !await loadWallet(password)) {
+      } else if (!await loadWallet(password)) {
         Global.logger.i("Wrong password!");
         return VoteChainWalletStatus.wrongPassword;
       } else {
@@ -49,9 +50,9 @@ class VoteChainWallet {
   */
   static Future<void> createAccount() async {
     var ran = Random.secure();
-    _credentials = EthPrivateKey.createRandom(ran);
-    _address = _credentials!.address;
-    Global.logger.i("Created address : ${_address!.hex}");
+    credentials = EthPrivateKey.createRandom(ran);
+    address = credentials!.address;
+    Global.logger.i("Created address : ${address!.hex}");
   }
 
   /*
@@ -60,7 +61,7 @@ class VoteChainWallet {
   */
   static bool saveWallet(String password) {
     try {
-      wallet = Wallet.createNew(_credentials!, password, Random.secure());
+      wallet = Wallet.createNew(credentials!, password, Random.secure());
       if (Utils.secureSave(
           key: "account", value: json.encode({"wallet": wallet!.toJson()}))) {
         Global.logger.i("Saved the wallet");
@@ -88,8 +89,8 @@ class VoteChainWallet {
       Global.userId = encoded["uid"];
       Global.userName = encoded["name"];
       wallet = Wallet.fromJson(encoded["wallet"].toString(), password);
-      _credentials = wallet!.privateKey;
-      _address = _credentials!.address;
+      credentials = wallet!.privateKey;
+      address = credentials!.address;
       Global.logger.i("Loaded wallet from saved");
       return true;
     } catch (err) {
@@ -110,5 +111,17 @@ class VoteChainWallet {
       Global.logger.e("An unexpected error occured while logging out : $err");
       return false;
     }
+  }
+
+  // get the current address of the user
+  Future<EthereumAddress> getAddress() async {
+    await BlockchainClient.inited!;
+    return VoteChainWallet.address!;
+  }
+
+  // get the credentials : private key
+  Future<EthPrivateKey> getCredentials() async {
+    await BlockchainClient.inited!;
+    return VoteChainWallet.credentials!;
   }
 }

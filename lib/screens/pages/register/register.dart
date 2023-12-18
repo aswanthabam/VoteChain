@@ -8,10 +8,6 @@ import 'package:vote/screens/pages/register/personal_information/two_personal.da
 import 'package:vote/screens/pages/register/register_info.dart';
 import 'package:vote/screens/widgets/buttons/async_button.dart';
 import 'package:vote/screens/widgets/paginated_views/paginated_views.dart';
-import 'package:vote/services/blockchain/VoterHelper.dart';
-import 'package:vote/services/blockchain/contract_linker.dart';
-import 'package:vote/services/preferences.dart';
-import 'package:web3dart/web3dart.dart';
 
 class Register extends StatefulWidget {
   const Register({super.key});

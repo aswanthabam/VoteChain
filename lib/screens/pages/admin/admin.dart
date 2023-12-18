@@ -24,7 +24,6 @@ class _AdminState extends State<Admin> {
     super.initState();
     rpcUrl.text = Preferences.rpcUrl;
     helperUrl.text = Preferences.helperUrl;
-    contractAddress.text = Preferences.contractAddress ?? "";
     wsUrl.text = Preferences.wsUrl;
   }
 
@@ -111,7 +110,7 @@ class _AdminState extends State<Admin> {
                       onPressed: () {
                         Preferences.setRpcUrl(rpcUrl.text);
                         Preferences.setHelperUrl(helperUrl.text);
-                        Preferences.setConractAddress(contractAddress.text);
+                        // Preferences.setConractAddress(contractAddress.text);
                         Preferences.setWsUrl(wsUrl.text);
                         print("Saved");
                       },

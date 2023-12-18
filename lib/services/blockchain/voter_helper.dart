@@ -1,4 +1,5 @@
 import 'package:vote/Voter.g.dart';
+import 'package:vote/utils/types/user_types.dart';
 import 'package:web3dart/web3dart.dart';
 
 class VoterHelper {
@@ -13,16 +14,7 @@ class VoterHelper {
     credentials = cred;
   }
 
-  Future<void> registerVoter() async {
-    await voterContract.registerVoter([
-      {
-        "personalDetails": {},
-        "contactInfo": {},
-        "permenentAddress": {},
-        "currentAddress": {},
-        "orphan": false,
-        "married": false
-      }
-    ], credentials: credentials);
+  Future<void> registerVoter(VoterInfo voterInfo) async {
+    await voterContract.registerVoter([voterInfo], credentials: credentials);
   }
 }

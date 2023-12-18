@@ -1,12 +1,9 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
-import 'package:vote/VoteChain.g.dart';
 import 'package:vote/screens/widgets/dialog/dialog.dart';
-import 'package:vote/screens/widgets/input_components/password.dart';
 import 'package:vote/services/blockchain/wallet.dart';
 import 'package:vote/services/preferences.dart';
-import '../../../services/blockchain/contract_linker.dart';
 import '../../../services/global.dart';
 
 class SplashScreen extends StatefulWidget {
