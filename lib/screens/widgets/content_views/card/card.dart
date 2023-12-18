@@ -37,7 +37,7 @@ class CardWidget extends StatelessWidget {
                   'VoteChain',
                   style: TextStyle(
                     color: Color.fromARGB(255, 253, 203, 39),
-                    fontSize: 18,
+                    fontSize: 15,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -50,7 +50,7 @@ class CardWidget extends StatelessWidget {
                   'Aswanth V C',
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: 18,
+                    fontSize: 15,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -60,7 +60,7 @@ class CardWidget extends StatelessWidget {
                   child: Text(
                 "1923-1231-1231",
                 style: TextStyle(
-                    fontSize: 30,
+                    fontSize: 25,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                     letterSpacing: 6),
