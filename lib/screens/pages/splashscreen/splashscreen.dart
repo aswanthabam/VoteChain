@@ -1,9 +1,11 @@
+import 'package:convert/convert.dart';
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
 import 'package:vote/screens/widgets/dialog/dialog.dart';
 import 'package:vote/services/blockchain/wallet.dart';
 import 'package:vote/services/preferences.dart';
+import 'package:vote/utils/types/contract_types.dart';
 import '../../../services/global.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -32,8 +34,20 @@ class _SplashScreenState extends State<SplashScreen> {
       await Future.delayed(const Duration(seconds: 1));
       await Preferences.init();
       setStatus("Loading Account");
-      VoteChainWallet.init("password");
+      VoteChainWallet.init(null);
+      ContractAddress.voterContractAddress =
+          "0xE4B293636F4b10c9cBD8E798B80A75bba71a90cE";
+      ContractAddress.votechainContractAddress =
+          "0x3B2d33aC0B76462c8Eb58548ed7db68BC826F15E";
+      ContractAddress.candidateContractAddress =
+          "0xc080828C1A20E7cb0D20AD5191314e64286989E5";
+      ContractAddress.permissionsContractAddress =
+          "0x4d040B247949a76cB8134203Da822Da50C674557";
+
+      Preferences.setConractAddress();
       VoteChainWalletStatus status = await VoteChainWallet.inited!;
+
+      print(hex.encode(VoteChainWallet.credentials!.privateKey));
       showDialog(
           context: context,
           builder: (context) => MsgDialog(
@@ -42,7 +56,6 @@ class _SplashScreenState extends State<SplashScreen> {
               ));
       if (status == VoteChainWalletStatus.createdNew) {
         goto = "getstarted";
-        VoteChainWallet.saveWallet("password");
       } else if (status == VoteChainWalletStatus.loadedSaved) {
         goto = "profile";
       } else {

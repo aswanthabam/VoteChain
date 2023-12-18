@@ -2,8 +2,6 @@ import 'package:vote/services/blockchain/blockChain_client.dart';
 import 'package:vote/services/blockchain/wallet.dart';
 import 'package:web3dart/web3dart.dart';
 import 'package:http/http.dart';
-import 'package:web_socket_channel/io.dart';
-import 'package:flutter/services.dart';
 import 'dart:convert';
 import '../../Election.g.dart';
 import '../global.dart';

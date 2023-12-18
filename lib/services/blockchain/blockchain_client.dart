@@ -10,24 +10,26 @@ import 'package:web3dart/web3dart.dart';
 import 'package:web_socket_channel/io.dart';
 
 class BlockchainClient {
-  static Web3Client? client;
-  var httpClient = Client();
+  static late Web3Client client;
+  static var httpClient = Client();
   static Future<bool>? contract_loaded;
   static Future<bool>? inited;
 
-  void init() {
+  static void init() {
     inited = initWeb3();
   }
 
   /*
     Function to initialize the Web3 Client
   */
-  Future<bool> initWeb3() async {
-    Global.logger.i("Initializing Web3 Client");
+  static Future<bool> initWeb3() async {
     try {
-      client = Web3Client(Preferences.rpcUrl, httpClient, socketConnector: () {
-        return IOWebSocketChannel.connect(Preferences.wsUrl).cast<String>();
+      client = Web3Client('http://192.168.18.17:7545', httpClient,
+          socketConnector: () {
+        return IOWebSocketChannel.connect('ws://192.168.18.17:7545')
+            .cast<String>();
       });
+      Global.logger.i("Successfully Initialized Web3 Client");
       return true;
     } catch (err) {
       Global.logger.e(
