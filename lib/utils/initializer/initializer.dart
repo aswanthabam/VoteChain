@@ -1,9 +1,5 @@
-import 'dart:io';
-
-import 'package:vote/screens/widgets/input_components/password.dart';
 import 'package:vote/services/api/system/config.dart';
 import 'package:vote/services/blockchain/blockchain_client.dart';
-import 'package:vote/services/blockchain/wallet.dart';
 import 'package:vote/services/global.dart';
 import 'package:vote/services/preferences.dart';
 import 'package:vote/utils/types/api_types.dart';

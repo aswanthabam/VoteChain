@@ -7,9 +7,17 @@ import 'package:vote/screens/widgets/status_bar/status_bar.dart';
 import 'package:vote/utils/types/user_types.dart';
 import '../../../widgets/paginated_views/paginated_views.dart' as paging;
 
-class RegisterPersonalInfoOnePage extends FormPage<PersonalInfo> {
+class RegisterPersonalInfoPageData {
+  PersonalInfo personalInfo;
+  ContactInfo contactInfo;
+  RegisterPersonalInfoPageData(
+      {required this.personalInfo, required this.contactInfo});
+}
+
+class RegisterPersonalInfoOnePage
+    extends FormPage<RegisterPersonalInfoPageData> {
   @override
-  PersonalInfo? validatedData;
+  RegisterPersonalInfoPageData? validatedData;
 
   @override
   FormPageStatus validate() {
@@ -29,22 +37,31 @@ class RegisterPersonalInfoOnePage extends FormPage<PersonalInfo> {
         firstName.text == "" ||
         lastName.text == "" ||
         phoneNumber.text == "" ||
-        email.text == "") return FormPageStatus(false, "Fill all the fields");
+        email.text == "") {
+      return FormPageStatus(false,
+          "Please fill all the required fields to continue. The fields marked with * are required");
+    }
 
     if (phoneNumber.text.length != 10 ||
         phoneNumber.text.contains(RegExp(r'[a-zA-Z]'))) {
-      return FormPageStatus(false, "Enter a valid phone number");
+      return FormPageStatus(false,
+          "Please enter a valid phone number, A phone number should be 10 digits long and should not contain any alphabets (country code is not required)\n This number will be used for 2FA, so be careful when filling it.");
     }
     if (email.text != "" && !email.text.contains("@")) {
-      return FormPageStatus(false, "Enter a valid email");
+      return FormPageStatus(false,
+          "Please enter a valid email address, this address will be used for 2FA, so be careful when filling it.");
     }
-    validatedData = PersonalInfo(
+    var personalInfo = PersonalInfo(
       firstName: firstName.text,
       middleName: middleName.text,
       lastName: lastName.text,
       dob: dob.toIso8601String(),
     );
-    return FormPageStatus(true, "All fields are valid");
+    var contactInfo = ContactInfo(phone: phoneNumber.text, email: email.text);
+    validatedData = RegisterPersonalInfoPageData(
+        personalInfo: personalInfo, contactInfo: contactInfo);
+    return FormPageStatus(true,
+        "The Personal info you entered seams to be correct, please verify it before continuing");
   }
 
   @override
@@ -64,11 +81,11 @@ class RegisterPersonalInfoOneWidget extends StatefulWidget {
 
 class _RegisterPersonalInfoOneWidgetState
     extends State<RegisterPersonalInfoOneWidget> {
-  InputFieldHandler firstName = InputFieldHandler(label: "First Name");
+  InputFieldHandler firstName = InputFieldHandler(label: "First Name *");
   InputFieldHandler middleName = InputFieldHandler(label: "Middle Name");
-  InputFieldHandler lastName = InputFieldHandler(label: "Last Name");
-  InputFieldHandler phoneNumber = InputFieldHandler(label: "Phone Number");
-  InputFieldHandler email = InputFieldHandler(label: "Email");
+  InputFieldHandler lastName = InputFieldHandler(label: "Last Name *");
+  InputFieldHandler phoneNumber = InputFieldHandler(label: "Phone Number *");
+  InputFieldHandler email = InputFieldHandler(label: "Email *");
   DateTime? dob;
   @override
   void initState() {
@@ -85,10 +102,12 @@ class _RegisterPersonalInfoOneWidgetState
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
+        physics: const ClampingScrollPhysics(),
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.manual,
         child: Padding(
             padding: const EdgeInsets.all(20),
             child: Column(
-                mainAxisSize: MainAxisSize.max,
+                mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text("Personal Details",
@@ -144,7 +163,7 @@ class _RegisterPersonalInfoOneWidgetState
                             "Enter Your First Name, Second Name, Middle Name (If,). The name want to be entered in both English and your local language. Know more about loacal languages"),
                         const SizedBox(height: 20),
                         DateField(
-                            label: "Select Date",
+                            label: "Select Date *",
                             onDateSelected: (v) {
                               setState(() {
                                 dob = v;

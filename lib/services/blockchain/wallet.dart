@@ -130,13 +130,13 @@ class VoteChainWallet {
 
   // get the current address of the user
   Future<EthereumAddress> getAddress() async {
-    await BlockchainClient.inited!;
+    await BlockchainClient.inited;
     return VoteChainWallet.address!;
   }
 
   // get the credentials : private key
   Future<EthPrivateKey> getCredentials() async {
-    await BlockchainClient.inited!;
+    await BlockchainClient.inited;
     return VoteChainWallet.credentials!;
   }
 }

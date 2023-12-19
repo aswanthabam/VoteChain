@@ -80,7 +80,7 @@ class _SplashScreenState extends State<SplashScreen> {
         return;
       } else {
         await VoteChainWallet.createAccount();
-        goto = "register";
+        goto = "getstarted";
       }
       await Future.delayed(const Duration(seconds: 1));
       Navigator.pushReplacementNamed(context, goto);

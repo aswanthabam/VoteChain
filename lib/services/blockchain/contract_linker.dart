@@ -10,9 +10,6 @@ import '../preferences.dart';
 
 // Class that contains nessasary methods to communicate with the blockchain
 class ContractLinker extends ChangeNotifier {
-  // late String _rpcUrl = "http://127.0.0.1:7545";
-  // late String _wsUrl = 'ws://127.0.0.1:7545';
-  // late String _privateKey = "null";
   late Election election;
   double _balance = 0;
   late Future<List<Candidates>> candidates;
@@ -25,7 +22,7 @@ class ContractLinker extends ChangeNotifier {
   Future<Map<String, dynamic>> requestEthers(
       {void Function(String)? onSuccess,
       void Function(String)? onError}) async {
-    if (!await BlockchainClient.inited!) return {};
+    if (!await BlockchainClient.inited) return {};
     Map<String, dynamic> ret = {};
     try {
       final res = await post(
@@ -131,9 +128,9 @@ class ContractLinker extends ChangeNotifier {
 
   /* Check if the blockchain is alive */
   Future<bool> checkAlive() async {
-    if (!await BlockchainClient.inited!) return false;
+    if (!await BlockchainClient.inited) return false;
     try {
-      await BlockchainClient.client!.getChainId();
+      await BlockchainClient.client.getChainId();
       return true;
     } catch (err) {
       Global.logger.w(
@@ -144,10 +141,10 @@ class ContractLinker extends ChangeNotifier {
 
   // GET BALANCEE
   Future<double> getBalance() async {
-    await BlockchainClient.inited!;
+    await BlockchainClient.inited;
     try {
       double bal =
-          (await BlockchainClient.client!.getBalance(VoteChainWallet.address!))
+          (await BlockchainClient.client.getBalance(VoteChainWallet.address!))
               .getValueInUnit(EtherUnit.ether);
       if (_balance != bal) notifyListeners();
       _balance = bal;

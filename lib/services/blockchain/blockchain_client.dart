@@ -4,7 +4,6 @@ import 'package:vote/Permissions.g.dart';
 import 'package:vote/VoteChain.g.dart';
 import 'package:vote/Voter.g.dart';
 import 'package:vote/services/global.dart';
-import 'package:vote/services/preferences.dart';
 import 'package:vote/utils/types/contract_types.dart';
 import 'package:web3dart/web3dart.dart';
 import 'package:web_socket_channel/io.dart';
@@ -50,27 +49,27 @@ class BlockchainClient {
     Load the contracts, which can be used to intract with the contract
   */
   static Future<bool> loadContracts2() async {
-    if (!await BlockchainClient.inited!) return false;
+    if (!await BlockchainClient.inited) return false;
     try {
       // String abiString =
       //     await rootBundle.loadString("src/artifacts/Election.json");
       // var jsonAbi = jsonDecode(abiString);
       Contracts.voter = Voter(
           address: ContractAddress.voterAddress,
-          client: BlockchainClient.client!,
+          client: BlockchainClient.client,
           chainId: 1337);
       Contracts.candidate = Candidate(
           address: ContractAddress.candidateAddress,
-          client: BlockchainClient.client!,
+          client: BlockchainClient.client,
           chainId: 1337);
       ;
       Contracts.permissions = Permissions(
           address: ContractAddress.permissionsAddress,
-          client: BlockchainClient.client!,
+          client: BlockchainClient.client,
           chainId: 1337);
       Contracts.votechain = VoteChain(
           address: ContractAddress.votechainAddress,
-          client: BlockchainClient.client!,
+          client: BlockchainClient.client,
           chainId: 1337);
       Global.logger.i("Loaded Contracts");
       return true;
