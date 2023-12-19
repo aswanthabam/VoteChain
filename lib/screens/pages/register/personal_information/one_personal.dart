@@ -1,11 +1,52 @@
 import 'package:flutter/material.dart';
+import 'package:vote/screens/pages/register/register.dart';
 import 'package:vote/screens/widgets/content_views/underlined_text/underlined_text.dart';
 import 'package:vote/screens/widgets/input_components/input_field/date_field.dart';
 import 'package:vote/screens/widgets/input_components/input_field/input_field.dart';
 import 'package:vote/screens/widgets/status_bar/status_bar.dart';
+import 'package:vote/utils/types/user_types.dart';
 import '../../../widgets/paginated_views/paginated_views.dart' as paging;
 
-class RegisterPersonalInfoOnePage extends paging.Page {
+class RegisterPersonalInfoOnePage extends FormPage<PersonalInfo> {
+  @override
+  PersonalInfo? validatedData;
+
+  @override
+  FormPageStatus validate() {
+    InputFieldHandler? firstName = getState<InputFieldHandler>("firstName");
+    InputFieldHandler? middleName = getState<InputFieldHandler>("middleName");
+    InputFieldHandler? lastName = getState<InputFieldHandler>("lastName");
+    InputFieldHandler? phoneNumber = getState<InputFieldHandler>("phoneNumber");
+    InputFieldHandler? email = getState<InputFieldHandler>("email");
+    DateTime? dob = getState<DateTime?>("dob");
+
+    if (firstName == null ||
+        middleName == null ||
+        lastName == null ||
+        phoneNumber == null ||
+        email == null ||
+        dob == null ||
+        firstName.text == "" ||
+        lastName.text == "" ||
+        phoneNumber.text == "" ||
+        email.text == "") return FormPageStatus(false, "Fill all the fields");
+
+    if (phoneNumber.text.length != 10 ||
+        phoneNumber.text.contains(RegExp(r'[a-zA-Z]'))) {
+      return FormPageStatus(false, "Enter a valid phone number");
+    }
+    if (email.text != "" && !email.text.contains("@")) {
+      return FormPageStatus(false, "Enter a valid email");
+    }
+    validatedData = PersonalInfo(
+      firstName: firstName.text,
+      middleName: middleName.text,
+      lastName: lastName.text,
+      dob: dob.toIso8601String(),
+    );
+    return FormPageStatus(true, "All fields are valid");
+  }
+
   @override
   Widget build(paging.PaginationContext state) {
     return RegisterPersonalInfoOneWidget(pageState: this);
@@ -28,6 +69,18 @@ class _RegisterPersonalInfoOneWidgetState
   InputFieldHandler lastName = InputFieldHandler(label: "Last Name");
   InputFieldHandler phoneNumber = InputFieldHandler(label: "Phone Number");
   InputFieldHandler email = InputFieldHandler(label: "Email");
+  DateTime? dob;
+  @override
+  void initState() {
+    super.initState();
+    widget.pageState.bindWidgetState(setState);
+    widget.pageState.setState("firstName", firstName);
+    widget.pageState.setState("middleName", middleName);
+    widget.pageState.setState("lastName", lastName);
+    widget.pageState.setState("phoneNumber", phoneNumber);
+    widget.pageState.setState("email", email);
+    widget.pageState.setState("dob", dob);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -90,7 +143,14 @@ class _RegisterPersonalInfoOneWidgetState
                         const Text(
                             "Enter Your First Name, Second Name, Middle Name (If,). The name want to be entered in both English and your local language. Know more about loacal languages"),
                         const SizedBox(height: 20),
-                        DateField(label: "Select Date", onDateSelected: (v) {}),
+                        DateField(
+                            label: "Select Date",
+                            onDateSelected: (v) {
+                              setState(() {
+                                dob = v;
+                              });
+                              widget.pageState.setState("dob", dob);
+                            }),
                         const SizedBox(height: 20),
                         const UnderlinedText(
                           heading: "Contact Details",

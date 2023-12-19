@@ -1,10 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:vote/screens/pages/register/register.dart';
 import 'package:vote/screens/widgets/buttons/icon_button/icon_button.dart';
 import 'package:vote/screens/widgets/content_views/underlined_text/underlined_text.dart';
 import 'package:vote/screens/widgets/status_bar/status_bar.dart';
+import 'package:vote/utils/types/user_types.dart';
 import '../../../widgets/paginated_views/paginated_views.dart' as paging;
 
-class RegisterPersonalInfoThreePage extends paging.Page {
+class RegisterPersonalInfoThreePage extends FormPage<PersonalInfo> {
+  @override
+  PersonalInfo? validatedData;
+
+  @override
+  FormPageStatus validate() {
+    return FormPageStatus(true, "All fields are valid");
+  }
+
   @override
   Widget build(paging.PaginationContext state) {
     return RegisterPersonalInfoThreeWidget(pageState: this);

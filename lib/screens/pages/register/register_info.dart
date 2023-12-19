@@ -1,8 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:vote/screens/pages/register/register.dart';
 import 'package:vote/screens/widgets/content_views/dropdown.dart';
 import '../../widgets/paginated_views/paginated_views.dart' as paging;
 
-class RegisterInfoPage extends paging.Page {
+class RegisterInfoPage extends paging.Page implements FormPage<dynamic> {
+  @override
+  dynamic validatedData = '';
+
+  @override
+  FormPageStatus validate() {
+    return FormPageStatus(true, "All fields are valid");
+  }
+
   @override
   Widget build(paging.PaginationContext state) {
     return RegisterInfoWidget(pageState: this);
@@ -13,6 +22,7 @@ class RegisterInfoWidget extends StatefulWidget {
   const RegisterInfoWidget({super.key, required this.pageState});
 
   final paging.PageState pageState;
+
   @override
   State<RegisterInfoWidget> createState() => _RegisterInfoWidgetState();
 }
