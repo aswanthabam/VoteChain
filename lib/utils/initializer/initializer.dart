@@ -84,25 +84,24 @@ Future<ContractInitializationStatus> initializeContracts() async {
   }
 }
 
-Future<VoteChainWalletStatus> initializeAccount() async {
-  try {
-    String? password;
-    if (await VoteChainWallet.hasSavedWallet()) {
-      Global.logger.e("UnImplemented : Saved wallet exists");
-      password = "null";
-    } else {
-      password = null;
-    }
-    VoteChainWallet.init(password);
-    VoteChainWalletStatus status = await VoteChainWallet.inited!;
-    if (status == VoteChainWalletStatus.createdNew) {
-      var password = "mypass";
-      VoteChainWallet.saveWallet(password);
-    }
-    return status;
-  } catch (err) {
-    Global.logger.e(
-        "An unexpected error occured while initializing voter account : $err");
-    return VoteChainWalletStatus.errorOccured;
-  }
-}
+// Future<VoteChainWalletStatus> initializeAccount(String? password) async {
+//   try {
+//     if (await VoteChainWallet.hasSavedWallet()) {
+//       Global.logger.e("UnImplemented : Saved wallet exists");
+//       password = "mypass";
+//     } else {
+//       password = null;
+//     }
+//     VoteChainWallet.init(password);
+//     VoteChainWalletStatus status = await VoteChainWallet.inited!;
+//     if (status == VoteChainWalletStatus.createdNew) {
+//       var password = "mypass";
+//       VoteChainWallet.saveWallet(password);
+//     }
+//     return status;
+//   } catch (err) {
+//     Global.logger.e(
+//         "An unexpected error occured while initializing voter account : $err");
+//     return VoteChainWalletStatus.errorOccured;
+//   }
+// }

@@ -1,13 +1,10 @@
-import 'package:convert/convert.dart';
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
+import 'package:vote/screens/pages/splashscreen/password_page.dart';
 import 'package:vote/screens/widgets/dialog/TextPopup/TextPopup.dart';
-import 'package:vote/screens/widgets/dialog/dialog.dart';
 import 'package:vote/services/blockchain/wallet.dart';
-import 'package:vote/services/preferences.dart';
 import 'package:vote/utils/initializer/initializer.dart';
-import 'package:vote/utils/types/contract_types.dart';
 import '../../../services/global.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -55,18 +52,38 @@ class _SplashScreenState extends State<SplashScreen> {
             });
         return;
       }
-      VoteChainWalletStatus sts2 = await initializeAccount();
-      if (sts2 == VoteChainWalletStatus.errorOccured ||
-          sts2 == VoteChainWalletStatus.wrongPassword) {
-        setStatus(sts2.description);
-        showDialog(
-            context: context,
-            builder: (context) {
-              return TextPopup(message: sts2.description);
-            });
+      if (await VoteChainWallet.hasSavedWallet()) {
+        Navigator.of(context).pushReplacement(MaterialPageRoute(
+            builder: (context) => PasswordPage(
+                  onPasswordSubmit: (String pin) async {
+                    bool sts = await VoteChainWallet.loadWallet(pin);
+                    if (sts) {
+                      Navigator.pushReplacementNamed(context, "home");
+                      return true;
+                    }
+                    showDialog(
+                        context: context,
+                        builder: (context) => TextPopup(
+                              message:
+                                  "The pin you entered is Wrong,Please recheck the pin",
+                              bottomButtons: [
+                                TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: const Text("Try Again!"))
+                              ],
+                            ));
+                    return false;
+                  },
+                )));
+        return;
+      } else {
+        await VoteChainWallet.createAccount();
+        goto = "register";
       }
       await Future.delayed(const Duration(seconds: 1));
-      // Navigator.pushReplacementNamed(context, goto);
+      Navigator.pushReplacementNamed(context, goto);
     } catch (err) {
       Global.logger.e("An error occured when setting up app : $err");
     }

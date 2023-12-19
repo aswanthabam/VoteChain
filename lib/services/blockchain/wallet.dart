@@ -33,12 +33,13 @@ class VoteChainWallet {
         await createAccount();
         Global.logger.i("Created a new account ");
         return VoteChainWalletStatus.createdNew;
-      } else if (!await loadWallet(password)) {
+      } else {
+        if (!await loadWallet(password)) {
+          Global.logger.i("Loading account from saved");
+          return VoteChainWalletStatus.loadedSaved;
+        }
         Global.logger.i("Wrong password!");
         return VoteChainWalletStatus.wrongPassword;
-      } else {
-        Global.logger.i("Loading account from saved");
-        return VoteChainWalletStatus.loadedSaved;
       }
     } catch (err) {
       return VoteChainWalletStatus.errorOccured;
