@@ -86,8 +86,8 @@ class VoteChainWallet {
     try {
       Map<String, dynamic> encoded =
           json.decode((await Utils.storage.read(key: "account"))!);
-      Global.userId = encoded["uid"];
-      Global.userName = encoded["name"];
+      // Global.userId = encoded["uid"];
+      // Global.userName = encoded["name"];
       wallet = Wallet.fromJson(encoded["wallet"].toString(), password);
       credentials = wallet!.privateKey;
       address = credentials!.address;
@@ -109,6 +109,20 @@ class VoteChainWallet {
       return true;
     } catch (err) {
       Global.logger.e("An unexpected error occured while logging out : $err");
+      return false;
+    }
+  }
+
+  static Future<bool> hasSavedWallet() async {
+    try {
+      Map<String, dynamic> encoded =
+          json.decode((await Utils.storage.read(key: "account"))!);
+      if (encoded['wallet'] != null) return true;
+      return false;
+    } catch (err) {
+      Global.logger.e(
+        "An unexpected error occured while loading the wallet : $err",
+      );
       return false;
     }
   }

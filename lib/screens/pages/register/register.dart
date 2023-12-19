@@ -34,36 +34,36 @@ class _RegisterState extends State<Register> {
   ]);
 
   void submitRegister() async {
-    BlockchainClient client = BlockchainClient();
-    BlockchainClient.init();
-    await BlockchainClient.inited!;
-    client.loadContracts();
-    print(await BlockchainClient.contract_loaded!);
-    Future.delayed(const Duration(seconds: 2));
-    print(Contracts.voter);
-    VoterHelper helper = VoterHelper(Contracts.voter!);
-    PersonalInfo personalInfo = PersonalInfo(
-        firstName: "firstName",
-        middleName: "middleName",
-        lastName: "lastName",
-        dob: "dob");
-    ContactInfo contactInfo = ContactInfo(email: "email", phone: "phone");
-    AddressInfo permeantAddress = AddressInfo(
-        state: "state",
-        district: "district",
-        locality: "locality",
-        ward: "ward",
-        houseName: "houseName",
-        houseNumber: "houseNumber",
-        street: "street",
-        pincode: "pincode");
-    await helper.registerVoter(VoterInfo(
-        personalInfo: personalInfo,
-        contactInfo: contactInfo,
-        permeantAddress: permeantAddress,
-        currentAddress: permeantAddress,
-        married: false,
-        orphan: false));
+    // BlockchainClient client = BlockchainClient();
+    // BlockchainClient.init();
+    // await BlockchainClient.inited!;
+    // client.loadContracts();
+    // print(await BlockchainClient.contract_loaded!);
+    // Future.delayed(const Duration(seconds: 2));
+    // print(Contracts.voter);
+    // VoterHelper helper = VoterHelper(Contracts.voter!);
+    // PersonalInfo personalInfo = PersonalInfo(
+    //     firstName: "firstName",
+    //     middleName: "middleName",
+    //     lastName: "lastName",
+    //     dob: "dob");
+    // ContactInfo contactInfo = ContactInfo(email: "email", phone: "phone");
+    // AddressInfo permeantAddress = AddressInfo(
+    //     state: "state",
+    //     district: "district",
+    //     locality: "locality",
+    //     ward: "ward",
+    //     houseName: "houseName",
+    //     houseNumber: "houseNumber",
+    //     street: "street",
+    //     pincode: "pincode");
+    // await helper.registerVoter(VoterInfo(
+    //     personalInfo: personalInfo,
+    //     contactInfo: contactInfo,
+    //     permeantAddress: permeantAddress,
+    //     currentAddress: permeantAddress,
+    //     married: false,
+    //     orphan: false));
   }
 
   @override

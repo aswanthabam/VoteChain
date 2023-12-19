@@ -12,8 +12,8 @@ import 'package:web_socket_channel/io.dart';
 class BlockchainClient {
   static late Web3Client client;
   static var httpClient = Client();
-  static Future<bool>? contract_loaded;
-  static Future<bool>? inited;
+  static late Future<bool> contract_loaded;
+  static late Future<bool> inited;
 
   static void init() {
     inited = initWeb3();
@@ -42,14 +42,14 @@ class BlockchainClient {
   /*
     Function that overlaps the loadContracts function for storing the Future state in contract_loaded
   */
-  void loadContracts() {
+  static void loadContracts() {
     contract_loaded = loadContracts2();
   }
 
   /*
     Load the contracts, which can be used to intract with the contract
   */
-  Future<bool> loadContracts2() async {
+  static Future<bool> loadContracts2() async {
     if (!await BlockchainClient.inited!) return false;
     try {
       // String abiString =

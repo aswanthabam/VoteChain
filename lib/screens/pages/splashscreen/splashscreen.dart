@@ -2,9 +2,11 @@ import 'package:convert/convert.dart';
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
+import 'package:vote/screens/widgets/dialog/TextPopup/TextPopup.dart';
 import 'package:vote/screens/widgets/dialog/dialog.dart';
 import 'package:vote/services/blockchain/wallet.dart';
 import 'package:vote/services/preferences.dart';
+import 'package:vote/utils/initializer/initializer.dart';
 import 'package:vote/utils/types/contract_types.dart';
 import '../../../services/global.dart';
 
@@ -31,66 +33,40 @@ class _SplashScreenState extends State<SplashScreen> {
   Future<void> setup() async {
     String goto = "";
     try {
-      await Future.delayed(const Duration(seconds: 1));
-      await Preferences.init();
-      setStatus("Loading Account");
-      VoteChainWallet.init(null);
-      ContractAddress.voterContractAddress =
-          "0xE4B293636F4b10c9cBD8E798B80A75bba71a90cE";
-      ContractAddress.votechainContractAddress =
-          "0x3B2d33aC0B76462c8Eb58548ed7db68BC826F15E";
-      ContractAddress.candidateContractAddress =
-          "0xc080828C1A20E7cb0D20AD5191314e64286989E5";
-      ContractAddress.permissionsContractAddress =
-          "0x4d040B247949a76cB8134203Da822Da50C674557";
-
-      Preferences.setConractAddress();
-      VoteChainWalletStatus status = await VoteChainWallet.inited!;
-
-      print(hex.encode(VoteChainWallet.credentials!.privateKey));
-      showDialog(
-          context: context,
-          builder: (context) => MsgDialog(
-                text: status.description,
-                icon: Icons.lock,
-              ));
-      if (status == VoteChainWalletStatus.createdNew) {
-        goto = "getstarted";
-      } else if (status == VoteChainWalletStatus.loadedSaved) {
-        goto = "profile";
-      } else {
+      setStatus("Loading Client");
+      ClientStatus status = await initializeClient();
+      if (status == ClientStatus.failed) {
+        setStatus(status.message);
         showDialog(
             context: context,
-            builder: (context) => MsgDialog(
-                  text: status.description,
-                  icon: Icons.lock,
-                ));
+            builder: (context) {
+              return TextPopup(message: status.message);
+            });
         return;
       }
-
-      //   setStatus("Connecting to blockchain");
-      //   Global.linker = ContractLinker();
-      //   Global.linker.init();
-      //   Global.linker.loadContracts();
-      //   await Global.linker.contract_loaded;
-      //   if (!await Global.linker.checkAlive()) {
-      //     showDialog(
-      //         context: context,
-      //         builder: (context) => const MsgDialog(
-      //               text: "The Server is not alive now",
-      //               icon: Icons.wifi_tethering_error,
-      //             ));
-      //     return;
-      //   }
-      //   if (await Global.linker.loadWallet("123456aA")) {
-      //     goto = "home";
-      //   } else {
-      //     await Global.linker.createAccount();
-      //     goto = "getstarted";
-      //   }
-      //   setStatus("Getting Started");
-      //   await Future.delayed(const Duration(milliseconds: 50));
-      Navigator.pushReplacementNamed(context, goto);
+      setStatus("Loading Contracts");
+      ContractInitializationStatus sts = await initializeContracts();
+      if (sts == ContractInitializationStatus.failed) {
+        setStatus(sts.message);
+        showDialog(
+            context: context,
+            builder: (context) {
+              return TextPopup(message: sts.message);
+            });
+        return;
+      }
+      VoteChainWalletStatus sts2 = await initializeAccount();
+      if (sts2 == VoteChainWalletStatus.errorOccured ||
+          sts2 == VoteChainWalletStatus.wrongPassword) {
+        setStatus(sts2.description);
+        showDialog(
+            context: context,
+            builder: (context) {
+              return TextPopup(message: sts2.description);
+            });
+      }
+      await Future.delayed(const Duration(seconds: 1));
+      // Navigator.pushReplacementNamed(context, goto);
     } catch (err) {
       Global.logger.e("An error occured when setting up app : $err");
     }

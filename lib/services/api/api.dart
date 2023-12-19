@@ -1,9 +1,21 @@
 // Class for intracting with the API Server
 
+import 'dart:io';
+
 import 'package:http/http.dart';
 import 'package:vote/services/global.dart';
 import '../preferences.dart';
 import 'dart:convert';
+
+class APIClass {
+  String host = "http://votechain-backend.vercel.app";
+  Future<Map<String, dynamic>?> getCall(String route) async {
+    Response response = await get(Uri.parse(host + route));
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body)['data'][0];
+    }
+  }
+}
 
 class API {
   static String apiMessage =
