@@ -30,28 +30,7 @@ class _SplashScreenState extends State<SplashScreen> {
   Future<void> setup() async {
     String goto = "";
     try {
-      setStatus("Loading Client");
-      ClientStatus status = await initializeClient();
-      if (status == ClientStatus.failed) {
-        setStatus(status.message);
-        showDialog(
-            context: context,
-            builder: (context) {
-              return TextPopup(message: status.message);
-            });
-        return;
-      }
-      setStatus("Loading Contracts");
-      ContractInitializationStatus sts = await initializeContracts();
-      if (sts == ContractInitializationStatus.failed) {
-        setStatus(sts.message);
-        showDialog(
-            context: context,
-            builder: (context) {
-              return TextPopup(message: sts.message);
-            });
-        return;
-      }
+      setStatus("Loading Account");
       if (await VoteChainWallet.hasSavedWallet()) {
         Navigator.of(context).pushReplacement(MaterialPageRoute(
             builder: (context) => PasswordPage(
@@ -81,6 +60,42 @@ class _SplashScreenState extends State<SplashScreen> {
       } else {
         await VoteChainWallet.createAccount();
         goto = "getstarted";
+      }
+      setStatus("Loading Client");
+      ClientStatus status = await initializeClient();
+      if (status == ClientStatus.failed) {
+        setStatus(status.message);
+        showDialog(
+            context: context,
+            builder: (context) {
+              return TextPopup(message: status.message, bottomButtons: [
+                TextButton(
+                    onPressed: () async {
+                      Navigator.of(context).pop();
+                      await setup();
+                    },
+                    child: const Text("Retry!"))
+              ]);
+            });
+        return;
+      }
+      setStatus("Loading Contracts");
+      ContractInitializationStatus sts = await initializeContracts();
+      if (sts == ContractInitializationStatus.failed) {
+        setStatus(sts.message);
+        showDialog(
+            context: context,
+            builder: (context) {
+              return TextPopup(message: sts.message, bottomButtons: [
+                TextButton(
+                    onPressed: () async {
+                      Navigator.of(context).pop();
+                      await setup();
+                    },
+                    child: const Text("Retry!"))
+              ]);
+            });
+        return;
       }
       await Future.delayed(const Duration(seconds: 1));
       Navigator.pushReplacementNamed(context, goto);

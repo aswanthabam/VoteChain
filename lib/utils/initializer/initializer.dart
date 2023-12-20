@@ -34,6 +34,9 @@ Future<ClientStatus> initializeClient() async {
     await Preferences.init();
     BlockchainClient.init();
     if (await BlockchainClient.inited) {
+      if (!await BlockchainClient.checkAlive()) {
+        return ClientStatus.failed;
+      }
       return ClientStatus.success;
     }
   } catch (err) {

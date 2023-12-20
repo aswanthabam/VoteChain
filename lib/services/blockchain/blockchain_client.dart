@@ -3,7 +3,9 @@ import 'package:vote/Candidate.g.dart';
 import 'package:vote/Permissions.g.dart';
 import 'package:vote/VoteChain.g.dart';
 import 'package:vote/Voter.g.dart';
+import 'package:vote/services/blockchain/wallet.dart';
 import 'package:vote/services/global.dart';
+import 'package:vote/services/preferences.dart';
 import 'package:vote/utils/types/contract_types.dart';
 import 'package:web3dart/web3dart.dart';
 import 'package:web_socket_channel/io.dart';
@@ -25,7 +27,8 @@ class BlockchainClient {
     try {
       client = Web3Client('http://192.168.18.17:7545', httpClient,
           socketConnector: () {
-        return IOWebSocketChannel.connect('ws://192.168.18.17:7545')
+        return IOWebSocketChannel.connect('ws://192.168.18.17:7545',
+                connectTimeout: const Duration(seconds: 5))
             .cast<String>();
       });
       Global.logger.i("Successfully Initialized Web3 Client");
@@ -51,9 +54,6 @@ class BlockchainClient {
   static Future<bool> loadContracts2() async {
     if (!await BlockchainClient.inited) return false;
     try {
-      // String abiString =
-      //     await rootBundle.loadString("src/artifacts/Election.json");
-      // var jsonAbi = jsonDecode(abiString);
       Contracts.voter = Voter(
           address: ContractAddress.voterAddress,
           client: BlockchainClient.client,
@@ -71,12 +71,39 @@ class BlockchainClient {
           address: ContractAddress.votechainAddress,
           client: BlockchainClient.client,
           chainId: 1337);
+      Global.logger.i(
+          "Your current balance is : ${await BlockchainClient.getBalance()}");
       Global.logger.i("Loaded Contracts");
       return true;
     } catch (err) {
       Global.logger.e(
         "An error occured while trying to load the contract : $err",
       );
+      return false;
+    }
+  }
+
+  static Future<double> getBalance() async {
+    await BlockchainClient.inited;
+    try {
+      double bal =
+          (await BlockchainClient.client.getBalance(VoteChainWallet.address!))
+              .getValueInUnit(EtherUnit.ether);
+      return bal;
+    } catch (err) {
+      Global.logger.e("An error occured while checking balance : $err");
+      return 0;
+    }
+  }
+
+  static Future<bool> checkAlive() async {
+    if (!await BlockchainClient.inited) return false;
+    try {
+      await BlockchainClient.client.getChainId();
+      return true;
+    } catch (err) {
+      Global.logger.w(
+          "Server Not Alive :\n\tAddress : ${Preferences.rpcUrl} Error checking alive status : ${err.toString()}");
       return false;
     }
   }

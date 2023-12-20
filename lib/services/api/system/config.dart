@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:vote/services/api/api.dart';
 import 'package:vote/services/global.dart';
 import 'package:vote/utils/types/api_types.dart';
@@ -19,7 +17,6 @@ class SystemConfigCall extends APIClass {
       if (val == null) {
         return SystemConfigCallStatus.failed;
       }
-      print(val);
       SystemConfig.fromJson(val);
       return SystemConfigCallStatus.success;
     } catch (err) {
