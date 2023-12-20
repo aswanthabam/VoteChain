@@ -12,6 +12,7 @@ class APIClass {
     if (response.statusCode == 200) {
       return jsonDecode(response.body)['data'][0];
     }
+    return null;
   }
 }
 

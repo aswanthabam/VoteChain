@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vote/screens/pages/home/home.dart';
 import 'package:vote/screens/pages/admin/admin.dart';
+import 'package:vote/screens/pages/qrcode/qr_scanner.dart';
 import 'package:vote/screens/pages/splashscreen/splashscreen.dart';
 import 'package:vote/screens/pages/testscreen/test.dart';
 import 'screens/pages/getstarted/getstarted.dart';
