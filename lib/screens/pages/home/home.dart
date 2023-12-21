@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vote/screens/widgets/appbars/appbar.dart';
 import 'package:vote/services/global.dart';
-import '../../../Election.g.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -14,7 +13,7 @@ class _HomeState extends State<Home> {
   String address = "";
   String balance = "";
   bool isVerified = false;
-  List<Elections> elections = [];
+  // List<Elections> elections = [];
   @override
   void initState() {
     super.initState();
@@ -90,7 +89,7 @@ class _HomeState extends State<Home> {
                         address: address,
                       ),
                       const SizedBox(height: 20),
-                      ElectionsSelector(elections: elections),
+                      // ElectionsSelector(elections: []),
                       const SizedBox(
                         height: 10,
                       ),
@@ -194,57 +193,57 @@ class IdentityCard extends StatelessWidget {
   }
 }
 
-class ElectionsSelector extends StatefulWidget {
-  const ElectionsSelector({super.key, required this.elections});
-  final List<Elections> elections;
-  @override
-  State<ElectionsSelector> createState() => _ElectionsSelectorState();
-}
+// class ElectionsSelector extends StatefulWidget {
+//   // const ElectionsSelector({super.key, required this.elections});
+//   // final List<Elections> elections;
+//   @override
+//   State<ElectionsSelector> createState() => _ElectionsSelectorState();
+// }
 
-class _ElectionsSelectorState extends State<ElectionsSelector> {
-  // List<Elections> elections = [];
-  int selected = -1;
-  @override
-  Widget build(BuildContext context) {
-    return Column(children: [
-      const Text(
-        "Send Request to participate in elections",
-        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-      ),
-      SizedBox(
-          child: DropdownButton(
-              hint: Text(selected == -1
-                  ? "Select Election"
-                  : widget.elections[selected - 1].name),
-              items: () {
-                List<DropdownMenuItem> items = [
-                  // DropdownMenuItem(
-                  //   child: Text("Select Item"),
-                  //   value: 0,
-                  // )
-                ];
-                items.addAll(widget.elections.map((e) => DropdownMenuItem(
-                      value: e.id.toInt(),
-                      child: Text(e.name),
-                    )));
-                return items;
-              }(),
-              onChanged: (value) {
-                if (selected != value) {
-                  setState(() {
-                    selected = value;
-                  });
-                }
-              })),
-      TextButton(
-          onPressed: () {
-            if (selected != -1) {
-              // Global.linker.requestToParticipate(3, selected);
-            }
-          },
-          child: Text((selected == -1)
-              ? "Choose election"
-              : "Request to participate in ${widget.elections[selected - 1].name}"))
-    ]);
-  }
-}
+// class _ElectionsSelectorState extends State<ElectionsSelector> {
+//   // List<Elections> elections = [];
+//   int selected = -1;
+//   @override
+//   Widget build(BuildContext context) {
+//     return Column(children: [
+//       const Text(
+//         "Send Request to participate in elections",
+//         style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+//       ),
+//       SizedBox(
+//           child: DropdownButton(
+//               hint: Text(selected == -1
+//                   ? "Select Election"
+//                   : widget.elections[selected - 1].name),
+//               items: () {
+//                 List<DropdownMenuItem> items = [
+//                   // DropdownMenuItem(
+//                   //   child: Text("Select Item"),
+//                   //   value: 0,
+//                   // )
+//                 ];
+//                 items.addAll(widget.elections.map((e) => DropdownMenuItem(
+//                       value: e.id.toInt(),
+//                       child: Text(e.name),
+//                     )));
+//                 return items;
+//               }(),
+//               onChanged: (value) {
+//                 if (selected != value) {
+//                   setState(() {
+//                     selected = value;
+//                   });
+//                 }
+//               })),
+//       TextButton(
+//           onPressed: () {
+//             if (selected != -1) {
+//               // Global.linker.requestToParticipate(3, selected);
+//             }
+//           },
+//           child: Text((selected == -1)
+//               ? "Choose election"
+//               : "Request to participate in ${widget.elections[selected - 1].name}"))
+//     ]);
+//   }
+// }

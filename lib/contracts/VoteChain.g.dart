@@ -287,7 +287,7 @@ class VoteChain extends _i1.GeneratedContract {
     );
     return client.events(filter).map((_i1.FilterEvent result) {
       final decoded = event.decodeResults(
-        result.topics!.cast(),
+        result.topics!.cast().cast(),
         result.data!,
       );
       return ElectionCreated(

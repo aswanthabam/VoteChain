@@ -1,8 +1,8 @@
 import 'package:http/http.dart';
-import 'package:vote/Candidate.g.dart';
-import 'package:vote/Permissions.g.dart';
-import 'package:vote/VoteChain.g.dart';
-import 'package:vote/Voter.g.dart';
+import 'package:vote/contracts/Candidate.g.dart';
+import 'package:vote/contracts/Permissions.g.dart';
+import 'package:vote/contracts/VoteChain.g.dart';
+import 'package:vote/contracts/Voter.g.dart';
 import 'package:vote/services/blockchain/wallet.dart';
 import 'package:vote/services/global.dart';
 import 'package:vote/services/preferences.dart';
