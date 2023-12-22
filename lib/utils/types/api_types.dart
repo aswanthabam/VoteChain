@@ -3,6 +3,8 @@ class SystemConfig {
   static late String voterAddress;
   static late String permissionsAddress;
   static late String candidateAddress;
+  static late String voterReaderAddress;
+  static late String linkerAddress;
   static late String rpcUrl;
   static late String wsUrl;
 
@@ -13,5 +15,7 @@ class SystemConfig {
     SystemConfig.candidateAddress = data['candidateAddress'];
     SystemConfig.rpcUrl = data['rpcUrl'];
     SystemConfig.wsUrl = data['wsUrl'];
+    SystemConfig.voterReaderAddress = data['voterReaderAddress'];
+    SystemConfig.linkerAddress = data['linkerAddress'];
   }
 }

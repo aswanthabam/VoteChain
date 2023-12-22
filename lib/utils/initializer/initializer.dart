@@ -69,6 +69,9 @@ Future<ContractInitializationStatus> initializeContracts() async {
     ContractAddress.candidateContractAddress = SystemConfig.candidateAddress;
     ContractAddress.permissionsContractAddress =
         SystemConfig.permissionsAddress;
+    ContractAddress.voterReaderContractAddress =
+        SystemConfig.voterReaderAddress;
+    ContractAddress.linkerContractAddress = SystemConfig.linkerAddress;
     Preferences.setRpcUrl(SystemConfig.rpcUrl);
     Preferences.setWsUrl(SystemConfig.wsUrl);
     Preferences.setConractAddress();

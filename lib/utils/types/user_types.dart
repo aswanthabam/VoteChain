@@ -80,7 +80,7 @@ class ContactInfo extends JsonType {
 class VoterInfo extends JsonType {
   PersonalInfo personalInfo;
   ContactInfo contactInfo;
-  AddressInfo permeantAddress;
+  AddressInfo permanentAddress;
   AddressInfo currentAddress;
   bool married;
   bool orphan;
@@ -88,7 +88,7 @@ class VoterInfo extends JsonType {
   VoterInfo({
     required this.personalInfo,
     required this.contactInfo,
-    required this.permeantAddress,
+    required this.permanentAddress,
     required this.currentAddress,
     required this.married,
     required this.orphan,
@@ -99,7 +99,7 @@ class VoterInfo extends JsonType {
     return {
       "personal_info": personalInfo.toJson(),
       "contact_info": contactInfo.toJson(),
-      "permeant_address": permeantAddress.toJson(),
+      "permeant_address": permanentAddress.toJson(),
       "current_address": currentAddress.toJson(),
       "married": married,
       "orphan": orphan,

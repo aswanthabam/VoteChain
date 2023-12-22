@@ -17,6 +17,7 @@ class SystemConfigCall extends APIClass {
       if (val == null) {
         return SystemConfigCallStatus.failed;
       }
+      print(val);
       SystemConfig.fromJson(val);
       return SystemConfigCallStatus.success;
     } catch (err) {

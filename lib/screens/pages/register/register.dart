@@ -10,6 +10,9 @@ import 'package:vote/screens/widgets/buttons/async_button.dart';
 import 'package:vote/screens/widgets/dialog/TextPopup/TextPopup.dart';
 import 'package:vote/screens/widgets/paginated_views/paginated_views.dart'
     as pagging;
+import 'package:vote/services/blockchain/blockchain_client.dart';
+import 'package:vote/services/blockchain/voter_helper.dart';
+import 'package:vote/utils/initializer/initializer.dart';
 import 'package:vote/utils/types/user_types.dart';
 
 class Register extends StatefulWidget {
@@ -28,8 +31,8 @@ class _RegisterState extends State<Register> {
     RegisterInfoPage(),
     RegisterPersonalInfoOnePage(),
     RegisterPersonalInfoTwoPage(),
-    RegisterPersonalInfoThreePage(),
-    RegisterElectionDetailsOnePage(),
+    // RegisterPersonalInfoThreePage(),
+    // RegisterElectionDetailsOnePage(),
   ]);
 
   PersonalInfo? personalInfo;
@@ -37,7 +40,30 @@ class _RegisterState extends State<Register> {
   AddressInfo? permenentAddressInfo;
   AddressInfo? currentAddressInfo;
 
-  void submitRegister() async {}
+  void submitRegister() async {
+    await initializeContracts();
+    VoterHelper helper = VoterHelper();
+    await helper.fundAccount();
+    var sts = await helper.registerVoter(VoterInfo(
+        personalInfo: personalInfo!,
+        contactInfo: contactInfo!,
+        permanentAddress: permenentAddressInfo!,
+        currentAddress: currentAddressInfo!,
+        married: false,
+        orphan: false));
+    showDialog(
+        context: context,
+        builder: (context) => TextPopup(
+              message: sts.message,
+              bottomButtons: [
+                TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text("Continue"))
+              ],
+            ));
+  }
 
   @override
   void initState() {

@@ -160,6 +160,8 @@ class _RegisterPersonalInfoTwoWidgetState
       InputFieldHandler(label: "Select Locality *");
   InputFieldHandler permenentWard = InputFieldHandler(label: "Select Ward *");
 
+  bool sameAsPermenent = false;
+
   @override
   void initState() {
     super.initState();
@@ -200,7 +202,7 @@ class _RegisterPersonalInfoTwoWidgetState
                 mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text("permenent Details",
+                  const Text("Address Details",
                       textAlign: TextAlign.start,
                       style: TextStyle(
                         fontSize: 25,
@@ -246,25 +248,65 @@ class _RegisterPersonalInfoTwoWidgetState
                         const SizedBox(height: 20),
                         permenentPincode.widget,
                         const SizedBox(height: 20),
-                        const UnderlinedText(
-                          heading: "permenent Address",
-                          fontSize: 13,
-                          color: Color.fromARGB(255, 38, 38, 38),
-                          underlineColor: Color.fromARGB(255, 128, 129, 128),
-                          underlineWidth: 50,
-                          underlineHeight: 3,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Checkbox(
+                                value: sameAsPermenent,
+                                onChanged: (bool? val) {
+                                  if (val == null || !val) {
+                                    setState(() {
+                                      sameAsPermenent = false;
+                                    });
+                                    return;
+                                  }
+                                  setState(() {
+                                    sameAsPermenent = true;
+                                    state.text = permenentState.text;
+                                    district.text = permenentDistrict.text;
+                                    locality.text = permenentLocality.text;
+                                    ward.text = permenentWard.text;
+                                    houseName.text = permenentHouseName.text;
+                                    houseNo.text = permenentHouseNo.text;
+                                    street.text = permenentStreet.text;
+                                    pincode.text = permenentPincode.text;
+                                  });
+                                }),
+                            const Text("Same as permenent address")
+                          ],
                         ),
-                        const Text("Enter your permenent Address. "),
-                        address.widget,
                         const SizedBox(height: 20),
-                        houseName.widget,
-                        const SizedBox(height: 20),
-                        houseNo.widget,
-                        const SizedBox(height: 20),
-                        street.widget,
-                        const SizedBox(height: 20),
-                        pincode.widget,
-                        const SizedBox(height: 20),
+                        sameAsPermenent
+                            ? const SizedBox(
+                                height: 20,
+                              )
+                            : Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const UnderlinedText(
+                                    heading: "Residential Address",
+                                    fontSize: 13,
+                                    color: Color.fromARGB(255, 38, 38, 38),
+                                    underlineColor:
+                                        Color.fromARGB(255, 128, 129, 128),
+                                    underlineWidth: 50,
+                                    underlineHeight: 3,
+                                  ),
+                                  const Text(
+                                      "Enter your residential Address. "),
+                                  address.widget,
+                                  const SizedBox(height: 20),
+                                  houseName.widget,
+                                  const SizedBox(height: 20),
+                                  houseNo.widget,
+                                  const SizedBox(height: 20),
+                                  street.widget,
+                                  const SizedBox(height: 20),
+                                  pincode.widget,
+                                  const SizedBox(height: 20),
+                                ],
+                              )
                       ],
                     ),
                   )

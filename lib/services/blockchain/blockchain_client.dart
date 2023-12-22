@@ -1,8 +1,10 @@
 import 'package:http/http.dart';
 import 'package:vote/contracts/Candidate.g.dart';
+import 'package:vote/contracts/Linker.g.dart';
 import 'package:vote/contracts/Permissions.g.dart';
 import 'package:vote/contracts/VoteChain.g.dart';
 import 'package:vote/contracts/Voter.g.dart';
+import 'package:vote/contracts/VoterReader.g.dart';
 import 'package:vote/services/blockchain/wallet.dart';
 import 'package:vote/services/global.dart';
 import 'package:vote/services/preferences.dart';
@@ -71,6 +73,10 @@ class BlockchainClient {
           address: ContractAddress.votechainAddress,
           client: BlockchainClient.client,
           chainId: 1337);
+      Contracts.linker =
+          Linker(address: ContractAddress.linkerAddress, client: client);
+      Contracts.voterReader = VoterReader(
+          address: ContractAddress.voterReaderAddress, client: client);
       Global.logger.i(
           "Your current balance is : ${await BlockchainClient.getBalance()}");
       Global.logger.i("Loaded Contracts");
@@ -114,4 +120,6 @@ class Contracts {
   static Candidate? candidate;
   static Permissions? permissions;
   static VoteChain? votechain;
+  static VoterReader? voterReader;
+  static Linker? linker;
 }
