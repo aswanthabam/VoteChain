@@ -39,7 +39,6 @@ class _RegisterState extends State<Register> {
   AddressInfo? currentAddressInfo;
 
   void submitRegister() async {
-    await initializeContracts();
     VoterHelper helper = VoterHelper();
     var res = await EthersCall().requestEthers();
     if (res != FundAccountCallStatus.success) {

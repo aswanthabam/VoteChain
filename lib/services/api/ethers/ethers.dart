@@ -19,7 +19,6 @@ class EthersCall extends APIClass {
           '/api/web3/ethers/fund/',
           {'to_address': VoteChainWallet.address!.hex},
           SystemConfig.localServer);
-      print(val);
       if (val == null) {
         return FundAccountCallStatus.failed;
       }
