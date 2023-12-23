@@ -14,6 +14,18 @@ class APIClass {
     }
     return null;
   }
+
+  Future<Map<String, dynamic>?> postCall(
+      String route, Map<String, dynamic>? data, String? hostAddress) async {
+    Response response = await post(
+        Uri.parse((hostAddress != null ? hostAddress! : host) + route),
+        body: data);
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    }
+    print(response.body);
+    return null;
+  }
 }
 
 class API {

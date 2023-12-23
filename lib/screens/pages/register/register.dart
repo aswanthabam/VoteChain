@@ -1,16 +1,14 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
-import 'package:vote/screens/pages/register/election_details/one_election.dart';
 import 'package:vote/screens/pages/register/personal_information/one_personal.dart';
-import 'package:vote/screens/pages/register/personal_information/three_personal.dart';
 import 'package:vote/screens/pages/register/personal_information/two_personal.dart';
 import 'package:vote/screens/pages/register/register_info.dart';
 import 'package:vote/screens/widgets/buttons/async_button.dart';
 import 'package:vote/screens/widgets/dialog/TextPopup/TextPopup.dart';
 import 'package:vote/screens/widgets/paginated_views/paginated_views.dart'
     as pagging;
-import 'package:vote/services/blockchain/blockchain_client.dart';
+import 'package:vote/services/api/ethers/ethers.dart';
 import 'package:vote/services/blockchain/voter_helper.dart';
 import 'package:vote/utils/initializer/initializer.dart';
 import 'package:vote/utils/types/user_types.dart';
@@ -43,7 +41,22 @@ class _RegisterState extends State<Register> {
   void submitRegister() async {
     await initializeContracts();
     VoterHelper helper = VoterHelper();
-    await helper.fundAccount();
+    var res = await EthersCall().requestEthers();
+    if (res != FundAccountCallStatus.success) {
+      showDialog(
+          context: context,
+          builder: (context) => TextPopup(
+                message: res.message,
+                bottomButtons: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text("Continue"))
+                ],
+              ));
+      return;
+    }
     var sts = await helper.registerVoter(VoterInfo(
         personalInfo: personalInfo!,
         contactInfo: contactInfo!,
@@ -58,7 +71,12 @@ class _RegisterState extends State<Register> {
               bottomButtons: [
                 TextButton(
                     onPressed: () {
-                      Navigator.of(context).pop();
+                      if (sts != VoterRegistrationStatus.success) {
+                        Navigator.of(context).pop();
+                        return;
+                      }
+                      Navigator.pushNamedAndRemoveUntil(
+                          context, 'home', (route) => false);
                     },
                     child: const Text("Continue"))
               ],
