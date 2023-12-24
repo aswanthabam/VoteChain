@@ -14,11 +14,22 @@ enum VoterRegistrationStatus {
   const VoterRegistrationStatus(this.message);
 }
 
+enum VoterStatus {
+  registered("Voter is registered, and waiting for approval."),
+  verified("Voter is verified and can vote.");
+
+  final String message;
+  const VoterStatus(this.message);
+}
+
 class VoterHelper {
   late Web3Client client;
   late Voter voterContract;
   late VoterReader voterReaderContract;
   late Credentials credentials;
+  static VoterInfo? voterInfo;
+  static VoterStatus? voterRegistrationStatus;
+
   VoterHelper() {
     voterContract = Contracts.voter!;
     voterReaderContract = Contracts.voterReader!;
@@ -27,19 +38,15 @@ class VoterHelper {
   Future<bool> fundAccount() async {
     double bal = await BlockchainClient.getBalance();
     try {
-      print(credentials.address);
       var fumc = voterReaderContract.self.function('fundAccount');
       // ;
-      print(await BlockchainClient.client.sendRawTransaction(
+      await BlockchainClient.client.sendRawTransaction(
           await BlockchainClient.client.signTransaction(
               credentials,
               Transaction.callContract(
                   contract: voterReaderContract.self,
                   function: fumc,
-                  parameters: []))));
-      // print(await voterReaderContract.fundAccount(
-      //   credentials: credentials,
-      // ));
+                  parameters: [])));
       Global.logger.i("Account funded with balance = $bal");
       return true;
     } catch (err) {
@@ -49,9 +56,52 @@ class VoterHelper {
     }
   }
 
+  Future<VoterInfo?> fetchInfo() async {
+    try {
+      var func = voterReaderContract.self.function('getVoterInfo');
+      var info = await BlockchainClient.client.call(
+          contract: voterReaderContract.self,
+          function: func,
+          sender: VoteChainWallet.address!,
+          params: []);
+      if (info.isEmpty) {
+        return null;
+      }
+      VoterHelper.voterInfo = VoterInfo.fromList(info[0]);
+
+      return VoterHelper.voterInfo;
+    } catch (err) {
+      Global.logger.e("An error occured while fetching voter info : $err");
+      return null;
+    }
+  }
+
+  Future<VoterStatus?> fetchRegistrationStatus() async {
+    try {
+      var func = voterReaderContract.self.function('getRegistrationStatus');
+      var info = await BlockchainClient.client.call(
+          contract: voterReaderContract.self,
+          function: func,
+          sender: VoteChainWallet.address!,
+          params: []);
+      if (info.isEmpty) {
+        return null;
+      }
+      print(info[0] == BigInt.zero);
+      VoterHelper.voterRegistrationStatus = info[0] == BigInt.zero
+          ? VoterStatus.registered
+          : VoterStatus.verified;
+      return VoterHelper.voterRegistrationStatus;
+    } catch (err) {
+      Global.logger.e("An error occured while fetching voter info : $err");
+      return null;
+    }
+  }
+
   Future<VoterRegistrationStatus> registerVoter(VoterInfo voterInfo) async {
     try {
       await voterContract.registerVoter([
+        voterInfo.aadharNumber,
         [...voterInfo.personalInfo.toJson().values],
         [...voterInfo.contactInfo.toJson().values],
         [...voterInfo.currentAddress.toJson().values],

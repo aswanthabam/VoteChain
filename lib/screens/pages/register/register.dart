@@ -5,6 +5,7 @@ import 'package:vote/screens/pages/register/final/password_adder.dart';
 import 'package:vote/screens/pages/register/final/pin_add.dart';
 import 'package:vote/screens/pages/register/personal_information/one_personal.dart';
 import 'package:vote/screens/pages/register/personal_information/two_personal.dart';
+import 'package:vote/screens/pages/register/personal_information/uid.dart';
 import 'package:vote/screens/pages/register/register_info.dart';
 import 'package:vote/screens/widgets/buttons/async_button.dart';
 import 'package:vote/screens/widgets/dialog/TextPopup/TextPopup.dart';
@@ -30,6 +31,7 @@ class _RegisterState extends State<Register> {
   String pin = "";
   pagging.Pagination pagination = pagging.Pagination(pages: <FormPage>[
     RegisterInfoPage(),
+    RegisterUIDPage(),
     RegisterPersonalInfoOnePage(),
     RegisterPersonalInfoTwoPage(),
     // RegisterPersonalInfoThreePage(),
@@ -42,6 +44,7 @@ class _RegisterState extends State<Register> {
   ContactInfo? contactInfo;
   AddressInfo? permenentAddressInfo;
   AddressInfo? currentAddressInfo;
+  String? aadhar;
 
   void submitRegister() async {
     VoterHelper helper = VoterHelper();
@@ -62,6 +65,7 @@ class _RegisterState extends State<Register> {
       return;
     }
     var sts = await helper.registerVoter(VoterInfo(
+        aadharNumber: aadhar!,
         personalInfo: personalInfo!,
         contactInfo: contactInfo!,
         permanentAddress: permenentAddressInfo!,
@@ -70,6 +74,7 @@ class _RegisterState extends State<Register> {
         orphan: false));
     if (sts == VoterRegistrationStatus.success) {
       VoteChainWallet.saveWallet(pin);
+      print(await helper.fetchInfo());
     }
     print(sts);
     showDialog(
@@ -141,6 +146,8 @@ class _RegisterState extends State<Register> {
                     children: [
                       Expanded(child: pagination.widget),
                       getPrimaryAsyncButton(context, () async {
+                        VoterHelper helper = VoterHelper();
+                        await helper.fetchInfo();
                         FormPage page = pagination
                             .pages[pagination.currentIndex]! as FormPage;
                         FormPageStatus sts = page.validate();
@@ -149,6 +156,9 @@ class _RegisterState extends State<Register> {
                             case 0:
                               break;
                             case 2:
+                              aadhar = page.validatedData as String;
+                              break;
+                            case 3:
                               personalInfo = (page.validatedData
                                       as RegisterPersonalInfoPageData)
                                   .personalInfo;
@@ -156,7 +166,7 @@ class _RegisterState extends State<Register> {
                                       as RegisterPersonalInfoPageData)
                                   .contactInfo;
                               break;
-                            case 3:
+                            case 4:
                               permenentAddressInfo =
                                   (page.validatedData as RegisterPageTwoData)
                                       .permenentAddressInfo;
@@ -164,10 +174,10 @@ class _RegisterState extends State<Register> {
                                   (page.validatedData as RegisterPageTwoData)
                                       .currentAddressInfo;
                               break;
-                            case 4:
+                            case 5:
                               password = page.validatedData as String;
                               break;
-                            case 5:
+                            case 6:
                               pin = page.validatedData as String;
                               break;
                             default:

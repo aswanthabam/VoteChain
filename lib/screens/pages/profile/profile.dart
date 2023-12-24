@@ -3,6 +3,7 @@ import 'package:vote/screens/widgets/appbars/backbar.dart';
 import 'package:vote/screens/widgets/buttons/fullsize_action_button/full_size_action_button.dart';
 import 'package:vote/screens/widgets/content_views/card/card.dart';
 import 'package:vote/screens/widgets/dialog/TextPopup/TextPopup.dart';
+import 'package:vote/services/blockchain/wallet.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -37,7 +38,8 @@ class _ProfileState extends State<Profile> {
                                 "Are You sure you want to logout? You want to login with your credentials again to relogin.",
                             bottomButtons: [
                               TextButton(
-                                  onPressed: () {
+                                  onPressed: () async {
+                                    await VoteChainWallet.logOut();
                                     Navigator.pushReplacementNamed(
                                         context, 'getstarted');
                                   },

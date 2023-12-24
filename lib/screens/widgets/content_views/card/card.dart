@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vote/services/blockchain/voter_helper.dart';
 
 class CardWidget extends StatelessWidget {
   @override
@@ -43,12 +44,14 @@ class CardWidget extends StatelessWidget {
                 ),
               ),
 
-              const Positioned(
+              Positioned(
                 bottom: 20,
                 right: 20,
                 child: Text(
-                  'Aswanth V C',
-                  style: TextStyle(
+                  VoterHelper.voterInfo == null
+                      ? "Unknown User"
+                      : "${VoterHelper.voterInfo!.personalInfo.firstName}${VoterHelper.voterInfo!.personalInfo.middleName} ${VoterHelper.voterInfo!.personalInfo.lastName}",
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 15,
                     fontWeight: FontWeight.bold,
@@ -56,10 +59,14 @@ class CardWidget extends StatelessWidget {
                 ),
               ),
 
-              const Positioned(
+              Positioned(
                   child: Text(
-                "1923-1231-1231",
-                style: TextStyle(
+                VoterHelper.voterInfo == null &&
+                        VoterHelper.voterInfo!.aadharNumber.isEmpty &&
+                        VoterHelper.voterInfo!.aadharNumber.length != 12
+                    ? "Unknown UID"
+                    : "${VoterHelper.voterInfo!.aadharNumber.substring(0, 4)}-${VoterHelper.voterInfo!.aadharNumber.substring(4, 8)}-${VoterHelper.voterInfo!.aadharNumber.substring(8, 12)}",
+                style: const TextStyle(
                     fontSize: 25,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
