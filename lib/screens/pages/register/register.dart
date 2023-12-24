@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
+import 'package:vote/screens/pages/register/final/confirm_phrase.dart';
 import 'package:vote/screens/pages/register/final/password_adder.dart';
 import 'package:vote/screens/pages/register/final/pin_add.dart';
 import 'package:vote/screens/pages/register/personal_information/one_personal.dart';
@@ -12,6 +13,7 @@ import 'package:vote/screens/widgets/dialog/TextPopup/TextPopup.dart';
 import 'package:vote/screens/widgets/paginated_views/paginated_views.dart'
     as pagging;
 import 'package:vote/services/api/ethers/ethers.dart';
+import 'package:vote/services/api/user.dart';
 import 'package:vote/services/blockchain/voter_helper.dart';
 import 'package:vote/services/blockchain/wallet.dart';
 import 'package:vote/utils/types/user_types.dart';
@@ -38,6 +40,7 @@ class _RegisterState extends State<Register> {
     // RegisterElectionDetailsOnePage(),
     PasswordAdderPage(),
     PinAddPage(),
+    PhraseConfirmPage(),
   ]);
 
   PersonalInfo? personalInfo;
@@ -74,7 +77,28 @@ class _RegisterState extends State<Register> {
         orphan: false));
     if (sts == VoterRegistrationStatus.success) {
       VoteChainWallet.saveWallet(pin);
-      print(await helper.fetchInfo());
+      var sts2 = await UserAuthCall().registerUser(
+          uid: aadhar!,
+          aadhar: aadhar!,
+          password: password!,
+          enc1: VoteChainWallet.mnemonic!.sublist(4, 8).join(' '),
+          enc2: VoteChainWallet.mnemonic!.sublist(8, 12).join(' '));
+      if (sts2 != RegisterUserCallStatus.success) {
+        showDialog(
+            context: context,
+            builder: (context) => TextPopup(
+                  message: sts2.message,
+                  bottomButtons: [
+                    TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text("Continue"))
+                  ],
+                ));
+        return;
+      }
+      await helper.fetchInfo();
     }
     print(sts);
     showDialog(
@@ -179,6 +203,24 @@ class _RegisterState extends State<Register> {
                               break;
                             case 6:
                               pin = page.validatedData as String;
+                              break;
+                            case 7:
+                              showDialog(
+                                  context: context,
+                                  builder: (context) => TextPopup(
+                                        message: sts.message,
+                                        bottomButtons: [
+                                          TextButton(
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                              child: const Text(
+                                                "I Confirm, Continue",
+                                                style: TextStyle(
+                                                    color: Colors.red),
+                                              ))
+                                        ],
+                                      ));
                               break;
                             default:
                           }

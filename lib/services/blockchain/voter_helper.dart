@@ -56,6 +56,16 @@ class VoterHelper {
     }
   }
 
+  Future<BigInt?> getVoterID() async {
+    try {
+      var val = await voterContract.voter_id_linker(VoteChainWallet.address!);
+      return val;
+    } catch (err) {
+      Global.logger.e("An error occured while fetching voter id : $err");
+      return null;
+    }
+  }
+
   Future<VoterInfo?> fetchInfo() async {
     try {
       var func = voterReaderContract.self.function('getVoterInfo');

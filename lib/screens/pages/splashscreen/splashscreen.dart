@@ -99,9 +99,7 @@ class _SplashScreenState extends State<SplashScreen> {
         await VoteChainWallet.createAccount();
         goto = "getstarted";
       }
-      Contracts.voter!.voterRegisteredEvents().listen((event) {
-        Global.logger.i("Voter Registered : $event");
-      });
+
       await Future.delayed(const Duration(seconds: 1));
       Navigator.pushReplacementNamed(context, goto);
     } catch (err) {
