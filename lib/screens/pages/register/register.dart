@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
+import 'package:vote/screens/pages/register/final/password_adder.dart';
 import 'package:vote/screens/pages/register/personal_information/one_personal.dart';
 import 'package:vote/screens/pages/register/personal_information/two_personal.dart';
 import 'package:vote/screens/pages/register/register_info.dart';
@@ -10,7 +11,7 @@ import 'package:vote/screens/widgets/paginated_views/paginated_views.dart'
     as pagging;
 import 'package:vote/services/api/ethers/ethers.dart';
 import 'package:vote/services/blockchain/voter_helper.dart';
-import 'package:vote/utils/initializer/initializer.dart';
+import 'package:vote/services/blockchain/wallet.dart';
 import 'package:vote/utils/types/user_types.dart';
 
 class Register extends StatefulWidget {
@@ -31,6 +32,7 @@ class _RegisterState extends State<Register> {
     RegisterPersonalInfoTwoPage(),
     // RegisterPersonalInfoThreePage(),
     // RegisterElectionDetailsOnePage(),
+    PasswordAdderPage(),
   ]);
 
   PersonalInfo? personalInfo;
@@ -63,6 +65,10 @@ class _RegisterState extends State<Register> {
         currentAddress: currentAddressInfo!,
         married: false,
         orphan: false));
+    if (sts == VoterRegistrationStatus.success) {
+      VoteChainWallet.saveWallet(password);
+    }
+    print(sts);
     showDialog(
         context: context,
         builder: (context) => TextPopup(
@@ -156,6 +162,7 @@ class _RegisterState extends State<Register> {
                                       .currentAddressInfo;
                               break;
                             case 4:
+                              password = page.validatedData as String;
                               break;
                             case 5:
                               break;

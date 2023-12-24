@@ -1,10 +1,12 @@
 import 'dart:convert';
 import 'dart:math';
+import 'dart:typed_data';
 
 import 'package:vote/services/blockchain/blockchain_client.dart';
 import 'package:vote/services/global.dart';
 import 'package:vote/services/utils.dart';
 import 'package:web3dart/web3dart.dart';
+import 'package:wallet/wallet.dart' as web3_wallet;
 
 enum VoteChainWalletStatus {
   createdNew("Created a new account!"),
@@ -22,7 +24,7 @@ class VoteChainWallet {
   static EthereumAddress? address;
   static Wallet? wallet;
   static Future<VoteChainWalletStatus>? inited;
-
+  static List<String>? mnemonic;
   static void init(String? password) {
     inited = init2(password: password);
   }
@@ -50,10 +52,17 @@ class VoteChainWallet {
     Function to generate a public and private key pairs
   */
   static Future<void> createAccount() async {
-    var ran = Random.secure();
-    credentials = EthPrivateKey.createRandom(ran);
+    mnemonic = web3_wallet.generateMnemonic();
+    Uint8List seed =
+        web3_wallet.mnemonicToSeed(mnemonic!, passphrase: 'myhome');
+    var master = web3_wallet.ExtendedPrivateKey.master(seed, web3_wallet.xprv);
+    var root = master.forPath("m/44'/195'/0'/0/0");
+    var privateKey =
+        web3_wallet.PrivateKey((root as web3_wallet.ExtendedPrivateKey).key);
+    credentials = EthPrivateKey.fromInt(privateKey.value);
     address = credentials!.address;
     Global.logger.i("Created address : ${address!.hex}");
+    Global.logger.i("Mneumonic : ${mnemonic!.join(' ')}");
   }
 
   /*
