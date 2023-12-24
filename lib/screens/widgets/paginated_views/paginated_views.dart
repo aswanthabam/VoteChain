@@ -100,6 +100,14 @@ class Pagination extends PaginationContext {
     pageCount++;
     pages[pageCount] = page;
   }
+
+  bool hasNext() {
+    return currentIndex + 1 <= pageCount;
+  }
+
+  bool hasPrev() {
+    return currentIndex - 1 > 0;
+  }
 }
 
 class PaginationContext {

@@ -1,9 +1,10 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
-import 'package:vote/screens/widgets/dialog/dialog.dart';
-import 'package:vote/services/preferences.dart';
-import '../../../services/blockchain/contract_linker.dart';
+import 'package:vote/screens/pages/splashscreen/password_page.dart';
+import 'package:vote/screens/widgets/dialog/TextPopup/TextPopup.dart';
+import 'package:vote/services/blockchain/wallet.dart';
+import 'package:vote/utils/initializer/initializer.dart';
 import '../../../services/global.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -29,31 +30,74 @@ class _SplashScreenState extends State<SplashScreen> {
   Future<void> setup() async {
     String goto = "";
     try {
-      await Future.delayed(const Duration(seconds: 1));
-      await Preferences.init();
       setStatus("Loading Account");
-      Global.linker = ContractLinker();
-      Global.linker.init();
-      Global.linker.loadContracts();
-      await Global.linker.contract_loaded;
-      setStatus("Connecting to blockchain");
-      if (!await Global.linker.checkAlive()) {
-        showDialog(
-            context: context,
-            builder: (context) => const MsgDialog(
-                  text: "The Server is not alive now",
-                  icon: Icons.wifi_tethering_error,
-                ));
+      if (await VoteChainWallet.hasSavedWallet()) {
+        Navigator.of(context).pushReplacement(MaterialPageRoute(
+            builder: (context) => PasswordPage(
+                  onPasswordSubmit: (String pin) async {
+                    bool sts = await VoteChainWallet.loadWallet(pin);
+                    if (sts) {
+                      Navigator.pushReplacementNamed(context, "home");
+                      return true;
+                    }
+                    showDialog(
+                        context: context,
+                        builder: (context) => TextPopup(
+                              message:
+                                  "The pin you entered is Wrong,Please recheck the pin",
+                              bottomButtons: [
+                                TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: const Text("Try Again!"))
+                              ],
+                            ));
+                    return false;
+                  },
+                )));
         return;
-      }
-      if (await Global.linker.loadWallet("123456aA")) {
-        goto = "home";
       } else {
-        await Global.linker.createAccount();
+        await VoteChainWallet.createAccount();
         goto = "getstarted";
       }
-      setStatus("Getting Started");
-      await Future.delayed(const Duration(milliseconds: 50));
+      setStatus("Loading Client");
+      ClientStatus status = await initializeClient();
+      if (status == ClientStatus.failed) {
+        setStatus(status.message);
+        showDialog(
+            context: context,
+            builder: (context) {
+              return TextPopup(message: status.message, bottomButtons: [
+                TextButton(
+                    onPressed: () async {
+                      Navigator.of(context).pop();
+                      await setup();
+                    },
+                    child: const Text("Retry!"))
+              ]);
+            });
+        return;
+      }
+      setStatus("Loading Contracts");
+      ContractInitializationStatus sts = await initializeContracts();
+      if (sts == ContractInitializationStatus.failed) {
+        setStatus(sts.message);
+        showDialog(
+            context: context,
+            builder: (context) {
+              return TextPopup(message: sts.message, bottomButtons: [
+                TextButton(
+                    onPressed: () async {
+                      Navigator.of(context).pop();
+                      await setup();
+                    },
+                    child: const Text("Retry!"))
+              ]);
+            });
+        return;
+      }
+      await Future.delayed(const Duration(seconds: 1));
       Navigator.pushReplacementNamed(context, goto);
     } catch (err) {
       Global.logger.e("An error occured when setting up app : $err");

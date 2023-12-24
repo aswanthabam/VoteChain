@@ -5,6 +5,27 @@ import 'package:vote/services/global.dart';
 import '../preferences.dart';
 import 'dart:convert';
 
+class APIClass {
+  String host = "https://votechain-backend.vercel.app";
+  Future<Map<String, dynamic>?> getCall(String route) async {
+    Response response = await get(Uri.parse(host + route));
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body)['data'][0];
+    }
+    return null;
+  }
+
+  Future<Map<String, dynamic>?> postCall(
+      String route, Map<String, dynamic>? data, String? hostAddress) async {
+    Response response =
+        await post(Uri.parse((hostAddress ?? host) + route), body: data);
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    }
+    return null;
+  }
+}
+
 class API {
   static String apiMessage =
       ""; // Variable that stores the final result from the API. refreshes after each request

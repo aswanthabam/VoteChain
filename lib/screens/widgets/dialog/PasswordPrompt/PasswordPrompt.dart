@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 
 typedef OnBottomButtonPress = void Function(int);
 
-class TextPopup extends StatelessWidget {
+class PasswordPrompt extends StatelessWidget {
   final String message;
   final List<Widget> bottomButtons;
   final OnBottomButtonPress? onBottomButtonPress;
 
-  const TextPopup({
+  const PasswordPrompt({
     Key? key,
     required this.message,
     this.bottomButtons = const [],
@@ -21,20 +21,17 @@ class TextPopup extends StatelessWidget {
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
         child: Padding(
           padding:
-              const EdgeInsets.only(top: 20, bottom: 5, left: 20, right: 20),
+              const EdgeInsets.only(top: 5, bottom: 5, left: 20, right: 20),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              // IconButton(
-              //     onPressed: () {
-              //       Navigator.pop(context);
-              //     },
-              //     icon: Icon(
-              //       Icons.close,
-              //       size: 20,
-              //     )),
-              const SizedBox(height: 10.0),
+              IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: Icon(Icons.close)),
+              const SizedBox(height: 20.0),
               Text(message, style: TextStyle(fontSize: 13)),
               Container(
                 height: 60,

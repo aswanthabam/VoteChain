@@ -1,8 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:vote/screens/pages/register/register.dart';
 import 'package:vote/screens/widgets/content_views/dropdown.dart';
 import '../../widgets/paginated_views/paginated_views.dart' as paging;
 
-class RegisterInfoPage extends paging.Page {
+class RegisterInfoPage extends paging.Page implements FormPage<dynamic> {
+  @override
+  dynamic validatedData = '';
+
+  @override
+  FormPageStatus validate() {
+    return FormPageStatus(true, "All fields are valid");
+  }
+
   @override
   Widget build(paging.PaginationContext state) {
     return RegisterInfoWidget(pageState: this);
@@ -13,6 +22,7 @@ class RegisterInfoWidget extends StatefulWidget {
   const RegisterInfoWidget({super.key, required this.pageState});
 
   final paging.PageState pageState;
+
   @override
   State<RegisterInfoWidget> createState() => _RegisterInfoWidgetState();
 }
@@ -71,19 +81,49 @@ class _RegisterInfoWidgetState extends State<RegisterInfoWidget> {
             const SizedBox(
               height: 10,
             ),
-            const ContentDropdown(
+            ContentDropdown(
               heading: "Election Details",
-              contents: [],
+              contents: [
+                TextContent(
+                    content:
+                        "Here you want to enter the details about your election constituency and other details."),
+                ListContent(list: [
+                  "Constituency",
+                  "Assembly Constituency",
+                ])
+              ],
               height: 100,
             ),
-            const ContentDropdown(
+            ContentDropdown(
               heading: "Document Uploadation",
-              contents: [],
+              contents: [
+                TextContent(
+                    content:
+                        "Here you want to upload the nessesary documents for the verification process."),
+                TextContent(
+                    content:
+                        "NB : You can skip this step by verifying your account by linking with aadhar or other valid documents."),
+                ListContent(list: [
+                  "Identity Proof",
+                  "Address Proof",
+                  "Age Proof",
+                  "Other Documents"
+                ])
+              ],
               height: 100,
             ),
-            const ContentDropdown(
+            ContentDropdown(
               heading: "Face Registaration",
-              contents: [],
+              contents: [
+                TextContent(
+                    content:
+                        "In this step you want to register your face for face verification. This is a one time process. Make sure that you are in a well lit room and your face is clearly visible. Below are the criteria for a valid face registration."),
+                ListContent(list: [
+                  "Face should be clearly visible",
+                  "Face should be in the center of the frame",
+                  "Diffenrent angles of your face should be visible",
+                ])
+              ],
               height: 100,
             ),
           ]))
