@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:vote/screens/pages/register/final/password_adder.dart';
+import 'package:vote/screens/pages/register/final/pin_add.dart';
 import 'package:vote/screens/pages/register/personal_information/one_personal.dart';
 import 'package:vote/screens/pages/register/personal_information/two_personal.dart';
 import 'package:vote/screens/pages/register/register_info.dart';
@@ -26,6 +27,7 @@ class _RegisterState extends State<Register> {
   String uid = "";
   String otp = "";
   String password = "";
+  String pin = "";
   pagging.Pagination pagination = pagging.Pagination(pages: <FormPage>[
     RegisterInfoPage(),
     RegisterPersonalInfoOnePage(),
@@ -33,6 +35,7 @@ class _RegisterState extends State<Register> {
     // RegisterPersonalInfoThreePage(),
     // RegisterElectionDetailsOnePage(),
     PasswordAdderPage(),
+    PinAddPage(),
   ]);
 
   PersonalInfo? personalInfo;
@@ -66,7 +69,7 @@ class _RegisterState extends State<Register> {
         married: false,
         orphan: false));
     if (sts == VoterRegistrationStatus.success) {
-      VoteChainWallet.saveWallet(password);
+      VoteChainWallet.saveWallet(pin);
     }
     print(sts);
     showDialog(
@@ -165,6 +168,7 @@ class _RegisterState extends State<Register> {
                               password = page.validatedData as String;
                               break;
                             case 5:
+                              pin = page.validatedData as String;
                               break;
                             default:
                           }
