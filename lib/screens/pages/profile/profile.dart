@@ -41,7 +41,7 @@ class _ProfileState extends State<Profile> {
                                   onPressed: () async {
                                     await VoteChainWallet.logOut();
                                     Navigator.pushReplacementNamed(
-                                        context, 'getstarted');
+                                        context, 'splashscreen');
                                   },
                                   child: const Text(
                                     "Yes, Logout",

@@ -1,4 +1,3 @@
-import 'package:vote/contracts/Voter.g.dart';
 import 'package:vote/utils/types/types.dart';
 
 class PersonalInfo extends JsonType {

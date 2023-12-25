@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:vote/screens/pages/register/register.dart';
-import 'package:vote/screens/widgets/content_views/underlined_text/underlined_text.dart';
 import 'package:vote/screens/widgets/input_components/input_field/input_field.dart';
 import 'package:vote/screens/widgets/input_components/keyboard.dart';
 import 'package:vote/screens/widgets/input_components/valueDisplayer.dart';
