@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vote/screens/widgets/appbars/appbar.dart';
+import 'package:vote/services/blockchain/voter_helper.dart';
 import 'package:vote/services/global.dart';
 
 class Home extends StatefulWidget {
@@ -17,33 +18,15 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    // init();
+    init();
   }
 
-  // Future<void> init() async {
-  //   await (Global.linker.getAddress().then((value) {
-  //     setState(() {
-  //       address = value.toString();
-  //     });
-  //     Global.linker.getBalance().then((value) {
-  //       setState(() {
-  //         balance = value.toString();
-  //       });
-  //       Global.linker.isVerified().then((value) {
-  //         setState(() {
-  //           isVerified = value;
-  //         });
-  //         Global.linker.getElections().then((value) {
-  //           Global.logger.i("HERE: ${value.length}");
-  //           // print(e.toString());
-  //           setState(() {
-  //             elections = value;
-  //           });
-  //         });
-  //       });
-  //     });
-  //   }));
-  // }
+  Future<void> init() async {
+    await VoterHelper().fetchRegistrationStatus();
+    await VoterHelper().fetchInfo();
+    Global.logger.i(
+        "About the voter : \n - ${VoterHelper.voterRegistrationStatus!.message} \n ${VoterHelper.voterInfo!.toJson()}");
+  }
 
   @override
   Widget build(BuildContext context) {

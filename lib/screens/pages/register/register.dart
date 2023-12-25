@@ -1,18 +1,22 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
+import 'package:vote/screens/pages/register/final/confirm_phrase.dart';
 import 'package:vote/screens/pages/register/final/password_adder.dart';
 import 'package:vote/screens/pages/register/final/pin_add.dart';
 import 'package:vote/screens/pages/register/personal_information/one_personal.dart';
 import 'package:vote/screens/pages/register/personal_information/two_personal.dart';
+import 'package:vote/screens/pages/register/personal_information/uid.dart';
 import 'package:vote/screens/pages/register/register_info.dart';
 import 'package:vote/screens/widgets/buttons/async_button.dart';
 import 'package:vote/screens/widgets/dialog/TextPopup/TextPopup.dart';
 import 'package:vote/screens/widgets/paginated_views/paginated_views.dart'
     as pagging;
 import 'package:vote/services/api/ethers/ethers.dart';
+import 'package:vote/services/api/user.dart';
 import 'package:vote/services/blockchain/voter_helper.dart';
 import 'package:vote/services/blockchain/wallet.dart';
+import 'package:vote/utils/encryption.dart';
 import 'package:vote/utils/types/user_types.dart';
 
 class Register extends StatefulWidget {
@@ -30,18 +34,21 @@ class _RegisterState extends State<Register> {
   String pin = "";
   pagging.Pagination pagination = pagging.Pagination(pages: <FormPage>[
     RegisterInfoPage(),
+    RegisterUIDPage(),
     RegisterPersonalInfoOnePage(),
     RegisterPersonalInfoTwoPage(),
     // RegisterPersonalInfoThreePage(),
     // RegisterElectionDetailsOnePage(),
     PasswordAdderPage(),
     PinAddPage(),
+    PhraseConfirmPage(),
   ]);
 
   PersonalInfo? personalInfo;
   ContactInfo? contactInfo;
   AddressInfo? permenentAddressInfo;
   AddressInfo? currentAddressInfo;
+  String? aadhar;
 
   void submitRegister() async {
     VoterHelper helper = VoterHelper();
@@ -62,6 +69,7 @@ class _RegisterState extends State<Register> {
       return;
     }
     var sts = await helper.registerVoter(VoterInfo(
+        aadharNumber: aadhar!,
         personalInfo: personalInfo!,
         contactInfo: contactInfo!,
         permanentAddress: permenentAddressInfo!,
@@ -70,6 +78,32 @@ class _RegisterState extends State<Register> {
         orphan: false));
     if (sts == VoterRegistrationStatus.success) {
       VoteChainWallet.saveWallet(pin);
+      var sts2 = await UserAuthCall().registerUser(
+          uid: aadhar!,
+          aadhar: aadhar!,
+          enc1: await encrypt(VoteChainWallet.mnemonic!.sublist(4, 8).join(' '),
+                  password) ??
+              "errorstring:enc",
+          enc2: await encrypt(
+                  VoteChainWallet.mnemonic!.sublist(8, 12).join(' '),
+                  password) ??
+              "erronstring:enc");
+      if (sts2 != RegisterUserCallStatus.success) {
+        showDialog(
+            context: context,
+            builder: (context) => TextPopup(
+                  message: sts2.message,
+                  bottomButtons: [
+                    TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text("Continue"))
+                  ],
+                ));
+        return;
+      }
+      await helper.fetchInfo();
     }
     print(sts);
     showDialog(
@@ -141,6 +175,8 @@ class _RegisterState extends State<Register> {
                     children: [
                       Expanded(child: pagination.widget),
                       getPrimaryAsyncButton(context, () async {
+                        VoterHelper helper = VoterHelper();
+                        await helper.fetchInfo();
                         FormPage page = pagination
                             .pages[pagination.currentIndex]! as FormPage;
                         FormPageStatus sts = page.validate();
@@ -149,6 +185,9 @@ class _RegisterState extends State<Register> {
                             case 0:
                               break;
                             case 2:
+                              aadhar = page.validatedData as String;
+                              break;
+                            case 3:
                               personalInfo = (page.validatedData
                                       as RegisterPersonalInfoPageData)
                                   .personalInfo;
@@ -156,7 +195,7 @@ class _RegisterState extends State<Register> {
                                       as RegisterPersonalInfoPageData)
                                   .contactInfo;
                               break;
-                            case 3:
+                            case 4:
                               permenentAddressInfo =
                                   (page.validatedData as RegisterPageTwoData)
                                       .permenentAddressInfo;
@@ -164,11 +203,29 @@ class _RegisterState extends State<Register> {
                                   (page.validatedData as RegisterPageTwoData)
                                       .currentAddressInfo;
                               break;
-                            case 4:
+                            case 5:
                               password = page.validatedData as String;
                               break;
-                            case 5:
+                            case 6:
                               pin = page.validatedData as String;
+                              break;
+                            case 7:
+                              showDialog(
+                                  context: context,
+                                  builder: (context) => TextPopup(
+                                        message: sts.message,
+                                        bottomButtons: [
+                                          TextButton(
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                              child: const Text(
+                                                "I Confirm, Continue",
+                                                style: TextStyle(
+                                                    color: Colors.red),
+                                              ))
+                                        ],
+                                      ));
                               break;
                             default:
                           }

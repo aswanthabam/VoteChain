@@ -30,37 +30,6 @@ class _SplashScreenState extends State<SplashScreen> {
   Future<void> setup() async {
     String goto = "";
     try {
-      setStatus("Loading Account");
-      if (await VoteChainWallet.hasSavedWallet()) {
-        Navigator.of(context).pushReplacement(MaterialPageRoute(
-            builder: (context) => PasswordPage(
-                  onPasswordSubmit: (String pin) async {
-                    bool sts = await VoteChainWallet.loadWallet(pin);
-                    if (sts) {
-                      Navigator.pushReplacementNamed(context, "home");
-                      return true;
-                    }
-                    showDialog(
-                        context: context,
-                        builder: (context) => TextPopup(
-                              message:
-                                  "The pin you entered is Wrong,Please recheck the pin",
-                              bottomButtons: [
-                                TextButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: const Text("Try Again!"))
-                              ],
-                            ));
-                    return false;
-                  },
-                )));
-        return;
-      } else {
-        await VoteChainWallet.createAccount();
-        goto = "getstarted";
-      }
       setStatus("Loading Client");
       ClientStatus status = await initializeClient();
       if (status == ClientStatus.failed) {
@@ -97,6 +66,38 @@ class _SplashScreenState extends State<SplashScreen> {
             });
         return;
       }
+      setStatus("Loading Account");
+      if (await VoteChainWallet.hasSavedWallet()) {
+        Navigator.of(context).pushReplacement(MaterialPageRoute(
+            builder: (context) => PasswordPage(
+                  onPasswordSubmit: (String pin) async {
+                    bool sts = await VoteChainWallet.loadWallet(pin);
+                    if (sts) {
+                      Navigator.pushReplacementNamed(context, "home");
+                      return true;
+                    }
+                    showDialog(
+                        context: context,
+                        builder: (context) => TextPopup(
+                              message:
+                                  "The pin you entered is Wrong,Please recheck the pin",
+                              bottomButtons: [
+                                TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: const Text("Try Again!"))
+                              ],
+                            ));
+                    return false;
+                  },
+                )));
+        return;
+      } else {
+        await VoteChainWallet.createAccount();
+        goto = "getstarted";
+      }
+
       await Future.delayed(const Duration(seconds: 1));
       Navigator.pushReplacementNamed(context, goto);
     } catch (err) {

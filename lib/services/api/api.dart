@@ -19,6 +19,7 @@ class APIClass {
       String route, Map<String, dynamic>? data, String? hostAddress) async {
     Response response =
         await post(Uri.parse((hostAddress ?? host) + route), body: data);
+    print(response.body);
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
     }

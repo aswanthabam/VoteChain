@@ -51,18 +51,25 @@ class VoteChainWallet {
   /*
     Function to generate a public and private key pairs
   */
-  static Future<void> createAccount() async {
-    mnemonic = web3_wallet.generateMnemonic();
-    Uint8List seed =
-        web3_wallet.mnemonicToSeed(mnemonic!, passphrase: 'myhome');
-    var master = web3_wallet.ExtendedPrivateKey.master(seed, web3_wallet.xprv);
-    var root = master.forPath("m/44'/195'/0'/0/0");
-    var privateKey =
-        web3_wallet.PrivateKey((root as web3_wallet.ExtendedPrivateKey).key);
-    credentials = EthPrivateKey.fromInt(privateKey.value);
-    address = credentials!.address;
-    Global.logger.i("Created address : ${address!.hex}");
-    Global.logger.i("Mneumonic : ${mnemonic!.join(' ')}");
+  static Future<bool> createAccount({List<String>? mneu}) async {
+    try {
+      mnemonic = mneu ?? web3_wallet.generateMnemonic();
+      Uint8List seed =
+          web3_wallet.mnemonicToSeed(mnemonic!, passphrase: 'myhome');
+      var master =
+          web3_wallet.ExtendedPrivateKey.master(seed, web3_wallet.xprv);
+      var root = master.forPath("m/44'/195'/0'/0/0");
+      var privateKey =
+          web3_wallet.PrivateKey((root as web3_wallet.ExtendedPrivateKey).key);
+      credentials = EthPrivateKey.fromInt(privateKey.value);
+      address = credentials!.address;
+      Global.logger.i("Created address : ${address!.hex}");
+      Global.logger.i("Mneumonic : ${mnemonic!.join(' ')}");
+      return true;
+    } catch (err) {
+      Global.logger.e("An error occured while creating account : $err");
+      return false;
+    }
   }
 
   /*

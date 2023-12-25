@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:vote/screens/pages/register/register.dart';
-import 'package:vote/screens/widgets/content_views/underlined_text/underlined_text.dart';
 import 'package:vote/screens/widgets/input_components/input_field/input_field.dart';
 import 'package:vote/screens/widgets/input_components/keyboard.dart';
 import 'package:vote/screens/widgets/input_components/valueDisplayer.dart';
@@ -50,28 +49,41 @@ class _PinAddWidgetState extends State<PinAddWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(20),
-      width: MediaQuery.of(context).size.width - 0,
+      width: MediaQuery.of(context).size.width,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.max,
         children: [
-          const Icon(Icons.lock, size: 50, color: Colors.green),
-          const SizedBox(
-            height: 20,
+          Padding(
+            padding: const EdgeInsets.all(10),
+            child: Column(
+              children: [
+                const Icon(Icons.lock, size: 40, color: Colors.green),
+                const SizedBox(
+                  height: 20,
+                ),
+                const Text("Setup A PIN",
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontFamily: 'Poppins',
+                      letterSpacing: 2.5,
+                      fontWeight: FontWeight.w700,
+                    )),
+                const SizedBox(height: 10),
+                const Text(
+                  "Please set a PIN for your account, This pin will be used for locking your app",
+                  style: TextStyle(fontSize: 13),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 10),
+                ValueDisplayer(
+                    value: password.text,
+                    length: 6,
+                    fill: '-',
+                    divide: const [1, 1, 1, 1, 1, 1]),
+              ],
+            ),
           ),
-          const Text("Setup A PIN",
-              style: TextStyle(
-                fontSize: 20,
-                fontFamily: 'Poppins',
-                letterSpacing: 2.5,
-                fontWeight: FontWeight.w700,
-              )),
-          ValueDisplayer(
-              value: password.text,
-              length: 6,
-              fill: '-',
-              divide: const [1, 1, 1, 1, 1, 1]),
           const Spacer(),
           KeyBoard(onPressed: (String value) {
             setState(() {

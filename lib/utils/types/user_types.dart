@@ -22,6 +22,14 @@ class PersonalInfo extends JsonType {
       "dob": dob,
     };
   }
+
+  static PersonalInfo fromList(List<dynamic> data) {
+    return PersonalInfo(
+        firstName: data[0],
+        middleName: data[1],
+        lastName: data[2],
+        dob: data[3]);
+  }
 }
 
 class AddressInfo extends JsonType {
@@ -58,6 +66,18 @@ class AddressInfo extends JsonType {
       "pincode": pincode,
     };
   }
+
+  static AddressInfo fromList(List<dynamic> data) {
+    return AddressInfo(
+        state: data[0],
+        district: data[1],
+        locality: data[2],
+        ward: data[3],
+        houseName: data[4],
+        houseNumber: data[5],
+        street: data[6],
+        pincode: data[7]);
+  }
 }
 
 class ContactInfo extends JsonType {
@@ -75,9 +95,14 @@ class ContactInfo extends JsonType {
       "email": email,
     };
   }
+
+  static ContactInfo fromList(List<dynamic> data) {
+    return ContactInfo(phone: data[0], email: data[1]);
+  }
 }
 
 class VoterInfo extends JsonType {
+  String aadharNumber;
   PersonalInfo personalInfo;
   ContactInfo contactInfo;
   AddressInfo permanentAddress;
@@ -86,6 +111,7 @@ class VoterInfo extends JsonType {
   bool orphan;
 
   VoterInfo({
+    required this.aadharNumber,
     required this.personalInfo,
     required this.contactInfo,
     required this.permanentAddress,
@@ -97,6 +123,7 @@ class VoterInfo extends JsonType {
   @override
   Map<String, dynamic> toJson() {
     return {
+      "aadhar_number": aadharNumber,
       "personal_info": personalInfo.toJson(),
       "contact_info": contactInfo.toJson(),
       "permeant_address": permanentAddress.toJson(),
@@ -104,6 +131,17 @@ class VoterInfo extends JsonType {
       "married": married,
       "orphan": orphan,
     };
+  }
+
+  static VoterInfo fromList(List<dynamic> data) {
+    return VoterInfo(
+        aadharNumber: data[0],
+        personalInfo: PersonalInfo.fromList(data[1]),
+        contactInfo: ContactInfo.fromList(data[2]),
+        permanentAddress: AddressInfo.fromList(data[3]),
+        currentAddress: AddressInfo.fromList(data[4]),
+        married: data[5],
+        orphan: data[6]);
   }
 }
 
