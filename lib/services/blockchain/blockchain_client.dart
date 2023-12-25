@@ -8,6 +8,7 @@ import 'package:vote/contracts/VoterReader.g.dart';
 import 'package:vote/services/blockchain/wallet.dart';
 import 'package:vote/services/global.dart';
 import 'package:vote/services/preferences.dart';
+import 'package:vote/utils/types/api_types.dart';
 import 'package:vote/utils/types/contract_types.dart';
 import 'package:web3dart/web3dart.dart';
 import 'package:web_socket_channel/io.dart';
@@ -27,12 +28,13 @@ class BlockchainClient {
   */
   static Future<bool> initWeb3() async {
     try {
-      client = Web3Client('http://192.168.18.17:7545', httpClient,
-          socketConnector: () {
-        return IOWebSocketChannel.connect('ws://192.168.18.17:7545',
+      client = Web3Client(SystemConfig.rpcUrl, httpClient, socketConnector: () {
+        return IOWebSocketChannel.connect(SystemConfig.wsUrl,
                 connectTimeout: const Duration(seconds: 5))
             .cast<String>();
       });
+
+      BlockchainClient.client.printErrors = true;
       Global.logger.i("Successfully Initialized Web3 Client");
       return true;
     } catch (err) {

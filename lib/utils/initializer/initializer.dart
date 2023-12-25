@@ -31,6 +31,7 @@ enum SystemConfigInitializationStatus {
 
 Future<ClientStatus> initializeClient() async {
   try {
+    await initializeSystemConfigs();
     await Preferences.init();
     BlockchainClient.init();
     if (await BlockchainClient.inited) {
@@ -60,10 +61,6 @@ Future<SystemConfigInitializationStatus> initializeSystemConfigs() async {
 
 Future<ContractInitializationStatus> initializeContracts() async {
   try {
-    var status = await SystemConfigCall().getSystemConfigs();
-    if (status == SystemConfigCallStatus.failed) {
-      return ContractInitializationStatus.failed;
-    }
     ContractAddress.voterContractAddress = SystemConfig.voterAddress;
     ContractAddress.votechainContractAddress = SystemConfig.votechainAddress;
     ContractAddress.candidateContractAddress = SystemConfig.candidateAddress;
@@ -85,25 +82,3 @@ Future<ContractInitializationStatus> initializeContracts() async {
     return ContractInitializationStatus.failed;
   }
 }
-
-// Future<VoteChainWalletStatus> initializeAccount(String? password) async {
-//   try {
-//     if (await VoteChainWallet.hasSavedWallet()) {
-//       Global.logger.e("UnImplemented : Saved wallet exists");
-//       password = "mypass";
-//     } else {
-//       password = null;
-//     }
-//     VoteChainWallet.init(password);
-//     VoteChainWalletStatus status = await VoteChainWallet.inited!;
-//     if (status == VoteChainWalletStatus.createdNew) {
-//       var password = "mypass";
-//       VoteChainWallet.saveWallet(password);
-//     }
-//     return status;
-//   } catch (err) {
-//     Global.logger.e(
-//         "An unexpected error occured while initializing voter account : $err");
-//     return VoteChainWalletStatus.errorOccured;
-//   }
-// }

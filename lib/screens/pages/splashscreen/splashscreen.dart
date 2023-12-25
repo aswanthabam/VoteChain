@@ -3,10 +3,8 @@
 import 'package:flutter/material.dart';
 import 'package:vote/screens/pages/splashscreen/password_page.dart';
 import 'package:vote/screens/widgets/dialog/TextPopup/TextPopup.dart';
-import 'package:vote/services/blockchain/blockchain_client.dart';
 import 'package:vote/services/blockchain/wallet.dart';
 import 'package:vote/utils/initializer/initializer.dart';
-import 'package:web3dart/web3dart.dart';
 import '../../../services/global.dart';
 
 class SplashScreen extends StatefulWidget {

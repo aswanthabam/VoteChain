@@ -16,6 +16,7 @@ import 'package:vote/services/api/ethers/ethers.dart';
 import 'package:vote/services/api/user.dart';
 import 'package:vote/services/blockchain/voter_helper.dart';
 import 'package:vote/services/blockchain/wallet.dart';
+import 'package:vote/utils/encryption.dart';
 import 'package:vote/utils/types/user_types.dart';
 
 class Register extends StatefulWidget {
@@ -80,9 +81,13 @@ class _RegisterState extends State<Register> {
       var sts2 = await UserAuthCall().registerUser(
           uid: aadhar!,
           aadhar: aadhar!,
-          password: password!,
-          enc1: VoteChainWallet.mnemonic!.sublist(4, 8).join(' '),
-          enc2: VoteChainWallet.mnemonic!.sublist(8, 12).join(' '));
+          enc1: await encrypt(VoteChainWallet.mnemonic!.sublist(4, 8).join(' '),
+                  password) ??
+              "errorstring:enc",
+          enc2: await encrypt(
+                  VoteChainWallet.mnemonic!.sublist(8, 12).join(' '),
+                  password) ??
+              "erronstring:enc");
       if (sts2 != RegisterUserCallStatus.success) {
         showDialog(
             context: context,
