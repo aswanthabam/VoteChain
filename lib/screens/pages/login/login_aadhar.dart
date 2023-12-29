@@ -71,7 +71,7 @@ class _LoginAadharWidgetState extends State<LoginAadharWidget> {
                 ValueDisplayer(
                     value: aadhar.text,
                     length: 12,
-                    fill: '-',
+                    fill: '0',
                     divide: const [4, 4, 4]),
               ],
             ),

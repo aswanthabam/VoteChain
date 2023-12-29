@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:vote/screens/widgets/appbars/backbar.dart';
 import 'package:vote/services/global.dart';
 
 class QRScanner extends StatefulWidget {
   final String heading;
   final String helpText;
   final bool exitOnResult;
-  final Function(String) onResult;
+  final Future<void> Function(String) onResult;
   const QRScanner(
       {super.key,
       required this.heading,
@@ -22,6 +23,7 @@ class _QRScannerState extends State<QRScanner> {
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   late QRViewController controller;
   bool exited = false;
+  bool result_proccessing = false;
 
   @override
   void dispose() {
@@ -32,6 +34,9 @@ class _QRScannerState extends State<QRScanner> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: BackBar(onPressed: () {
+        Navigator.pop(context);
+      }),
       body: Padding(
         padding: EdgeInsets.only(
             top: MediaQuery.of(context).viewPadding.top,
@@ -105,14 +110,22 @@ class _QRScannerState extends State<QRScanner> {
 
   void _onQRViewCreated(QRViewController controller) {
     this.controller = controller;
-    controller.scannedDataStream.listen((scanData) {
+    controller.scannedDataStream.listen((scanData) async {
+      controller.pauseCamera();
       if (scanData.code != null) {
         if (scanData.format != BarcodeFormat.qrcode) {
           Global.logger
               .w("NOT A QR CODE : ${scanData.format} && ${scanData.code}");
+          controller.resumeCamera();
           return;
         }
-        widget.onResult(scanData.code!);
+        if (result_proccessing) {
+          Global.logger.w("Result already being processed");
+          return;
+        }
+        result_proccessing = true;
+        await widget.onResult(scanData.code!);
+        result_proccessing = false;
         if (widget.exitOnResult && !exited) {
           exited = true;
           Navigator.pop(context);

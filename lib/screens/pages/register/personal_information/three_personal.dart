@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:vote/screens/pages/qrcode/qr_scanner.dart';
+import 'package:vote/screens/widgets/qrcode/qr_scanner.dart';
 import 'package:vote/screens/pages/register/register.dart';
 import 'package:vote/screens/widgets/buttons/icon_button/icon_button.dart';
 import 'package:vote/screens/widgets/content_views/underlined_text/underlined_text.dart';
@@ -101,7 +101,7 @@ class _RegisterPersonalInfoThreeWidgetState
                                               helpText:
                                                   "Scan the QR code of your father's VoteChain account to link it with your account.",
                                               exitOnResult: true,
-                                              onResult: (String result) {
+                                              onResult: (String result) async {
                                                 Global.logger.i(
                                                     "Successfully scanned qr code and got result : $result");
                                               })))
@@ -141,7 +141,7 @@ class _RegisterPersonalInfoThreeWidgetState
                                               helpText:
                                                   "Scan the QR code of your mother's VoteChain account to link it with your account.",
                                               exitOnResult: true,
-                                              onResult: (String result) {
+                                              onResult: (String result) async {
                                                 Global.logger.i(
                                                     "Successfully scanned qr code and got result : $result");
                                               })))
@@ -181,7 +181,7 @@ class _RegisterPersonalInfoThreeWidgetState
                                               helpText:
                                                   "Scan the QR code of your spouse VoteChain account to link it with your account.",
                                               exitOnResult: true,
-                                              onResult: (String result) {
+                                              onResult: (String result) async {
                                                 Global.logger.i(
                                                     "Successfully scanned qr code and got result : $result");
                                               })))
