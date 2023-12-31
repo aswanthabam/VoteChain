@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:vote/provider/voter_provider.dart';
 import 'package:vote/screens/pages/register/register.dart';
 import 'package:vote/screens/widgets/content_views/underlined_text/underlined_text.dart';
 import 'package:vote/screens/widgets/input_components/input_field/date_field.dart';
@@ -26,10 +28,9 @@ class RegisterPersonalInfoOnePage
     InputFieldHandler? lastName = getState<InputFieldHandler>("lastName");
     InputFieldHandler? phoneNumber = getState<InputFieldHandler>("phoneNumber");
     InputFieldHandler? email = getState<InputFieldHandler>("email");
-    DateTime? dob = getState<DateTime?>("dob");
+    String? dob = getState<String?>("dob");
 
     if (firstName == null ||
-        middleName == null ||
         lastName == null ||
         phoneNumber == null ||
         email == null ||
@@ -53,9 +54,9 @@ class RegisterPersonalInfoOnePage
     }
     var personalInfo = PersonalInfo(
       firstName: firstName.text,
-      middleName: middleName.text,
+      middleName: middleName == null ? "" : middleName.text,
       lastName: lastName.text,
-      dob: dob.toIso8601String(),
+      dob: dob,
     );
     var contactInfo = ContactInfo(phone: phoneNumber.text, email: email.text);
     validatedData = RegisterPersonalInfoPageData(
@@ -81,22 +82,61 @@ class RegisterPersonalInfoOneWidget extends StatefulWidget {
 
 class _RegisterPersonalInfoOneWidgetState
     extends State<RegisterPersonalInfoOneWidget> {
-  InputFieldHandler firstName = InputFieldHandler(label: "First Name *");
-  InputFieldHandler middleName = InputFieldHandler(label: "Middle Name");
-  InputFieldHandler lastName = InputFieldHandler(label: "Last Name *");
-  InputFieldHandler phoneNumber = InputFieldHandler(label: "Phone Number *");
-  InputFieldHandler email = InputFieldHandler(label: "Email *");
-  DateTime? dob;
+  late InputFieldHandler firstName = InputFieldHandler(label: "");
+  late InputFieldHandler middleName = InputFieldHandler(label: "");
+  late InputFieldHandler lastName = InputFieldHandler(label: "");
+  late InputFieldHandler phoneNumber = InputFieldHandler(label: "");
+  late InputFieldHandler email = InputFieldHandler(label: "");
   @override
   void initState() {
     super.initState();
+    firstName = InputFieldHandler(
+        label: "First Name *",
+        initialValue: Provider.of<VoterModal>(context, listen: false).firstName,
+        onChanged: (v) {
+          Provider.of<VoterModal>(context, listen: false).firstName =
+              firstName.text;
+          widget.pageState.setState("firstName", firstName);
+        });
+    middleName = InputFieldHandler(
+        label: "Middle Name",
+        initialValue:
+            Provider.of<VoterModal>(context, listen: false).middleName,
+        onChanged: (v) {
+          Provider.of<VoterModal>(context, listen: false).middleName =
+              middleName.text;
+          widget.pageState.setState("middleName", middleName);
+        });
+    lastName = InputFieldHandler(
+        label: "Last Name *",
+        initialValue: Provider.of<VoterModal>(context, listen: false).lastName,
+        onChanged: (v) {
+          Provider.of<VoterModal>(context, listen: false).lastName =
+              lastName.text;
+          widget.pageState.setState("lastName", lastName);
+        });
+    phoneNumber = InputFieldHandler(
+        label: "Phone Number *",
+        initialValue: Provider.of<VoterModal>(context, listen: false).phone,
+        onChanged: (v) {
+          Provider.of<VoterModal>(context, listen: false).phone =
+              phoneNumber.text;
+          widget.pageState.setState("phoneNumber", phoneNumber);
+        });
+    email = InputFieldHandler(
+        label: "Email *",
+        initialValue: Provider.of<VoterModal>(context, listen: false).email,
+        onChanged: (v) {
+          Provider.of<VoterModal>(context, listen: false).email = email.text;
+          widget.pageState.setState("email", email);
+        });
+
     widget.pageState.bindWidgetState(setState);
-    widget.pageState.setState("firstName", firstName);
-    widget.pageState.setState("middleName", middleName);
-    widget.pageState.setState("lastName", lastName);
-    widget.pageState.setState("phoneNumber", phoneNumber);
-    widget.pageState.setState("email", email);
-    widget.pageState.setState("dob", dob);
+    // widget.pageState.setState("middleName", middleName);
+    // widget.pageState.setState("lastName", lastName);
+    // widget.pageState.setState("phoneNumber", phoneNumber);
+    // widget.pageState.setState("email", email);
+    // widget.pageState.setState("dob", );
   }
 
   @override
@@ -165,10 +205,13 @@ class _RegisterPersonalInfoOneWidgetState
                         DateField(
                             label: "Select Date *",
                             onDateSelected: (v) {
-                              setState(() {
-                                dob = v;
-                              });
-                              widget.pageState.setState("dob", dob);
+                              Provider.of<VoterModal>(context, listen: false)
+                                  .dob = v.toIso8601String();
+                              widget.pageState.setState<String>(
+                                  "dob",
+                                  Provider.of<VoterModal>(context,
+                                          listen: false)
+                                      .dob);
                             }),
                         const SizedBox(height: 20),
                         const UnderlinedText(
