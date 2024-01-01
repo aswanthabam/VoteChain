@@ -46,6 +46,12 @@ class VoterModal extends ChangeNotifier {
   String get phone => _phone;
   String get permanentAddressState => _permanentAddressState;
   String get permanentAddressDistrict => _permanentAddressDistrict;
+  String get permanentAddressLocality => _permanentAddressLocality;
+  String get permanentAddressWard => _permanentAddressWard;
+  String get permanentAddressHouseName => _permanentAddressHouseName;
+  String get permanentAddressHouseNumber => _permanentAddressHouseNumber;
+  String get permanentAddressStreet => _permanentAddressStreet;
+  String get permanentAddressPincode => _permanentAddressPincode;
   String get currentAddressState => _currentAddressState;
   String get currentAddressDistrict => _currentAddressDistrict;
   String get currentAddressLocality => _currentAddressLocality;

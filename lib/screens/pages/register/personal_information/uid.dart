@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:vote/provider/voter_provider.dart';
 import 'package:vote/screens/pages/register/register.dart';
 import 'package:vote/screens/widgets/content_views/underlined_text/underlined_text.dart';
 import 'package:vote/screens/widgets/input_components/input_field/input_field.dart';
@@ -36,17 +38,26 @@ class RegisterUIDWidget extends StatefulWidget {
 }
 
 class _RegisterUIDWidgetState extends State<RegisterUIDWidget> {
-  InputFieldHandler aadhar = InputFieldHandler(label: 'Aadhar Number *');
+  late InputFieldHandler aadhar;
   @override
   void initState() {
     super.initState();
+    aadhar = InputFieldHandler(
+      label: "Aadhar number *",
+      initialValue:
+          Provider.of<VoterModal>(context, listen: false).aadharNumber,
+      onChanged: (String val) {
+        Provider.of<VoterModal>(context, listen: false).aadharNumber = val;
+        widget.pageState.setState<InputFieldHandler>("aadhar", aadhar);
+      },
+    );
     widget.pageState.bindWidgetState(setState);
     widget.pageState.setState<InputFieldHandler>("aadhar", aadhar);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
         child: Column(

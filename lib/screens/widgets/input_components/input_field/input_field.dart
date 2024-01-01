@@ -4,17 +4,27 @@ class InputFieldHandler {
   late final TextEditingController controller;
   final void Function(String)? onChanged;
   final String initialValue;
-  InputFieldHandler({required label, this.onChanged, this.initialValue = ""}) {
+  final bool secureText;
+  InputFieldHandler(
+      {required label,
+      this.onChanged,
+      this.initialValue = "",
+      this.secureText = false}) {
     controller = TextEditingController(text: initialValue);
     inputField = InputField(
       label: label,
       controller: controller,
       onChanged: onChanged,
+      secureText: secureText,
     );
   }
 
   String get text => controller.text;
-  set text(String value) => controller.text = value;
+  set text(String value) {
+    controller.text = value;
+    onChanged?.call(value);
+  }
+
   late InputField inputField;
 
   void clear() {
@@ -30,10 +40,12 @@ class InputField extends StatefulWidget {
     required this.label,
     required this.controller,
     this.onChanged,
+    this.secureText = false,
   });
   final String label;
   final TextEditingController controller;
   final void Function(String)? onChanged;
+  final bool secureText;
   @override
   State<InputField> createState() => _InputFieldState();
 }
@@ -46,6 +58,7 @@ class _InputFieldState extends State<InputField> {
             color: const Color.fromARGB(68, 27, 166, 141),
             borderRadius: BorderRadius.circular(20)),
         child: TextField(
+          obscureText: widget.secureText,
           controller: widget.controller,
           onChanged: widget.onChanged,
           decoration: InputDecoration(

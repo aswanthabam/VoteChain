@@ -57,51 +57,7 @@ class _RegisterState extends State<Register> {
     await helper.fetchInfo();
     FormPage page = pagination.pages[pagination.currentIndex]! as FormPage;
     FormPageStatus sts = page.validate();
-    print(sts);
     if (sts.status) {
-      // switch (pagination.currentIndex) {
-      //   case 0:
-      //     break;
-      //   case 2:
-      //     // aadhar = page.validatedData as String;
-      //     context
-      //         .read<VoterModal>()
-      //         .setAadharNumber(page.validatedData as String);
-      //     break;
-      //   case 3:
-      //     // personalInfo =
-      //     //     (page.validatedData as RegisterPersonalInfoPageData).personalInfo;
-      //     // contactInfo =
-      //     //     (page.validatedData as RegisterPersonalInfoPageData).contactInfo;
-      //     context.read<VoterModal>().setPersonalInfo(
-      //         (page.validatedData as RegisterPersonalInfoPageData)
-      //             .personalInfo);
-      //     context.read<VoterModal>().setContactInfo(
-      //         (page.validatedData as RegisterPersonalInfoPageData).contactInfo);
-      //     break;
-      //   case 4:
-      //     // permenentAddressInfo =
-      //     //     (page.validatedData as RegisterPageTwoData).permenentAddressInfo;
-      //     // currentAddressInfo =
-      //     //     (page.validatedData as RegisterPageTwoData).currentAddressInfo;
-      //     context.read<VoterModal>().setPermanentAddress(
-      //         (page.validatedData as RegisterPageTwoData).permenentAddressInfo);
-      //     context.read<VoterModal>().setCurrentAddress(
-      //         (page.validatedData as RegisterPageTwoData).currentAddressInfo);
-      //     break;
-      //   case 5:
-      //     // password = page.validatedData as String;
-      //     context.read<VoterModal>().setPassword(page.validatedData as String);
-      //     break;
-      //   case 6:
-      //     // pin = page.validatedData as String;
-      //     context.read<VoterModal>().setPin(page.validatedData as String);
-      //     break;
-      //   case 7:
-      //     //
-      //     break;
-      //   default:
-      // }
       if (pagination.hasNext()) {
         setState(() {
           pagination.next(rebuild: false);
@@ -109,6 +65,7 @@ class _RegisterState extends State<Register> {
         return true;
       } else {
         Completer<bool> completer = Completer<bool>();
+        BuildContext _outer_context = context;
         showDialog(
             context: context,
             builder: (context) => TextPopup(
@@ -121,9 +78,25 @@ class _RegisterState extends State<Register> {
                               .then((value) {
                             if (value.success) {
                               completer.complete(true);
+                              showDialog(
+                                  context: _outer_context,
+                                  builder: (context) => TextPopup(
+                                        message: value.message,
+                                        bottomButtons: [
+                                          TextButton(
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                                Navigator.of(context)
+                                                    .pushNamedAndRemoveUntil(
+                                                        'home',
+                                                        (route) => false);
+                                              },
+                                              child: const Text("Continue"))
+                                        ],
+                                      ));
                             } else {
                               showDialog(
-                                  context: context,
+                                  context: _outer_context,
                                   builder: (context) => TextPopup(
                                         message: value.message,
                                         bottomButtons: [

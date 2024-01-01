@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:vote/provider/voter_provider.dart';
 import 'package:vote/screens/pages/register/register.dart';
 import 'package:vote/screens/widgets/content_views/underlined_text/underlined_text.dart';
 import 'package:vote/screens/widgets/input_components/input_field/input_field.dart';
@@ -6,6 +8,7 @@ import '../../../widgets/paginated_views/paginated_views.dart' as paging;
 
 class PasswordAdderPage extends FormPage<String> {
   @override
+  // ignore: overridden_fields
   String? validatedData;
 
   @override
@@ -39,11 +42,20 @@ class PasswordAdderWidget extends StatefulWidget {
 }
 
 class _PasswordAdderWidgetState extends State<PasswordAdderWidget> {
-  InputFieldHandler password = InputFieldHandler(label: 'Password *');
+  late InputFieldHandler password;
   @override
   void initState() {
     super.initState();
     widget.pageState.bindWidgetState(setState);
+    password = InputFieldHandler(
+      label: "Password *",
+      initialValue: Provider.of<VoterModal>(context, listen: false).password,
+      onChanged: (String val) {
+        Provider.of<VoterModal>(context, listen: false).password = val;
+        widget.pageState.setState<InputFieldHandler>("password", password);
+      },
+      secureText: true,
+    );
     widget.pageState.setState("password", password);
   }
 

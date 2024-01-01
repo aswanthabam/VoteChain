@@ -40,6 +40,7 @@ Future<RegisterCallbackResult> submitRegister(VoterModal modal) async {
       return RegisterCallbackResult(success: false, message: sts2.message);
     }
     await helper.fetchInfo(); // get the user registration from the blockchain
+    return RegisterCallbackResult(success: true, message: sts.message);
   }
   return RegisterCallbackResult(success: false, message: sts.message);
 }

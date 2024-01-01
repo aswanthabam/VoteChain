@@ -97,7 +97,6 @@ class VoterHelper {
       if (info.isEmpty) {
         return null;
       }
-      print(info[0] == BigInt.zero);
       VoterHelper.voterRegistrationStatus = info[0] == BigInt.zero
           ? VoterStatus.registered
           : VoterStatus.verified;
