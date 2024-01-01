@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:vote/provider/voter_provider.dart';
 import 'package:vote/screens/pages/register/register.dart';
 import 'package:vote/screens/widgets/content_views/underlined_text/underlined_text.dart';
 import 'package:vote/screens/widgets/input_components/input_field/grouped_input_field.dart';
@@ -9,14 +11,15 @@ import '../../../widgets/paginated_views/paginated_views.dart' as paging;
 
 class RegisterPageTwoData {
   AddressInfo currentAddressInfo;
-  AddressInfo permenentAddressInfo;
+  AddressInfo permenantAddressInfo;
 
   RegisterPageTwoData(
-      {required this.currentAddressInfo, required this.permenentAddressInfo});
+      {required this.currentAddressInfo, required this.permenantAddressInfo});
 }
 
 class RegisterPersonalInfoTwoPage extends FormPage<RegisterPageTwoData> {
   @override
+  // ignore: overridden_fields
   RegisterPageTwoData? validatedData;
 
   @override
@@ -52,6 +55,7 @@ class RegisterPersonalInfoTwoPage extends FormPage<RegisterPageTwoData> {
         getState<InputFieldHandler>("permenantAddressStreet");
     InputFieldHandler? residentialPincode =
         getState<InputFieldHandler>("permenantAddressPincode");
+
     if (state == null ||
         district == null ||
         locality == null ||
@@ -105,7 +109,7 @@ class RegisterPersonalInfoTwoPage extends FormPage<RegisterPageTwoData> {
             houseNumber: houseNo.text,
             street: street.text,
             pincode: pincode.text),
-        permenentAddressInfo: AddressInfo(
+        permenantAddressInfo: AddressInfo(
             state: residentialState.text,
             district: residentialDistrict.text,
             locality: residentialLocality.text,
@@ -135,53 +139,208 @@ class RegisterPersonalInfoTwoWidget extends StatefulWidget {
 
 class _RegisterPersonalInfoTwoWidgetState
     extends State<RegisterPersonalInfoTwoWidget> {
-  InputFieldHandler houseName = InputFieldHandler(label: "House Name *");
-  InputFieldHandler houseNo = InputFieldHandler(label: "House No *");
-  InputFieldHandler street = InputFieldHandler(label: "Street *");
-  InputFieldHandler pincode = InputFieldHandler(label: "Pincode *");
-
+  late InputFieldHandler houseName,
+      houseNo,
+      street,
+      pincode,
+      state,
+      district,
+      locality,
+      ward,
+      permenantHouseName,
+      permenantHouseNo,
+      permenantStreet,
+      permenantPincode,
+      permenantState,
+      permenantDistrict,
+      permenantLocality,
+      permenantWard;
   late GroupedInputFieldHandler address;
-  InputFieldHandler state = InputFieldHandler(label: "Select State *");
-  InputFieldHandler district = InputFieldHandler(label: "Select District *");
-  InputFieldHandler locality = InputFieldHandler(label: "Select Locality *");
-  InputFieldHandler ward = InputFieldHandler(label: "Select Ward *");
+  late GroupedInputFieldHandler permenantAddress;
 
-  InputFieldHandler permenentHouseName =
-      InputFieldHandler(label: "House Name *");
-  InputFieldHandler permenentHouseNo = InputFieldHandler(label: "House No *");
-  InputFieldHandler permenentStreet = InputFieldHandler(label: "Street *");
-  InputFieldHandler permenentPincode = InputFieldHandler(label: "Pincode *");
-
-  late GroupedInputFieldHandler permenentAddress;
-  InputFieldHandler permenentState = InputFieldHandler(label: "Select State *");
-  InputFieldHandler permenentDistrict =
-      InputFieldHandler(label: "Select District *");
-  InputFieldHandler permenentLocality =
-      InputFieldHandler(label: "Select Locality *");
-  InputFieldHandler permenentWard = InputFieldHandler(label: "Select Ward *");
-
-  bool sameAsPermenent = false;
+  bool sameAspermenant = false;
 
   @override
   void initState() {
     super.initState();
+
+    state = InputFieldHandler(
+        label: "State *",
+        initialValue:
+            Provider.of<VoterModal>(context, listen: false).currentAddressState,
+        onChanged: (String val) {
+          Provider.of<VoterModal>(context, listen: false).currentAddressState =
+              val;
+          widget.pageState
+              .setState<InputFieldHandler>("currentAddressState", state);
+        });
+    district = InputFieldHandler(
+        label: "District *",
+        initialValue: Provider.of<VoterModal>(context, listen: false)
+            .currentAddressDistrict,
+        onChanged: (String val) {
+          Provider.of<VoterModal>(context, listen: false)
+              .currentAddressDistrict = val;
+          widget.pageState
+              .setState<InputFieldHandler>("currentAddressDistrict", district);
+        });
+    locality = InputFieldHandler(
+        label: "Locality *",
+        initialValue: Provider.of<VoterModal>(context, listen: false)
+            .currentAddressLocality,
+        onChanged: (String val) {
+          Provider.of<VoterModal>(context, listen: false)
+              .currentAddressLocality = val;
+          widget.pageState
+              .setState<InputFieldHandler>("currentAddressLocality", locality);
+        });
+    ward = InputFieldHandler(
+        label: "Ward *",
+        initialValue:
+            Provider.of<VoterModal>(context, listen: false).currentAddressWard,
+        onChanged: (String val) {
+          Provider.of<VoterModal>(context, listen: false).currentAddressWard =
+              val;
+          widget.pageState
+              .setState<InputFieldHandler>("currentAddressWard", ward);
+        });
+    houseName = InputFieldHandler(
+        label: "House Name *",
+        initialValue: Provider.of<VoterModal>(context, listen: false)
+            .currentAddressHouseName,
+        onChanged: (String val) {
+          Provider.of<VoterModal>(context, listen: false)
+              .currentAddressHouseName = val;
+          widget.pageState.setState<InputFieldHandler>(
+              "currentAddressHouseName", houseName);
+        });
+    houseNo = InputFieldHandler(
+        label: "House No *",
+        initialValue: Provider.of<VoterModal>(context, listen: false)
+            .currentAddressHouseNumber,
+        onChanged: (String val) {
+          Provider.of<VoterModal>(context, listen: false)
+              .currentAddressHouseNumber = val;
+          widget.pageState
+              .setState<InputFieldHandler>("currentAddressHouseNo", houseNo);
+        });
+    street = InputFieldHandler(
+        label: "Street *",
+        initialValue: Provider.of<VoterModal>(context, listen: false)
+            .currentAddressStreet,
+        onChanged: (String val) {
+          Provider.of<VoterModal>(context, listen: false).currentAddressStreet =
+              val;
+          widget.pageState
+              .setState<InputFieldHandler>("currentAddressStreet", street);
+        });
+    pincode = InputFieldHandler(
+        label: "Pincode *",
+        initialValue: Provider.of<VoterModal>(context, listen: false)
+            .currentAddressPincode,
+        onChanged: (String val) {
+          Provider.of<VoterModal>(context, listen: false)
+              .currentAddressPincode = val;
+          widget.pageState
+              .setState<InputFieldHandler>("currentAddressPincode", pincode);
+        });
+    permenantState = InputFieldHandler(
+        label: "State *",
+        initialValue: Provider.of<VoterModal>(context, listen: false)
+            .permanentAddressState,
+        onChanged: (String val) {
+          Provider.of<VoterModal>(context, listen: false)
+              .permanentAddressState = val;
+          widget.pageState.setState<InputFieldHandler>(
+              "permenantAddressState", permenantState);
+        });
+    permenantDistrict = InputFieldHandler(
+        label: "District *",
+        initialValue: Provider.of<VoterModal>(context, listen: false)
+            .permanentAddressDistrict,
+        onChanged: (String val) {
+          Provider.of<VoterModal>(context, listen: false)
+              .permanentAddressDistrict = val;
+          widget.pageState.setState<InputFieldHandler>(
+              "permenantAddressDistrict", permenantDistrict);
+        });
+    permenantLocality = InputFieldHandler(
+        label: "Locality *",
+        initialValue: Provider.of<VoterModal>(context, listen: false)
+            .permanentAddressLocality,
+        onChanged: (String val) {
+          Provider.of<VoterModal>(context, listen: false)
+              .permanentAddressLocality = val;
+          widget.pageState.setState<InputFieldHandler>(
+              "permenantAddressLocality", permenantLocality);
+        });
+    permenantWard = InputFieldHandler(
+        label: "Ward *",
+        initialValue: Provider.of<VoterModal>(context, listen: false)
+            .permanentAddressWard,
+        onChanged: (String val) {
+          Provider.of<VoterModal>(context, listen: false).permanentAddressWard =
+              val;
+          widget.pageState.setState<InputFieldHandler>(
+              "permenantAddressWard", permenantWard);
+        });
+    permenantHouseName = InputFieldHandler(
+        label: "House Name *",
+        initialValue: Provider.of<VoterModal>(context, listen: false)
+            .permanentAddressHouseName,
+        onChanged: (String val) {
+          Provider.of<VoterModal>(context, listen: false)
+              .permanentAddressHouseName = val;
+          widget.pageState.setState<InputFieldHandler>(
+              "permenantAddressHouseName", permenantHouseName);
+        });
+    permenantHouseNo = InputFieldHandler(
+        label: "House No *",
+        initialValue: Provider.of<VoterModal>(context, listen: false)
+            .permanentAddressHouseNumber,
+        onChanged: (String val) {
+          Provider.of<VoterModal>(context, listen: false)
+              .permanentAddressHouseNumber = val;
+          widget.pageState.setState<InputFieldHandler>(
+              "permenantAddressHouseNo", permenantHouseNo);
+        });
+    permenantStreet = InputFieldHandler(
+        label: "Street *",
+        initialValue: Provider.of<VoterModal>(context, listen: false)
+            .permanentAddressStreet,
+        onChanged: (String val) {
+          Provider.of<VoterModal>(context, listen: false)
+              .permanentAddressStreet = val;
+          widget.pageState.setState<InputFieldHandler>(
+              "permenantAddressStreet", permenantStreet);
+        });
+    permenantPincode = InputFieldHandler(
+        label: "Pincode *",
+        initialValue: Provider.of<VoterModal>(context, listen: false)
+            .permanentAddressPincode,
+        onChanged: (String val) {
+          Provider.of<VoterModal>(context, listen: false)
+              .permanentAddressPincode = val;
+          widget.pageState.setState<InputFieldHandler>(
+              "permenantAddressPincode", permenantPincode);
+        });
     address = GroupedInputFieldHandler(
         inputFields: [state, district, locality, ward], columnCount: 2);
-    permenentAddress = GroupedInputFieldHandler(inputFields: [
-      permenentState,
-      permenentDistrict,
-      permenentLocality,
-      permenentWard
+    permenantAddress = GroupedInputFieldHandler(inputFields: [
+      permenantState,
+      permenantDistrict,
+      permenantLocality,
+      permenantWard
     ], columnCount: 2);
     widget.pageState.bindWidgetState(setState);
-    widget.pageState.setState("permenantAddressState", permenentState);
-    widget.pageState.setState("permenantAddressDistrict", permenentDistrict);
-    widget.pageState.setState("permenantAddressLocality", permenentLocality);
-    widget.pageState.setState("permenantAddressWard", permenentWard);
-    widget.pageState.setState("permenantAddressHouseName", permenentHouseName);
-    widget.pageState.setState("permenantAddressHouseNo", permenentHouseNo);
-    widget.pageState.setState("permenantAddressStreet", permenentStreet);
-    widget.pageState.setState("permenantAddressPincode", permenentPincode);
+    widget.pageState.setState("permenantAddressState", permenantState);
+    widget.pageState.setState("permenantAddressDistrict", permenantDistrict);
+    widget.pageState.setState("permenantAddressLocality", permenantLocality);
+    widget.pageState.setState("permenantAddressWard", permenantWard);
+    widget.pageState.setState("permenantAddressHouseName", permenantHouseName);
+    widget.pageState.setState("permenantAddressHouseNo", permenantHouseNo);
+    widget.pageState.setState("permenantAddressStreet", permenantStreet);
+    widget.pageState.setState("permenantAddressPincode", permenantPincode);
 
     widget.pageState.setState("currentAddressState", state);
     widget.pageState.setState("currentAddressDistrict", district);
@@ -227,7 +386,7 @@ class _RegisterPersonalInfoTwoWidgetState
                           underlineHeight: 3,
                         ),
                         const Text(
-                            "Enter your current permenent Address & Permanent Address"),
+                            "Enter your current permenant Address & Permanent Address"),
                         const SizedBox(height: 20),
                         const UnderlinedText(
                           heading: "Permanent Address",
@@ -238,45 +397,45 @@ class _RegisterPersonalInfoTwoWidgetState
                           underlineHeight: 3,
                         ),
                         const Text("Enter your Permenant Address. "),
-                        permenentAddress.widget,
+                        permenantAddress.widget,
                         const SizedBox(height: 20),
-                        permenentHouseName.widget,
+                        permenantHouseName.widget,
                         const SizedBox(height: 20),
-                        permenentHouseNo.widget,
+                        permenantHouseNo.widget,
                         const SizedBox(height: 20),
-                        permenentStreet.widget,
+                        permenantStreet.widget,
                         const SizedBox(height: 20),
-                        permenentPincode.widget,
+                        permenantPincode.widget,
                         const SizedBox(height: 20),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Checkbox(
-                                value: sameAsPermenent,
+                                value: sameAspermenant,
                                 onChanged: (bool? val) {
                                   if (val == null || !val) {
                                     setState(() {
-                                      sameAsPermenent = false;
+                                      sameAspermenant = false;
                                     });
                                     return;
                                   }
                                   setState(() {
-                                    sameAsPermenent = true;
-                                    state.text = permenentState.text;
-                                    district.text = permenentDistrict.text;
-                                    locality.text = permenentLocality.text;
-                                    ward.text = permenentWard.text;
-                                    houseName.text = permenentHouseName.text;
-                                    houseNo.text = permenentHouseNo.text;
-                                    street.text = permenentStreet.text;
-                                    pincode.text = permenentPincode.text;
+                                    sameAspermenant = true;
+                                    state.text = permenantState.text;
+                                    district.text = permenantDistrict.text;
+                                    locality.text = permenantLocality.text;
+                                    ward.text = permenantWard.text;
+                                    houseName.text = permenantHouseName.text;
+                                    houseNo.text = permenantHouseNo.text;
+                                    street.text = permenantStreet.text;
+                                    pincode.text = permenantPincode.text;
                                   });
                                 }),
-                            const Text("Same as permenent address")
+                            const Text("Same as permenant address")
                           ],
                         ),
                         const SizedBox(height: 20),
-                        sameAsPermenent
+                        sameAspermenant
                             ? const SizedBox(
                                 height: 20,
                               )

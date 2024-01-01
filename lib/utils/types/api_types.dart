@@ -8,6 +8,7 @@ class SystemConfig {
   static late String rpcUrl;
   static late String wsUrl;
   static late String localServer;
+  static late String websocketServer;
 
   static void fromJson(Map<String, dynamic> data) {
     SystemConfig.votechainAddress = data['votechainAddress'];
@@ -19,5 +20,6 @@ class SystemConfig {
     SystemConfig.voterReaderAddress = data['voterReaderAddress'];
     SystemConfig.linkerAddress = data['linkerAddress'];
     SystemConfig.localServer = data['localServer'];
+    SystemConfig.websocketServer = data['websocketServer'];
   }
 }

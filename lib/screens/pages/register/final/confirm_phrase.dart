@@ -6,6 +6,7 @@ import '../../../widgets/paginated_views/paginated_views.dart' as paging;
 
 class PhraseConfirmPage extends FormPage<bool> {
   @override
+  // ignore: overridden_fields
   bool? validatedData;
 
   @override

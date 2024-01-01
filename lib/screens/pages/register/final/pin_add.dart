@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:vote/provider/voter_provider.dart';
 import 'package:vote/screens/pages/register/register.dart';
 import 'package:vote/screens/widgets/input_components/input_field/input_field.dart';
 import 'package:vote/screens/widgets/input_components/keyboard.dart';
@@ -7,6 +9,7 @@ import '../../../widgets/paginated_views/paginated_views.dart' as paging;
 
 class PinAddPage extends FormPage<String> {
   @override
+  // ignore: overridden_fields
   String? validatedData;
 
   @override
@@ -38,17 +41,26 @@ class PinAddWidget extends StatefulWidget {
 }
 
 class _PinAddWidgetState extends State<PinAddWidget> {
-  InputFieldHandler password = InputFieldHandler(label: 'Password *');
+  late InputFieldHandler password;
   @override
   void initState() {
     super.initState();
     widget.pageState.bindWidgetState(setState);
+    password = InputFieldHandler(
+      label: "PIN *",
+      initialValue: Provider.of<VoterModal>(context, listen: false).pin,
+      onChanged: (String val) {
+        Provider.of<VoterModal>(context, listen: false).pin = val;
+        widget.pageState.setState<InputFieldHandler>("password", password);
+      },
+      secureText: true,
+    );
     widget.pageState.setState("password", password);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: MediaQuery.of(context).size.width,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -94,7 +106,9 @@ class _PinAddWidgetState extends State<PinAddWidget> {
                   password.text =
                       password.text.substring(0, password.text.length - 1);
                 }
-              } else if (password.text.length < 6) password.text += value;
+              } else if (password.text.length < 6) {
+                password.text += value;
+              }
             });
           }),
         ],

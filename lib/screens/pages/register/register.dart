@@ -1,6 +1,11 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:vote/provider/voter_provider.dart';
+import 'package:vote/screens/pages/register/callbacks.dart';
 import 'package:vote/screens/pages/register/final/confirm_phrase.dart';
 import 'package:vote/screens/pages/register/final/password_adder.dart';
 import 'package:vote/screens/pages/register/final/pin_add.dart';
@@ -12,11 +17,7 @@ import 'package:vote/screens/widgets/buttons/async_button.dart';
 import 'package:vote/screens/widgets/dialog/TextPopup/TextPopup.dart';
 import 'package:vote/screens/widgets/paginated_views/paginated_views.dart'
     as pagging;
-import 'package:vote/services/api/ethers/ethers.dart';
-import 'package:vote/services/api/user.dart';
 import 'package:vote/services/blockchain/voter_helper.dart';
-import 'package:vote/services/blockchain/wallet.dart';
-import 'package:vote/utils/encryption.dart';
 import 'package:vote/utils/types/user_types.dart';
 
 class Register extends StatefulWidget {
@@ -32,6 +33,7 @@ class _RegisterState extends State<Register> {
   String otp = "";
   String password = "";
   String pin = "";
+
   pagging.Pagination pagination = pagging.Pagination(pages: <FormPage>[
     RegisterInfoPage(),
     RegisterUIDPage(),
@@ -50,14 +52,78 @@ class _RegisterState extends State<Register> {
   AddressInfo? currentAddressInfo;
   String? aadhar;
 
-  void submitRegister() async {
+  Future<bool> onNext() async {
     VoterHelper helper = VoterHelper();
-    var res = await EthersCall().requestEthers();
-    if (res != FundAccountCallStatus.success) {
+    await helper.fetchInfo();
+    FormPage page = pagination.pages[pagination.currentIndex]! as FormPage;
+    FormPageStatus sts = page.validate();
+    if (sts.status) {
+      if (pagination.hasNext()) {
+        setState(() {
+          pagination.next(rebuild: false);
+        });
+        return true;
+      } else {
+        Completer<bool> completer = Completer<bool>();
+        BuildContext _outer_context = context;
+        showDialog(
+            context: context,
+            builder: (context) => TextPopup(
+                  message: sts.message,
+                  bottomButtons: [
+                    TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          submitRegister(context.read<VoterModal>())
+                              .then((value) {
+                            if (value.success) {
+                              completer.complete(true);
+                              showDialog(
+                                  context: _outer_context,
+                                  builder: (context) => TextPopup(
+                                        message: value.message,
+                                        bottomButtons: [
+                                          TextButton(
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                                Navigator.of(context)
+                                                    .pushNamedAndRemoveUntil(
+                                                        'home',
+                                                        (route) => false);
+                                              },
+                                              child: const Text("Continue"))
+                                        ],
+                                      ));
+                            } else {
+                              showDialog(
+                                  context: _outer_context,
+                                  builder: (context) => TextPopup(
+                                        message: value.message,
+                                        bottomButtons: [
+                                          TextButton(
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                                completer.complete(false);
+                                              },
+                                              child: const Text("Continue"))
+                                        ],
+                                      ));
+                            }
+                          });
+                        },
+                        child: const Text(
+                          "I Confirm, Continue",
+                          style: TextStyle(color: Colors.red),
+                        ))
+                  ],
+                ));
+        return await completer.future;
+      }
+    } else {
       showDialog(
           context: context,
           builder: (context) => TextPopup(
-                message: res.message,
+                message: sts.message,
                 bottomButtons: [
                   TextButton(
                       onPressed: () {
@@ -66,63 +132,9 @@ class _RegisterState extends State<Register> {
                       child: const Text("Continue"))
                 ],
               ));
-      return;
     }
-    var sts = await helper.registerVoter(VoterInfo(
-        aadharNumber: aadhar!,
-        personalInfo: personalInfo!,
-        contactInfo: contactInfo!,
-        permanentAddress: permenentAddressInfo!,
-        currentAddress: currentAddressInfo!,
-        married: false,
-        orphan: false));
-    if (sts == VoterRegistrationStatus.success) {
-      VoteChainWallet.saveWallet(pin);
-      var sts2 = await UserAuthCall().registerUser(
-          uid: aadhar!,
-          aadhar: aadhar!,
-          enc1: await encrypt(VoteChainWallet.mnemonic!.sublist(4, 8).join(' '),
-                  password) ??
-              "errorstring:enc",
-          enc2: await encrypt(
-                  VoteChainWallet.mnemonic!.sublist(8, 12).join(' '),
-                  password) ??
-              "erronstring:enc");
-      if (sts2 != RegisterUserCallStatus.success) {
-        showDialog(
-            context: context,
-            builder: (context) => TextPopup(
-                  message: sts2.message,
-                  bottomButtons: [
-                    TextButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: const Text("Continue"))
-                  ],
-                ));
-        return;
-      }
-      await helper.fetchInfo();
-    }
-    print(sts);
-    showDialog(
-        context: context,
-        builder: (context) => TextPopup(
-              message: sts.message,
-              bottomButtons: [
-                TextButton(
-                    onPressed: () {
-                      if (sts != VoterRegistrationStatus.success) {
-                        Navigator.of(context).pop();
-                        return;
-                      }
-                      Navigator.pushNamedAndRemoveUntil(
-                          context, 'home', (route) => false);
-                    },
-                    child: const Text("Continue"))
-              ],
-            ));
+
+    return true;
   }
 
   @override
@@ -154,7 +166,7 @@ class _RegisterState extends State<Register> {
                       onPressed: () {
                         if (pagination.hasPrev()) {
                           setState(() {
-                            pagination.prev();
+                            pagination.prev(rebuild: false);
                           });
                         } else {
                           Navigator.of(context).pop();
@@ -174,87 +186,13 @@ class _RegisterState extends State<Register> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Expanded(child: pagination.widget),
-                      getPrimaryAsyncButton(context, () async {
-                        VoterHelper helper = VoterHelper();
-                        await helper.fetchInfo();
-                        FormPage page = pagination
-                            .pages[pagination.currentIndex]! as FormPage;
-                        FormPageStatus sts = page.validate();
-                        if (sts.status) {
-                          switch (pagination.currentIndex) {
-                            case 0:
-                              break;
-                            case 2:
-                              aadhar = page.validatedData as String;
-                              break;
-                            case 3:
-                              personalInfo = (page.validatedData
-                                      as RegisterPersonalInfoPageData)
-                                  .personalInfo;
-                              contactInfo = (page.validatedData
-                                      as RegisterPersonalInfoPageData)
-                                  .contactInfo;
-                              break;
-                            case 4:
-                              permenentAddressInfo =
-                                  (page.validatedData as RegisterPageTwoData)
-                                      .permenentAddressInfo;
-                              currentAddressInfo =
-                                  (page.validatedData as RegisterPageTwoData)
-                                      .currentAddressInfo;
-                              break;
-                            case 5:
-                              password = page.validatedData as String;
-                              break;
-                            case 6:
-                              pin = page.validatedData as String;
-                              break;
-                            case 7:
-                              showDialog(
-                                  context: context,
-                                  builder: (context) => TextPopup(
-                                        message: sts.message,
-                                        bottomButtons: [
-                                          TextButton(
-                                              onPressed: () {
-                                                Navigator.of(context).pop();
-                                              },
-                                              child: const Text(
-                                                "I Confirm, Continue",
-                                                style: TextStyle(
-                                                    color: Colors.red),
-                                              ))
-                                        ],
-                                      ));
-                              break;
-                            default:
-                          }
-                          if (pagination.hasNext()) {
-                            setState(() {
-                              pagination.next();
-                            });
-                            return true;
-                          } else {
-                            submitRegister();
-                            return true;
-                          }
-                        } else {
-                          showDialog(
-                              context: context,
-                              builder: (context) => TextPopup(
-                                    message: sts.message,
-                                    bottomButtons: [
-                                      TextButton(
-                                          onPressed: () {
-                                            Navigator.of(context).pop();
-                                          },
-                                          child: const Text("Continue"))
-                                    ],
-                                  ));
-                        }
-
-                        return true;
-                      }, "Continue", "Loading", "An Error Occured", "Continue",
+                      getPrimaryAsyncButton(
+                          context,
+                          onNext,
+                          "Continue",
+                          "Loading",
+                          "An Error Occured",
+                          "Continue",
                           MediaQuery.of(context).size.width - 20)
                     ],
                   )),

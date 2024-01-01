@@ -57,7 +57,7 @@ class _HomeState extends State<Home> {
                                   fontSize: 20, fontWeight: FontWeight.w400),
                             ),
                             Text(
-                              "${Global.userName ?? ""}, ",
+                              "${VoterHelper.voterInfo != null ? VoterHelper.voterInfo!.personalInfo.firstName : "Unknown User"}, ",
                               style: const TextStyle(
                                   fontSize: 30, fontWeight: FontWeight.w500),
                             )
@@ -72,6 +72,7 @@ class _HomeState extends State<Home> {
                         address: address,
                       ),
                       const SizedBox(height: 20),
+
                       // ElectionsSelector(elections: []),
                       const SizedBox(
                         height: 10,
