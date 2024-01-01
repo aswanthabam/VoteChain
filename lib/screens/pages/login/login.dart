@@ -1,5 +1,4 @@
 // ignore_for_file: use_build_context_synchronously
-
 import 'package:flutter/material.dart';
 import 'package:vote/screens/pages/login/login_aadhar.dart';
 import 'package:vote/screens/pages/login/password_page.dart';
@@ -65,7 +64,7 @@ class _LoginState extends State<Login> {
                   ]));
       return;
     }
-    String allPhrases = phrases!.split(' ').join(' ') + ' ' + dec1 + ' ' + dec2;
+    String allPhrases = '${phrases!.split(' ').join(' ')} $dec1 $dec2';
     bool sts = await VoteChainWallet.createAccount(mneu: allPhrases.split(' '));
     if (!sts) {
       showDialog(

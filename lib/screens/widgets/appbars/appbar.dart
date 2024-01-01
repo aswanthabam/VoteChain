@@ -112,9 +112,10 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
                             if (res['type'] == 'connect_response') {
                               Map<String, dynamic> _data =
                                   VoterHelper.voterInfo!.toJson();
-                              _data['address'] = hex.encode(
+                              _data['private_key'] = hex.encode(
                                   VoteChainWallet.credentials!.privateKey);
-
+                              _data['address'] =
+                                  VoteChainWallet.credentials?.address.hex;
                               String encrypted_data =
                                   await encrypt(json.encode(_data), data[1]) ??
                                       '';
