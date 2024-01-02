@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:vote/screens/layers/default_layer.dart';
-import 'package:vote/screens/widgets/appbars/backbar.dart';
 import 'package:vote/screens/widgets/buttons/fullsize_action_button/full_size_action_button.dart';
 import 'package:vote/screens/widgets/content_views/card/card.dart';
 import 'package:vote/screens/widgets/dialog/TextPopup/TextPopup.dart';
@@ -23,7 +22,7 @@ class _ProfileState extends State<Profile> {
           padding: const EdgeInsets.all(10),
           child: SingleChildScrollView(
               child: Column(children: [
-            CardWidget(),
+            const CardWidget(),
             Padding(
               padding: const EdgeInsets.all(10),
               child: FullSizeActionButton(

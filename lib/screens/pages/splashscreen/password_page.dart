@@ -63,7 +63,9 @@ class _PasswordPageState extends State<PasswordPage> {
                     "Try Again",
                     "Verifying",
                     "Success",
-                    pinValid ? Color.fromARGB(255, 23, 177, 64) : Colors.grey,
+                    pinValid
+                        ? const Color.fromARGB(255, 23, 177, 64)
+                        : Colors.grey,
                     Colors.white,
                     double.infinity)
                 : const SizedBox(),

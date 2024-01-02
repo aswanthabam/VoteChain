@@ -6,6 +6,7 @@ import '../../widgets/paginated_views/paginated_views.dart' as paging;
 
 class PasswordQueryPage extends FormPage<String> {
   @override
+  // ignore: overridden_fields
   String? validatedData;
 
   @override
@@ -16,7 +17,6 @@ class PasswordQueryPage extends FormPage<String> {
           "The password you entered is not valid, Please Enter a valid password");
     }
     validatedData = password.text;
-    print(password.text);
     return FormPageStatus(true,
         "The Personal info you entered seams to be correct, please verify it before continuing");
   }

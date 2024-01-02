@@ -65,7 +65,7 @@ class _RegisterState extends State<Register> {
         return true;
       } else {
         Completer<bool> completer = Completer<bool>();
-        BuildContext _outer_context = context;
+        BuildContext outerContext = context;
         showDialog(
             context: context,
             builder: (context) => TextPopup(
@@ -79,7 +79,7 @@ class _RegisterState extends State<Register> {
                             if (value.success) {
                               completer.complete(true);
                               showDialog(
-                                  context: _outer_context,
+                                  context: outerContext,
                                   builder: (context) => TextPopup(
                                         message: value.message,
                                         bottomButtons: [
@@ -96,7 +96,7 @@ class _RegisterState extends State<Register> {
                                       ));
                             } else {
                               showDialog(
-                                  context: _outer_context,
+                                  context: outerContext,
                                   builder: (context) => TextPopup(
                                         message: value.message,
                                         bottomButtons: [

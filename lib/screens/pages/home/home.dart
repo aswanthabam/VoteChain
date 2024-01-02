@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:vote/screens/layers/default_layer.dart';
-import 'package:vote/screens/widgets/appbars/appbar.dart';
 import 'package:vote/services/blockchain/voter_helper.dart';
 import 'package:vote/services/global.dart';
 

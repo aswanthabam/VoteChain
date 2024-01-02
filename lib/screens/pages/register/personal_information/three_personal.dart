@@ -10,6 +10,7 @@ import '../../../widgets/paginated_views/paginated_views.dart' as paging;
 
 class RegisterPersonalInfoThreePage extends FormPage<PersonalInfo> {
   @override
+  // ignore: overridden_fields
   PersonalInfo? validatedData;
 
   @override

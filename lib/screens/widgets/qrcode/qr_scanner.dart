@@ -23,7 +23,7 @@ class QRScannerState extends State<QRScanner> {
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   late QRViewController controller;
   bool exited = false;
-  bool result_proccessing = false;
+  bool resultProcessing = false;
 
   @override
   void dispose() {
@@ -118,13 +118,13 @@ class QRScannerState extends State<QRScanner> {
           controller.resumeCamera();
           return;
         }
-        if (result_proccessing) {
+        if (resultProcessing) {
           Global.logger.w("Result already being processed");
           return;
         }
-        result_proccessing = true;
+        resultProcessing = true;
         await widget.onResult(scanData.code!);
-        result_proccessing = false;
+        resultProcessing = false;
         if (widget.exitOnResult && !exited) {
           exited = true;
           // ignore: use_build_context_synchronously

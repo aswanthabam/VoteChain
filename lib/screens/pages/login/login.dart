@@ -82,7 +82,6 @@ class _LoginState extends State<Login> {
       return;
     }
     Navigator.of(context).pushNamedAndRemoveUntil('home', (route) => false);
-    print(allPhrases);
   }
 
   @override
