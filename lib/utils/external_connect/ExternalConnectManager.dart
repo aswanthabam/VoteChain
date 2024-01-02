@@ -7,7 +7,9 @@ import 'package:vote/utils/external_connect/connector.dart';
 class ExternalConnectResponse {
   final bool status;
   final String message;
-  const ExternalConnectResponse(this.status, this.message);
+  final bool stayUntilComplete;
+  const ExternalConnectResponse(this.status, this.message,
+      {this.stayUntilComplete = false});
 }
 
 enum ExternalConnectStatus {
@@ -38,12 +40,28 @@ class ExternalConnectManager {
       switch (connector?.type) {
         case "all":
           return await handleTypeAll();
+        case "function":
+          return await handleTypeFunction();
       }
       return const ExternalConnectResponse(
           true, "Successfully connected with the client!");
     } else {
       return const ExternalConnectResponse(false,
           "There was an error connecting with the platform, please try again later!");
+    }
+  }
+
+  Future<ExternalConnectResponse> handleTypeFunction() async {
+    String? val = connector?.vals;
+    Map<String, dynamic>? data = VoterHelper.voterInfo?.toJson() ?? {};
+    if (val == null) {
+      return const ExternalConnectResponse(false,
+          "There was an error with the data from the platform, please try again later!");
+    } else {
+      await connector?.sendEncryptedData(data);
+      return const ExternalConnectResponse(
+          true, "Successfully completed operation",
+          stayUntilComplete: true);
     }
   }
 

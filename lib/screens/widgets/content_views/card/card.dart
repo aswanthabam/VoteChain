@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:vote/services/blockchain/voter_helper.dart';
 
 class CardWidget extends StatelessWidget {
+  const CardWidget({super.key});
   @override
   Widget build(BuildContext context) {
     return SizedBox(
         width: MediaQuery.of(context).size.width,
         child: Card(
           clipBehavior: Clip.antiAlias,
-          margin: const EdgeInsets.all(20),
+          margin: const EdgeInsets.all(10),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(30),
           ),
@@ -61,11 +62,11 @@ class CardWidget extends StatelessWidget {
 
               Positioned(
                   child: Text(
-                VoterHelper.voterInfo == null &&
-                        VoterHelper.voterInfo!.aadharNumber.isEmpty &&
+                VoterHelper.voterInfo == null ||
+                        VoterHelper.voterInfo!.aadharNumber.isEmpty ||
                         VoterHelper.voterInfo!.aadharNumber.length != 12
                     ? "Unknown UID"
-                    : "${VoterHelper.voterInfo!.aadharNumber.substring(0, 4)}-${VoterHelper.voterInfo!.aadharNumber.substring(4, 8)}-${VoterHelper.voterInfo!.aadharNumber.substring(8, 12)}",
+                    : "${VoterHelper.voterInfo?.aadharNumber.substring(0, 4)}-${VoterHelper.voterInfo!.aadharNumber.substring(4, 8)}-${VoterHelper.voterInfo!.aadharNumber.substring(8, 12)}",
                 style: const TextStyle(
                     fontSize: 25,
                     fontWeight: FontWeight.bold,

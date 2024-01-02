@@ -126,7 +126,7 @@ class VoterInfo extends JsonType {
       "aadhar_number": aadharNumber,
       "personal_info": personalInfo.toJson(),
       "contact_info": contactInfo.toJson(),
-      "permeant_address": permanentAddress.toJson(),
+      "permenant_address": permanentAddress.toJson(),
       "current_address": currentAddress.toJson(),
       "married": married,
       "orphan": orphan,

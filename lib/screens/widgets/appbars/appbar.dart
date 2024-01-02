@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 import 'package:vote/screens/widgets/dialog/TextPopup/TextPopup.dart';
 import 'package:vote/screens/widgets/qrcode/qr_scanner.dart';
-import 'package:vote/services/global.dart';
 import 'package:vote/utils/external_connect/ExternalConnectManager.dart';
 
 class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
