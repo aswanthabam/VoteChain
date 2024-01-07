@@ -32,6 +32,7 @@ class VoterModal extends ChangeNotifier {
   String _currentAddressPincode = "";
   bool _married = false;
   bool _orphan = false;
+  String _constituency = "";
 
   EthereumAddress? get address => _privateKey?.address;
   EthPrivateKey? get privateKey => _privateKey;
@@ -62,6 +63,7 @@ class VoterModal extends ChangeNotifier {
   String get currentAddressPincode => _currentAddressPincode;
   bool get married => _married;
   bool get orphan => _orphan;
+  String get constituency => _constituency;
 
   PersonalInfo get personalInfo => PersonalInfo(
         firstName: _firstName,
@@ -105,7 +107,13 @@ class VoterModal extends ChangeNotifier {
         contactInfo: contactInfo,
         married: _married,
         orphan: _orphan,
+        constituency: _constituency,
       );
+
+  set constituency(String constituency) {
+    _constituency = constituency;
+    notifyListeners();
+  }
 
   set privatekey(EthPrivateKey key) {
     _privateKey = key;

@@ -7,10 +7,12 @@ import 'dart:convert';
 
 class APIClass {
   String host = "https://votechain-backend.vercel.app";
-  Future<Map<String, dynamic>?> getCall(String route) async {
+
+  Future<T?> getCall<T>(String route) async {
     Response response = await get(Uri.parse(host + route));
+    print(response.body);
     if (response.statusCode == 200) {
-      return jsonDecode(response.body)['data'][0];
+      return jsonDecode(response.body)['data'] as T;
     }
     return null;
   }

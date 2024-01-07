@@ -14,6 +14,7 @@ class _HomeState extends State<Home> {
   String address = "";
   String balance = "";
   bool isVerified = false;
+  VoterStatus status = VoterStatus.registered;
   // List<Elections> elections = [];
   @override
   void initState() {
@@ -22,7 +23,11 @@ class _HomeState extends State<Home> {
   }
 
   Future<void> init() async {
-    await VoterHelper().fetchRegistrationStatus();
+    status =
+        await VoterHelper().fetchRegistrationStatus() ?? VoterStatus.registered;
+    setState(() {
+      status = status;
+    });
     await VoterHelper().fetchInfo();
     Global.logger.i(
         "About the voter : \n - ${VoterHelper.voterRegistrationStatus!.message} \n ${VoterHelper.voterInfo!.toJson()}");
@@ -42,37 +47,17 @@ class _HomeState extends State<Home> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              "Welcome",
-                              style: TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.w400),
-                            ),
-                            Text(
-                              "${VoterHelper.voterInfo != null ? VoterHelper.voterInfo!.personalInfo.firstName : "Unknown User"}, ",
-                              style: const TextStyle(
-                                  fontSize: 30, fontWeight: FontWeight.w500),
+                      (status == VoterStatus.registered
+                          ? const AccountStatusCard(
+                              statusText: "Not Verified",
+                              statusDescription: "Waiting for verification",
+                              status: false,
                             )
-                          ],
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      IdentityCard(
-                        isVerified: isVerified,
-                        address: address,
-                      ),
-                      const SizedBox(height: 20),
-
-                      // ElectionsSelector(elections: []),
-                      const SizedBox(
-                        height: 10,
-                      ),
+                          : const AccountStatusCard(
+                              statusText: "Account Verified",
+                              statusDescription: "You can now access votechain",
+                              status: true,
+                            )),
                     ],
                   ),
                 ),
@@ -80,6 +65,50 @@ class _HomeState extends State<Home> {
             )),
       ),
     );
+  }
+}
+
+class AccountStatusCard extends StatelessWidget {
+  final String statusText;
+  final String statusDescription;
+  final bool status;
+  const AccountStatusCard(
+      {super.key,
+      required this.statusText,
+      required this.statusDescription,
+      required this.status});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        width: MediaQuery.of(context).size.width,
+        height: 100,
+        decoration: BoxDecoration(
+            color: status ? Colors.green.shade200 : Colors.orange.shade200,
+            borderRadius: BorderRadius.circular(20)),
+        child: Row(
+          children: [
+            const SizedBox(width: 20),
+            const Icon(Icons.info_outline, size: 40),
+            const SizedBox(width: 20),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(statusText,
+                    style: const TextStyle(
+                        fontSize: 20, fontWeight: FontWeight.w600)),
+                const SizedBox(height: 5),
+                Text(statusDescription,
+                    style: const TextStyle(
+                        fontSize: 12, fontWeight: FontWeight.w400)),
+              ],
+            ),
+            const Spacer(),
+            const Icon(Icons.chevron_right_rounded, size: 50),
+            const SizedBox(width: 20),
+          ],
+        ));
   }
 }
 

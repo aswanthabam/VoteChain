@@ -97,6 +97,7 @@ class VoterHelper {
       if (info.isEmpty) {
         return null;
       }
+      print(info);
       VoterHelper.voterRegistrationStatus = info[0] == BigInt.zero
           ? VoterStatus.registered
           : VoterStatus.verified;
@@ -107,7 +108,8 @@ class VoterHelper {
     }
   }
 
-  Future<VoterRegistrationStatus> registerVoter(VoterInfo voterInfo) async {
+  Future<VoterRegistrationStatus> registerVoter(
+      VoterInfo voterInfo, String constituency) async {
     try {
       await voterContract.registerVoter([
         voterInfo.aadharNumber,
@@ -116,8 +118,9 @@ class VoterHelper {
         [...voterInfo.currentAddress.toJson().values],
         [...voterInfo.permanentAddress.toJson().values],
         voterInfo.married,
-        voterInfo.orphan
-      ],
+        voterInfo.orphan,
+        constituency
+      ], constituency,
           credentials: credentials,
           transaction: Transaction(
               maxPriorityFeePerGas: EtherAmount.fromInt(EtherUnit.ether, 0)));

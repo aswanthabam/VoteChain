@@ -4,7 +4,7 @@
 import 'package:web3dart/web3dart.dart' as _i1;
 
 final _contractAbi = _i1.ContractAbi.fromJson(
-  '[{"inputs":[{"internalType":"address","name":"permissionsAddress","type":"address"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"candidateAddress","type":"address"}],"name":"CandidateRegistered","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"candidateAddress","type":"address"}],"name":"CandidateVerified","type":"event"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"candidates","outputs":[{"internalType":"address payable","name":"walletAddress","type":"address"},{"internalType":"string","name":"name","type":"string"},{"internalType":"enum Candidate.CandidateStatus","name":"status","type":"uint8"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"string","name":"_name","type":"string"}],"name":"registerCandidate","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address payable","name":"_candidateAddress","type":"address"},{"internalType":"enum Candidate.CandidateStatus","name":"status","type":"uint8"}],"name":"verifyNomination","outputs":[],"stateMutability":"nonpayable","type":"function"}]',
+  '[{"inputs":[{"internalType":"address","name":"permissionsAddress","type":"address"},{"internalType":"address","name":"linkerAddress","type":"address"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"candidateAddress","type":"address"}],"name":"CandidateRegistered","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"candidateAddress","type":"address"}],"name":"CandidateVerified","type":"event"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"candidates","outputs":[{"internalType":"address payable","name":"walletAddress","type":"address"},{"internalType":"enum Candidate.CandidateStatus","name":"status","type":"uint8"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"string","name":"constituency","type":"string"}],"name":"registerCandidate","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address payable","name":"_candidateAddress","type":"address"},{"internalType":"enum Candidate.CandidateStatus","name":"status","type":"uint8"}],"name":"verifyNomination","outputs":[],"stateMutability":"nonpayable","type":"function"}]',
   'Candidate',
 );
 
@@ -44,13 +44,13 @@ class Candidate extends _i1.GeneratedContract {
   /// like the gas price, nonce and max gas. The `data` and `to` fields will be
   /// set by the contract.
   Future<String> registerCandidate(
-    String _name, {
+    String constituency, {
     required _i1.Credentials credentials,
     _i1.Transaction? transaction,
   }) async {
     final function = self.abi.functions[2];
     assert(checkSignature(function, '9eb88db6'));
-    final params = [_name];
+    final params = [constituency];
     return write(
       credentials,
       transaction,
@@ -134,12 +134,9 @@ class Candidate extends _i1.GeneratedContract {
 class Candidates {
   Candidates(List<dynamic> response)
       : walletAddress = (response[0] as _i1.EthereumAddress),
-        name = (response[1] as String),
-        status = (response[2] as BigInt);
+        status = (response[1] as BigInt);
 
   final _i1.EthereumAddress walletAddress;
-
-  final String name;
 
   final BigInt status;
 }

@@ -4,7 +4,7 @@
 import 'package:web3dart/web3dart.dart' as _i1;
 
 final _contractAbi = _i1.ContractAbi.fromJson(
-  '[{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"inputs":[],"name":"admin","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[],"name":"adminCount","outputs":[{"internalType":"uint104","name":"","type":"uint104"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"adminIndex","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"admins","outputs":[{"internalType":"string","name":"name","type":"string"},{"internalType":"enum Permissions.AdminRole","name":"role","type":"uint8"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"enum Permissions.AdminRole","name":"role","type":"uint8"}],"name":"requireAdmin","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"string","name":"name","type":"string"},{"internalType":"address payable","name":"_newAdmin","type":"address"},{"internalType":"enum Permissions.AdminRole","name":"role","type":"uint8"}],"name":"addAdmin","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address payable","name":"_adminToRemove","type":"address"}],"name":"removeAdmin","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"getMyRole","outputs":[{"internalType":"enum Permissions.AdminRole","name":"","type":"uint8"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[],"name":"getAllAdmins","outputs":[{"components":[{"internalType":"string","name":"name","type":"string"},{"internalType":"enum Permissions.AdminRole","name":"role","type":"uint8"}],"internalType":"struct Permissions.AdminInfo[]","name":"","type":"tuple[]"}],"stateMutability":"view","type":"function","constant":true}]',
+  '[{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"inputs":[],"name":"admin","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[],"name":"adminCount","outputs":[{"internalType":"uint104","name":"","type":"uint104"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"adminIndex","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"admins","outputs":[{"internalType":"string","name":"name","type":"string"},{"internalType":"enum Permissions.AdminRole","name":"role","type":"uint8"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"address","name":"sender","type":"address"},{"internalType":"enum Permissions.AdminRole","name":"role","type":"uint8"}],"name":"requireAdmin","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"string","name":"name","type":"string"},{"internalType":"address payable","name":"_newAdmin","type":"address"},{"internalType":"enum Permissions.AdminRole","name":"role","type":"uint8"}],"name":"addAdmin","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address payable","name":"_adminToRemove","type":"address"}],"name":"removeAdmin","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"getMyRole","outputs":[{"internalType":"enum Permissions.AdminRole","name":"","type":"uint8"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[],"name":"getAllAdmins","outputs":[{"components":[{"internalType":"string","name":"name","type":"string"},{"internalType":"enum Permissions.AdminRole","name":"role","type":"uint8"}],"internalType":"struct Permissions.AdminInfo[]","name":"","type":"tuple[]"}],"stateMutability":"view","type":"function","constant":true}]',
   'Permissions',
 );
 
@@ -92,12 +92,16 @@ class Permissions extends _i1.GeneratedContract {
   /// set, the function will be evaluated in the specified block. By default, the
   /// latest on-chain block will be used.
   Future<bool> requireAdmin(
+    _i1.EthereumAddress sender,
     BigInt role, {
     _i1.BlockNum? atBlock,
   }) async {
     final function = self.abi.functions[5];
-    assert(checkSignature(function, 'f405275c'));
-    final params = [role];
+    assert(checkSignature(function, '1444166e'));
+    final params = [
+      sender,
+      role,
+    ];
     final response = await read(
       function,
       params,

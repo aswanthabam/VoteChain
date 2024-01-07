@@ -9,6 +9,7 @@ import 'package:vote/screens/pages/register/callbacks.dart';
 import 'package:vote/screens/pages/register/final/confirm_phrase.dart';
 import 'package:vote/screens/pages/register/final/password_adder.dart';
 import 'package:vote/screens/pages/register/final/pin_add.dart';
+import 'package:vote/screens/pages/register/personal_information/constituency.dart';
 import 'package:vote/screens/pages/register/personal_information/one_personal.dart';
 import 'package:vote/screens/pages/register/personal_information/two_personal.dart';
 import 'package:vote/screens/pages/register/personal_information/uid.dart';
@@ -39,6 +40,7 @@ class _RegisterState extends State<Register> {
     RegisterUIDPage(),
     RegisterPersonalInfoOnePage(),
     RegisterPersonalInfoTwoPage(),
+    ConstituencySelectorPage(),
     // RegisterPersonalInfoThreePage(),
     // RegisterElectionDetailsOnePage(),
     PasswordAdderPage(),

@@ -109,6 +109,7 @@ class VoterInfo extends JsonType {
   AddressInfo currentAddress;
   bool married;
   bool orphan;
+  String constituency;
 
   VoterInfo({
     required this.aadharNumber,
@@ -118,6 +119,7 @@ class VoterInfo extends JsonType {
     required this.currentAddress,
     required this.married,
     required this.orphan,
+    required this.constituency,
   });
 
   @override
@@ -130,6 +132,7 @@ class VoterInfo extends JsonType {
       "current_address": currentAddress.toJson(),
       "married": married,
       "orphan": orphan,
+      "constituency": constituency,
     };
   }
 
@@ -141,7 +144,8 @@ class VoterInfo extends JsonType {
         permanentAddress: AddressInfo.fromList(data[3]),
         currentAddress: AddressInfo.fromList(data[4]),
         married: data[5],
-        orphan: data[6]);
+        orphan: data[6],
+        constituency: data[7]);
   }
 }
 

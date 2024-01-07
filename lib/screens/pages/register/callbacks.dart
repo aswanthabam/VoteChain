@@ -19,8 +19,8 @@ Future<RegisterCallbackResult> submitRegister(VoterModal modal) async {
     return RegisterCallbackResult(success: false, message: res.message);
   }
 
-  var sts = await helper
-      .registerVoter(modal.voterInfo); // register voter with blockchain
+  var sts = await helper.registerVoter(
+      modal.voterInfo, modal.constituency); // register voter with blockchain
 
   if (sts == VoterRegistrationStatus.success) {
     VoteChainWallet.saveWallet(modal.pin); // save wallet to local storage

@@ -23,3 +23,108 @@ class SystemConfig {
     SystemConfig.websocketServer = data['websocketServer'];
   }
 }
+
+class State {
+  final String id;
+  final String name;
+  final String code;
+  final int noOfDistricts;
+
+  State({
+    required this.id,
+    required this.name,
+    required this.code,
+    required this.noOfDistricts,
+  });
+
+  @override
+  String toString() {
+    return name;
+  }
+
+  static State fromJson(Map<String, dynamic> data) {
+    return State(
+      id: data['id'],
+      name: data['name'],
+      code: data['code'],
+      noOfDistricts: data['no_of_districts'],
+    );
+  }
+}
+
+class District {
+  final String id;
+  final String name;
+  final String code;
+  final String state;
+  final int noOfConstituencies;
+  final String link;
+  final String? description;
+  final String? image;
+
+  District({
+    required this.id,
+    required this.name,
+    required this.code,
+    required this.state,
+    required this.noOfConstituencies,
+    required this.link,
+    required this.description,
+    required this.image,
+  });
+
+  @override
+  String toString() {
+    return name;
+  }
+
+  static District fromJson(Map<String, dynamic> data) {
+    return District(
+      id: data['id'],
+      name: data['name'],
+      code: data['code'],
+      state: data['state'],
+      noOfConstituencies: data['no_of_constituencies'],
+      link: data['link'],
+      description: data['description'],
+      image: data['image'],
+    );
+  }
+}
+
+class Constituency {
+  final String id;
+  final String name;
+  final String code;
+  final String district;
+  final String link;
+  final String? description;
+  final String? image;
+
+  Constituency({
+    required this.id,
+    required this.name,
+    required this.code,
+    required this.district,
+    required this.link,
+    required this.description,
+    required this.image,
+  });
+
+  @override
+  String toString() {
+    return name;
+  }
+
+  static Constituency fromJson(Map<String, dynamic> data) {
+    return Constituency(
+      id: data['id'],
+      name: data['name'],
+      code: data['code'],
+      district: data['district'],
+      link: data['link'],
+      description: data['description'],
+      image: data['image'],
+    );
+  }
+}
