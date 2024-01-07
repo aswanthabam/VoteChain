@@ -57,7 +57,7 @@ class _ProfileState extends State<Profile> {
                                       ],
                                     );
                                   });
-                              await res.waiter;
+                              await res.waiter!();
                             }
                             if (!res.status) {
                               // ignore: use_build_context_synchronously

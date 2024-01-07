@@ -13,7 +13,7 @@ class ExternalConnectResponse {
   final bool status;
   final String message;
   final bool stayUntilComplete;
-  final Future<bool>? waiter;
+  final Future<bool> Function()? waiter;
   const ExternalConnectResponse(this.status, this.message,
       {this.stayUntilComplete = false, this.waiter});
 }
@@ -72,24 +72,38 @@ class ExternalConnectManager {
           if (val[1] == 'register') {
             if (val[2] == 'stay') {
               stay = true;
-              Completer<bool> listener = Completer<bool>();
-              connector?.addListener('send_back', (p0) async {
-                Global.logger.i(p0);
-                await EthersCall().requestEthers();
-                String? hash = await Contracts.candidate?.registerCandidate(
-                    p0['data']['constituency'],
-                    credentials: VoteChainWallet.credentials!,
-                    transaction: Transaction(
-                        maxPriorityFeePerGas:
-                            EtherAmount.fromInt(EtherUnit.ether, 0)));
-                Global.logger.i("Registered with hash : $hash");
-                listener.complete(true);
-              });
-              Global.logger.d("Waiting for listener to complete");
-              await listener.future;
+              waiter() async {
+                Completer<bool> listener = Completer<bool>();
+                connector?.addListener('send_back', (p0) async {
+                  Global.logger.i(p0);
+                  await EthersCall().requestEthers();
+                  try {
+                    String? hash = await Contracts.candidate?.registerCandidate(
+                        BigInt.from(p0['data']['election']['id'] as int),
+                        credentials: VoteChainWallet.credentials!,
+                        transaction: Transaction(
+                            maxPriorityFeePerGas:
+                                EtherAmount.fromInt(EtherUnit.ether, 0)));
+                  } catch (err) {
+                    connector?.sendResult({'status': 'failed'});
+                    listener.complete(false);
+                    Global.logger.e("Error registering candidate: $err");
+                  }
+                  Global.logger.i("Registered with hash : $hash");
+                  if (hash != null) {
+                    connector?.sendResult({'status': 'success', 'value': hash});
+                    listener.complete(true);
+                  } else {
+                    connector?.sendResult({'status': 'failed'});
+                    listener.complete(false);
+                  }
+                });
+                return await listener.future;
+              }
+
               return ExternalConnectResponse(
-                  true, "Successfully completed operation",
-                  stayUntilComplete: true, waiter: listener.future);
+                  true, "Wait until the operation is complete, please wait!",
+                  stayUntilComplete: true, waiter: waiter);
             }
           }
         }

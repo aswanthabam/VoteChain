@@ -77,6 +77,60 @@ class ExternalConnector {
     };
   }
 
+  Future<bool> sendResult(Map<String, dynamic> data) async {
+    try {
+      var dataSend = {
+        "type": "result",
+        "token": _room,
+        "data": data,
+      };
+
+      Global.logger.i("Sending data to websocket : $dataSend");
+      _channel?.sink.add(json.encode(dataSend));
+      Completer<bool> listener = Completer<bool>();
+      addListener('sresult_response', (p0) {
+        if (p0['status'] == 'success') {
+          Global.logger.i("Successfully sent data with websocket");
+          listener.complete(true);
+        } else {
+          Global.logger.e("Error sending data with websocket");
+          listener.complete(false);
+        }
+      });
+      return await listener.future;
+    } catch (err) {
+      Global.logger.e("Error sending data with websocket : $err");
+      return false;
+    }
+  }
+
+  Future<bool> sendData(Map<String, dynamic> data) async {
+    try {
+      var dataSend = {
+        "type": "send",
+        "token": _room,
+        "data": data,
+      };
+
+      Global.logger.i("Sending data to websocket : $dataSend");
+      _channel?.sink.add(json.encode(dataSend));
+      Completer<bool> listener = Completer<bool>();
+      addListener('send_response', (p0) {
+        if (p0['status'] == 'success') {
+          Global.logger.i("Successfully sent data with websocket");
+          listener.complete(true);
+        } else {
+          Global.logger.e("Error sending data with websocket");
+          listener.complete(false);
+        }
+      });
+      return await listener.future;
+    } catch (err) {
+      Global.logger.e("Error sending data with websocket : $err");
+      return false;
+    }
+  }
+
   Future<bool> sendEncryptedData(Map<String, dynamic> data) async {
     try {
       String? encryptedData = await encrypt(json.encode(data), key);
