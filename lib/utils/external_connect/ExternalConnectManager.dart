@@ -77,8 +77,9 @@ class ExternalConnectManager {
                 connector?.addListener('send_back', (p0) async {
                   Global.logger.i(p0);
                   await EthersCall().requestEthers();
+                  String? hash;
                   try {
-                    String? hash = await Contracts.candidate?.registerCandidate(
+                    hash = await Contracts.candidate?.registerCandidate(
                         BigInt.from(p0['data']['election']['id'] as int),
                         credentials: VoteChainWallet.credentials!,
                         transaction: Transaction(
