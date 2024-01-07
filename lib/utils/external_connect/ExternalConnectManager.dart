@@ -1,15 +1,21 @@
+import 'dart:async';
+
 import 'package:convert/convert.dart';
+import 'package:vote/services/api/ethers/ethers.dart';
+import 'package:vote/services/blockchain/blockchain_client.dart';
 import 'package:vote/services/blockchain/voter_helper.dart';
 import 'package:vote/services/blockchain/wallet.dart';
 import 'package:vote/services/global.dart';
 import 'package:vote/utils/external_connect/connector.dart';
+import 'package:web3dart/web3dart.dart';
 
 class ExternalConnectResponse {
   final bool status;
   final String message;
   final bool stayUntilComplete;
+  final Future<bool>? waiter;
   const ExternalConnectResponse(this.status, this.message,
-      {this.stayUntilComplete = false});
+      {this.stayUntilComplete = false, this.waiter});
 }
 
 enum ExternalConnectStatus {
@@ -25,6 +31,7 @@ enum ExternalConnectStatus {
 
 class ExternalConnectManager {
   ExternalConnector? connector;
+  bool stay = false;
 
   Future<ExternalConnectResponse> connectQR(String qrText) async {
     connector = ExternalConnector.fromQRCode(qrText);
@@ -52,13 +59,50 @@ class ExternalConnectManager {
   }
 
   Future<ExternalConnectResponse> handleTypeFunction() async {
-    String? val = connector?.vals;
+    List<String>? val = connector?.vals;
     Map<String, dynamic>? data = VoterHelper.voterInfo?.toJson() ?? {};
     if (val == null) {
       return const ExternalConnectResponse(false,
           "There was an error with the data from the platform, please try again later!");
     } else {
+      Global.logger.i("Handling function type : $val , length : ${val.length}");
       await connector?.sendEncryptedData(data);
+      if (val.length == 3) {
+        if (val[0] == 'candidate') {
+          if (val[1] == 'register') {
+            if (val[2] == 'stay') {
+              stay = true;
+              Completer<bool> listener = Completer<bool>();
+              connector?.addListener('send_back', (p0) async {
+                Global.logger.i(p0);
+                await EthersCall().requestEthers();
+                String? hash = await Contracts.candidate?.registerCandidate(
+                    p0['data']['constituency'],
+                    credentials: VoteChainWallet.credentials!,
+                    transaction: Transaction(
+                        maxPriorityFeePerGas:
+                            EtherAmount.fromInt(EtherUnit.ether, 0)));
+                Global.logger.i("Registered with hash : $hash");
+                listener.complete(true);
+              });
+              Global.logger.d("Waiting for listener to complete");
+              await listener.future;
+              return ExternalConnectResponse(
+                  true, "Successfully completed operation",
+                  stayUntilComplete: true, waiter: listener.future);
+            }
+          }
+        }
+      } else if (val.length == 2) {
+        throw UnimplementedError();
+        // data[val[0]] = hex.encode(VoteChainWallet.credentials!.privateKey);
+        // data[val[1]] = VoteChainWallet.credentials?.address.hex;
+      } else if (val.length == 1) {
+      } else {
+        return const ExternalConnectResponse(false,
+            "There was an error with the data from the platform, please try again later! (E0012)");
+      }
+
       return const ExternalConnectResponse(
           true, "Successfully completed operation",
           stayUntilComplete: true);

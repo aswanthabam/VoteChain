@@ -10,7 +10,7 @@ class ExternalConnector {
   final String _room;
   final String _key;
   final String _type;
-  final String? _vals;
+  final List<String>? _vals;
 
   WebSocketChannel? _channel;
   Stream<dynamic>? _stream;
@@ -19,13 +19,13 @@ class ExternalConnector {
   String get room => _room;
   String get key => _key;
   String get type => _type;
-  String? get vals => _vals;
+  List<String>? get vals => _vals;
 
   ExternalConnector({
     required String room,
     required String key,
     required String type,
-    String? vals,
+    List<String>? vals,
   })  : _room = room,
         _key = key,
         _type = type,
@@ -125,7 +125,7 @@ class ExternalConnector {
       room: data[0],
       key: data[1],
       type: data[2],
-      vals: data.length == 4 ? data[3] : null,
+      vals: data.length == 4 ? data[3].split('.') : null,
     );
   }
 }

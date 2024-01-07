@@ -41,6 +41,24 @@ class _ProfileState extends State<Profile> {
                                 ExternalConnectManager();
                             ExternalConnectResponse res =
                                 await manager.connectQR(val);
+                            if (res.stayUntilComplete) {
+                              // ignore: use_build_context_synchronously
+                              showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return TextPopup(
+                                      message: res.message,
+                                      bottomButtons: [
+                                        TextButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                            child: const Text("Continue"))
+                                      ],
+                                    );
+                                  });
+                              await res.waiter;
+                            }
                             if (!res.status) {
                               // ignore: use_build_context_synchronously
                               await showDialog(
