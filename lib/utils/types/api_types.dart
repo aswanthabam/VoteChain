@@ -24,6 +24,43 @@ class SystemConfig {
   }
 }
 
+class Election {
+  final String id;
+  final String name;
+  final String description;
+  final DateTime startDate;
+  final DateTime endDate;
+  final String constituency;
+  final int nominationStatus;
+
+  Election({
+    required this.id,
+    required this.name,
+    required this.description,
+    required this.startDate,
+    required this.endDate,
+    required this.constituency,
+    required this.nominationStatus,
+  });
+
+  @override
+  String toString() {
+    return name;
+  }
+
+  static Election fromList(List<dynamic> data) {
+    return Election(
+      id: data[0].toString(),
+      name: data[1],
+      description: data[2],
+      startDate: DateTime.fromMillisecondsSinceEpoch(data[3].toInt() * 1000),
+      endDate: DateTime.fromMillisecondsSinceEpoch(data[4].toInt() * 1000),
+      constituency: data[5],
+      nominationStatus: data[6].toInt(),
+    );
+  }
+}
+
 class State {
   final String id;
   final String name;

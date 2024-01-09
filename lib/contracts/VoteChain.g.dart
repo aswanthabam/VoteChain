@@ -4,7 +4,7 @@
 import 'package:web3dart/web3dart.dart' as _i1;
 
 final _contractAbi = _i1.ContractAbi.fromJson(
-  '[{"inputs":[{"internalType":"address","name":"permissionsAddress","type":"address"},{"internalType":"address","name":"linkerAddress","type":"address"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"electionId","type":"uint256"}],"name":"ElectionCreated","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"electionId","type":"uint256"}],"name":"ElectionEnded","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"electionId","type":"uint256"}],"name":"ElectionStarted","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"electionId","type":"uint256"},{"indexed":true,"internalType":"address","name":"voterAddress","type":"address"}],"name":"VoteCasted","type":"event"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"address","name":"","type":"address"}],"name":"candidateVoteCount","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"string","name":"","type":"string"}],"name":"constituencyElectionCount","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"string","name":"","type":"string"},{"internalType":"uint256","name":"","type":"uint256"}],"name":"constituency_election_linker","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[],"name":"electionCount","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"elections","outputs":[{"internalType":"uint256","name":"id","type":"uint256"},{"internalType":"string","name":"name","type":"string"},{"internalType":"string","name":"description","type":"string"},{"internalType":"uint256","name":"startDate","type":"uint256"},{"internalType":"uint256","name":"endDate","type":"uint256"},{"internalType":"string","name":"constituency","type":"string"},{"internalType":"enum VoteChain.ElectionNominationStatus","name":"nominationStatus","type":"uint8"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"string","name":"str1","type":"string"},{"internalType":"string","name":"str2","type":"string"}],"name":"isEqual","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"pure","type":"function","constant":true},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"address","name":"","type":"address"}],"name":"voterVoted","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[],"name":"getEligibleElections","outputs":[{"components":[{"internalType":"uint256","name":"id","type":"uint256"},{"internalType":"string","name":"name","type":"string"},{"internalType":"string","name":"description","type":"string"},{"internalType":"uint256","name":"startDate","type":"uint256"},{"internalType":"uint256","name":"endDate","type":"uint256"},{"internalType":"string","name":"constituency","type":"string"},{"internalType":"enum VoteChain.ElectionNominationStatus","name":"nominationStatus","type":"uint8"}],"internalType":"struct VoteChain.ElectionInfo[]","name":"","type":"tuple[]"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"uint256","name":"electionId","type":"uint256"},{"internalType":"address","name":"candidateAddress","type":"address"}],"name":"vote","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"string","name":"_name","type":"string"},{"internalType":"string","name":"_description","type":"string"},{"internalType":"uint256","name":"_startDate","type":"uint256"},{"internalType":"uint256","name":"_endDate","type":"uint256"},{"internalType":"string","name":"constituency","type":"string"},{"internalType":"enum VoteChain.ElectionNominationStatus","name":"_nominationStatus","type":"uint8"}],"name":"createElection","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"getAllElections","outputs":[{"components":[{"internalType":"uint256","name":"id","type":"uint256"},{"internalType":"string","name":"name","type":"string"},{"internalType":"string","name":"description","type":"string"},{"internalType":"uint256","name":"startDate","type":"uint256"},{"internalType":"uint256","name":"endDate","type":"uint256"},{"internalType":"string","name":"constituency","type":"string"},{"internalType":"enum VoteChain.ElectionNominationStatus","name":"nominationStatus","type":"uint8"}],"internalType":"struct VoteChain.ElectionInfo[]","name":"","type":"tuple[]"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[],"name":"getUpComingElections","outputs":[{"components":[{"internalType":"uint256","name":"id","type":"uint256"},{"internalType":"string","name":"name","type":"string"},{"internalType":"string","name":"description","type":"string"},{"internalType":"uint256","name":"startDate","type":"uint256"},{"internalType":"uint256","name":"endDate","type":"uint256"},{"internalType":"string","name":"constituency","type":"string"},{"internalType":"enum VoteChain.ElectionNominationStatus","name":"nominationStatus","type":"uint8"}],"internalType":"struct VoteChain.ElectionInfo[]","name":"","type":"tuple[]"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[],"name":"getOnGoingElections","outputs":[{"components":[{"internalType":"uint256","name":"id","type":"uint256"},{"internalType":"string","name":"name","type":"string"},{"internalType":"string","name":"description","type":"string"},{"internalType":"uint256","name":"startDate","type":"uint256"},{"internalType":"uint256","name":"endDate","type":"uint256"},{"internalType":"string","name":"constituency","type":"string"},{"internalType":"enum VoteChain.ElectionNominationStatus","name":"nominationStatus","type":"uint8"}],"internalType":"struct VoteChain.ElectionInfo[]","name":"","type":"tuple[]"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"string","name":"constituency","type":"string"}],"name":"getNominatableElections","outputs":[{"components":[{"internalType":"uint256","name":"id","type":"uint256"},{"internalType":"string","name":"name","type":"string"},{"internalType":"string","name":"description","type":"string"},{"internalType":"uint256","name":"startDate","type":"uint256"},{"internalType":"uint256","name":"endDate","type":"uint256"},{"internalType":"string","name":"constituency","type":"string"},{"internalType":"enum VoteChain.ElectionNominationStatus","name":"nominationStatus","type":"uint8"}],"internalType":"struct VoteChain.ElectionInfo[]","name":"","type":"tuple[]"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"uint256","name":"electionId","type":"uint256"},{"internalType":"enum VoteChain.ElectionNominationStatus","name":"status","type":"uint8"}],"name":"setElectionNominationStatus","outputs":[],"stateMutability":"nonpayable","type":"function"}]',
+  '[{"inputs":[{"internalType":"address","name":"permissionsAddress","type":"address"},{"internalType":"address","name":"linkerAddress","type":"address"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"electionId","type":"uint256"}],"name":"ElectionCreated","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"electionId","type":"uint256"}],"name":"ElectionEnded","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"electionId","type":"uint256"}],"name":"ElectionStarted","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"electionId","type":"uint256"},{"indexed":true,"internalType":"address","name":"voterAddress","type":"address"}],"name":"VoteCasted","type":"event"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"address","name":"","type":"address"}],"name":"candidateVoteCount","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"string","name":"","type":"string"}],"name":"constituencyElectionCount","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"string","name":"","type":"string"},{"internalType":"uint256","name":"","type":"uint256"}],"name":"constituency_election_linker","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[],"name":"electionCount","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"elections","outputs":[{"internalType":"uint256","name":"id","type":"uint256"},{"internalType":"string","name":"name","type":"string"},{"internalType":"string","name":"description","type":"string"},{"internalType":"uint256","name":"startDate","type":"uint256"},{"internalType":"uint256","name":"endDate","type":"uint256"},{"internalType":"string","name":"constituency","type":"string"},{"internalType":"enum VoteChain.ElectionNominationStatus","name":"nominationStatus","type":"uint8"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"string","name":"str1","type":"string"},{"internalType":"string","name":"str2","type":"string"}],"name":"isEqual","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"pure","type":"function","constant":true},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"address","name":"","type":"address"}],"name":"voterVoted","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"uint256","name":"electionId","type":"uint256"},{"internalType":"address","name":"candidateAddress","type":"address"}],"name":"vote","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"string","name":"_name","type":"string"},{"internalType":"string","name":"_description","type":"string"},{"internalType":"uint256","name":"_startDate","type":"uint256"},{"internalType":"uint256","name":"_endDate","type":"uint256"},{"internalType":"string","name":"constituency","type":"string"},{"internalType":"enum VoteChain.ElectionNominationStatus","name":"_nominationStatus","type":"uint8"}],"name":"createElection","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"getAllElections","outputs":[{"components":[{"internalType":"uint256","name":"id","type":"uint256"},{"internalType":"string","name":"name","type":"string"},{"internalType":"string","name":"description","type":"string"},{"internalType":"uint256","name":"startDate","type":"uint256"},{"internalType":"uint256","name":"endDate","type":"uint256"},{"internalType":"string","name":"constituency","type":"string"},{"internalType":"enum VoteChain.ElectionNominationStatus","name":"nominationStatus","type":"uint8"}],"internalType":"struct VoteChain.ElectionInfo[]","name":"","type":"tuple[]"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"string","name":"constituency","type":"string"}],"name":"getAllElections","outputs":[{"components":[{"internalType":"uint256","name":"id","type":"uint256"},{"internalType":"string","name":"name","type":"string"},{"internalType":"string","name":"description","type":"string"},{"internalType":"uint256","name":"startDate","type":"uint256"},{"internalType":"uint256","name":"endDate","type":"uint256"},{"internalType":"string","name":"constituency","type":"string"},{"internalType":"enum VoteChain.ElectionNominationStatus","name":"nominationStatus","type":"uint8"}],"internalType":"struct VoteChain.ElectionInfo[]","name":"","type":"tuple[]"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[],"name":"getUpComingElections","outputs":[{"components":[{"internalType":"uint256","name":"id","type":"uint256"},{"internalType":"string","name":"name","type":"string"},{"internalType":"string","name":"description","type":"string"},{"internalType":"uint256","name":"startDate","type":"uint256"},{"internalType":"uint256","name":"endDate","type":"uint256"},{"internalType":"string","name":"constituency","type":"string"},{"internalType":"enum VoteChain.ElectionNominationStatus","name":"nominationStatus","type":"uint8"}],"internalType":"struct VoteChain.ElectionInfo[]","name":"","type":"tuple[]"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"string","name":"constituency","type":"string"}],"name":"getUpComingElections","outputs":[{"components":[{"internalType":"uint256","name":"id","type":"uint256"},{"internalType":"string","name":"name","type":"string"},{"internalType":"string","name":"description","type":"string"},{"internalType":"uint256","name":"startDate","type":"uint256"},{"internalType":"uint256","name":"endDate","type":"uint256"},{"internalType":"string","name":"constituency","type":"string"},{"internalType":"enum VoteChain.ElectionNominationStatus","name":"nominationStatus","type":"uint8"}],"internalType":"struct VoteChain.ElectionInfo[]","name":"","type":"tuple[]"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"string","name":"constituency","type":"string"}],"name":"getOnGoingElections","outputs":[{"components":[{"internalType":"uint256","name":"id","type":"uint256"},{"internalType":"string","name":"name","type":"string"},{"internalType":"string","name":"description","type":"string"},{"internalType":"uint256","name":"startDate","type":"uint256"},{"internalType":"uint256","name":"endDate","type":"uint256"},{"internalType":"string","name":"constituency","type":"string"},{"internalType":"enum VoteChain.ElectionNominationStatus","name":"nominationStatus","type":"uint8"}],"internalType":"struct VoteChain.ElectionInfo[]","name":"","type":"tuple[]"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[],"name":"getOnGoingElections","outputs":[{"components":[{"internalType":"uint256","name":"id","type":"uint256"},{"internalType":"string","name":"name","type":"string"},{"internalType":"string","name":"description","type":"string"},{"internalType":"uint256","name":"startDate","type":"uint256"},{"internalType":"uint256","name":"endDate","type":"uint256"},{"internalType":"string","name":"constituency","type":"string"},{"internalType":"enum VoteChain.ElectionNominationStatus","name":"nominationStatus","type":"uint8"}],"internalType":"struct VoteChain.ElectionInfo[]","name":"","type":"tuple[]"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"string","name":"constituency","type":"string"}],"name":"getNominatableElections","outputs":[{"components":[{"internalType":"uint256","name":"id","type":"uint256"},{"internalType":"string","name":"name","type":"string"},{"internalType":"string","name":"description","type":"string"},{"internalType":"uint256","name":"startDate","type":"uint256"},{"internalType":"uint256","name":"endDate","type":"uint256"},{"internalType":"string","name":"constituency","type":"string"},{"internalType":"enum VoteChain.ElectionNominationStatus","name":"nominationStatus","type":"uint8"}],"internalType":"struct VoteChain.ElectionInfo[]","name":"","type":"tuple[]"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"uint256","name":"electionId","type":"uint256"},{"internalType":"enum VoteChain.ElectionNominationStatus","name":"status","type":"uint8"}],"name":"setElectionNominationStatus","outputs":[],"stateMutability":"nonpayable","type":"function"}]',
   'VoteChain',
 );
 
@@ -161,21 +161,6 @@ class VoteChain extends _i1.GeneratedContract {
     return (response[0] as bool);
   }
 
-  /// The optional [atBlock] parameter can be used to view historical data. When
-  /// set, the function will be evaluated in the specified block. By default, the
-  /// latest on-chain block will be used.
-  Future<List<dynamic>> getEligibleElections({_i1.BlockNum? atBlock}) async {
-    final function = self.abi.functions[8];
-    assert(checkSignature(function, '49bfd05b'));
-    final params = [];
-    final response = await read(
-      function,
-      params,
-      atBlock,
-    );
-    return (response[0] as List<dynamic>).cast<dynamic>();
-  }
-
   /// The optional [transaction] parameter can be used to override parameters
   /// like the gas price, nonce and max gas. The `data` and `to` fields will be
   /// set by the contract.
@@ -185,7 +170,7 @@ class VoteChain extends _i1.GeneratedContract {
     required _i1.Credentials credentials,
     _i1.Transaction? transaction,
   }) async {
-    final function = self.abi.functions[9];
+    final function = self.abi.functions[8];
     assert(checkSignature(function, '02d947ef'));
     final params = [
       electionId,
@@ -212,7 +197,7 @@ class VoteChain extends _i1.GeneratedContract {
     required _i1.Credentials credentials,
     _i1.Transaction? transaction,
   }) async {
-    final function = self.abi.functions[10];
+    final function = self.abi.functions[9];
     assert(checkSignature(function, 'e94c50f0'));
     final params = [
       _name,
@@ -234,9 +219,27 @@ class VoteChain extends _i1.GeneratedContract {
   /// set, the function will be evaluated in the specified block. By default, the
   /// latest on-chain block will be used.
   Future<List<dynamic>> getAllElections({_i1.BlockNum? atBlock}) async {
-    final function = self.abi.functions[11];
+    final function = self.abi.functions[10];
     assert(checkSignature(function, '7fd5f268'));
     final params = [];
+    final response = await read(
+      function,
+      params,
+      atBlock,
+    );
+    return (response[0] as List<dynamic>).cast<dynamic>();
+  }
+
+  /// The optional [atBlock] parameter can be used to view historical data. When
+  /// set, the function will be evaluated in the specified block. By default, the
+  /// latest on-chain block will be used.
+  Future<List<dynamic>> getAllElections$2(
+    String constituency, {
+    _i1.BlockNum? atBlock,
+  }) async {
+    final function = self.abi.functions[11];
+    assert(checkSignature(function, 'fbbf9492'));
+    final params = [constituency];
     final response = await read(
       function,
       params,
@@ -263,8 +266,44 @@ class VoteChain extends _i1.GeneratedContract {
   /// The optional [atBlock] parameter can be used to view historical data. When
   /// set, the function will be evaluated in the specified block. By default, the
   /// latest on-chain block will be used.
-  Future<List<dynamic>> getOnGoingElections({_i1.BlockNum? atBlock}) async {
+  Future<List<dynamic>> getUpComingElections$2(
+    String constituency, {
+    _i1.BlockNum? atBlock,
+  }) async {
     final function = self.abi.functions[13];
+    assert(checkSignature(function, 'a14811e9'));
+    final params = [constituency];
+    final response = await read(
+      function,
+      params,
+      atBlock,
+    );
+    return (response[0] as List<dynamic>).cast<dynamic>();
+  }
+
+  /// The optional [atBlock] parameter can be used to view historical data. When
+  /// set, the function will be evaluated in the specified block. By default, the
+  /// latest on-chain block will be used.
+  Future<List<dynamic>> getOnGoingElections(
+    String constituency, {
+    _i1.BlockNum? atBlock,
+  }) async {
+    final function = self.abi.functions[14];
+    assert(checkSignature(function, '635fe9de'));
+    final params = [constituency];
+    final response = await read(
+      function,
+      params,
+      atBlock,
+    );
+    return (response[0] as List<dynamic>).cast<dynamic>();
+  }
+
+  /// The optional [atBlock] parameter can be used to view historical data. When
+  /// set, the function will be evaluated in the specified block. By default, the
+  /// latest on-chain block will be used.
+  Future<List<dynamic>> getOnGoingElections$2({_i1.BlockNum? atBlock}) async {
+    final function = self.abi.functions[15];
     assert(checkSignature(function, 'e8a472b3'));
     final params = [];
     final response = await read(
@@ -282,7 +321,7 @@ class VoteChain extends _i1.GeneratedContract {
     String constituency, {
     _i1.BlockNum? atBlock,
   }) async {
-    final function = self.abi.functions[14];
+    final function = self.abi.functions[16];
     assert(checkSignature(function, '7a534ced'));
     final params = [constituency];
     final response = await read(
@@ -302,7 +341,7 @@ class VoteChain extends _i1.GeneratedContract {
     required _i1.Credentials credentials,
     _i1.Transaction? transaction,
   }) async {
-    final function = self.abi.functions[15];
+    final function = self.abi.functions[17];
     assert(checkSignature(function, 'b83d1be8'));
     final params = [
       electionId,

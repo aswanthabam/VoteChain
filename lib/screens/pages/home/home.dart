@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:vote/contracts/VoteChain.g.dart';
 import 'package:vote/screens/layers/default_layer.dart';
+import 'package:vote/screens/widgets/content_views/underlined_text/underlined_text.dart';
+import 'package:vote/services/blockchain/blockchain_client.dart';
 import 'package:vote/services/blockchain/voter_helper.dart';
 import 'package:vote/services/global.dart';
+import 'package:vote/utils/types/api_types.dart' as apiTypes;
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -15,7 +19,9 @@ class _HomeState extends State<Home> {
   String balance = "";
   bool isVerified = false;
   VoterStatus status = VoterStatus.registered;
-  // List<Elections> elections = [];
+  List<apiTypes.Election> upcomingElections = [];
+  List<apiTypes.Election> ongoingElections = [];
+
   @override
   void initState() {
     super.initState();
@@ -31,6 +37,24 @@ class _HomeState extends State<Home> {
     await VoterHelper().fetchInfo();
     Global.logger.i(
         "About the voter : \n - ${VoterHelper.voterRegistrationStatus!.message} \n ${VoterHelper.voterInfo!.toJson()}");
+    Contracts.votechain
+        ?.getUpComingElections$2(VoterHelper.voterInfo?.constituency ?? "")
+        .then((value) {
+      Global.logger.d("Upcoming elections: $value");
+      upcomingElections = value
+          .map<apiTypes.Election>((e) => apiTypes.Election.fromList(e))
+          .toList();
+      setState(() {});
+    });
+    Contracts.votechain
+        ?.getOnGoingElections(VoterHelper.voterInfo?.constituency ?? "")
+        .then((value) {
+      Global.logger.d("Ongoing elections: $value");
+      ongoingElections = value
+          .map<apiTypes.Election>((e) => apiTypes.Election.fromList(e))
+          .toList();
+      setState(() {});
+    });
   }
 
   @override
@@ -58,6 +82,80 @@ class _HomeState extends State<Home> {
                               statusDescription: "You can now access votechain",
                               status: true,
                             )),
+                      const SizedBox(height: 15),
+                      const UnderlinedText(
+                          heading: "Ongoing Elections",
+                          fontSize: 17,
+                          color: Colors.black,
+                          underlineColor: Colors.black,
+                          underlineWidth: 100,
+                          underlineHeight: 4),
+                      const SizedBox(
+                        height: 0,
+                      ),
+                      Column(
+                        children: ongoingElections
+                            .map<Widget>((e) => SizedBox(
+                                width: MediaQuery.of(context).size.width,
+                                child: Card(
+                                    child: Padding(
+                                        padding: EdgeInsets.all(10),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              "${e.name} (ID: ${e.id})",
+                                              style: TextStyle(fontSize: 17),
+                                            ),
+                                            const SizedBox(
+                                              height: 10,
+                                            ),
+                                            Text(
+                                              e.description,
+                                              style: TextStyle(fontSize: 14),
+                                            )
+                                          ],
+                                        )))))
+                            .toList(),
+                      ),
+                      const SizedBox(height: 15),
+                      const UnderlinedText(
+                          heading: "Upcoming Elections",
+                          fontSize: 17,
+                          color: Colors.black,
+                          underlineColor: Colors.black,
+                          underlineWidth: 100,
+                          underlineHeight: 4),
+                      const SizedBox(
+                        height: 0,
+                      ),
+                      Column(
+                        children: upcomingElections
+                            .map<Widget>((e) => SizedBox(
+                                width: MediaQuery.of(context).size.width,
+                                child: Card(
+                                    child: Padding(
+                                        padding: EdgeInsets.all(10),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              "${e.name} (ID: ${e.id})",
+                                              style: TextStyle(fontSize: 17),
+                                            ),
+                                            const SizedBox(
+                                              height: 10,
+                                            ),
+                                            Text(
+                                              e.description,
+                                              style: TextStyle(fontSize: 14),
+                                            )
+                                          ],
+                                        )))))
+                            .toList(),
+                      )
                     ],
                   ),
                 ),

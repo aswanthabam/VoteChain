@@ -4,7 +4,7 @@
 import 'package:web3dart/web3dart.dart' as _i1;
 
 final _contractAbi = _i1.ContractAbi.fromJson(
-  '[{"inputs":[{"internalType":"address","name":"permissionsAddress","type":"address"},{"internalType":"address","name":"linkerAddress","type":"address"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"candidateAddress","type":"address"}],"name":"CandidateRegistered","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"candidateAddress","type":"address"}],"name":"CandidateVerified","type":"event"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"candidateCount","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"name":"candidates","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"name":"nominations","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"nominationsCount","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"uint256","name":"electionId","type":"uint256"}],"name":"registerCandidate","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"electionId","type":"uint256"},{"internalType":"address","name":"_candidateAddress","type":"address"}],"name":"verifyNomination","outputs":[],"stateMutability":"nonpayable","type":"function"}]',
+  '[{"inputs":[{"internalType":"address","name":"permissionsAddress","type":"address"},{"internalType":"address","name":"linkerAddress","type":"address"},{"internalType":"address","name":"voterAddress","type":"address"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"candidateAddress","type":"address"}],"name":"CandidateRegistered","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"candidateAddress","type":"address"}],"name":"CandidateVerified","type":"event"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"candidateCount","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"name":"candidates","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"name":"nominations","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"nominationsCount","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"uint256","name":"electionId","type":"uint256"}],"name":"registerCandidate","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"electionId","type":"uint256"},{"internalType":"address","name":"_candidateAddress","type":"address"}],"name":"verifyNomination","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"electionId","type":"uint256"}],"name":"getNominations","outputs":[{"components":[{"internalType":"address","name":"voter_address","type":"address"},{"components":[{"internalType":"string","name":"aadhar_number","type":"string"},{"components":[{"internalType":"string","name":"first_name","type":"string"},{"internalType":"string","name":"middle_name","type":"string"},{"internalType":"string","name":"last_name","type":"string"},{"internalType":"string","name":"dob","type":"string"}],"internalType":"struct Voter.VoterPersonalInfo","name":"personal_info","type":"tuple"},{"components":[{"internalType":"string","name":"phone","type":"string"},{"internalType":"string","name":"email","type":"string"}],"internalType":"struct Voter.VoterContactInfo","name":"contact_info","type":"tuple"},{"components":[{"internalType":"string","name":"state","type":"string"},{"internalType":"string","name":"district","type":"string"},{"internalType":"string","name":"locality","type":"string"},{"internalType":"string","name":"ward","type":"string"},{"internalType":"string","name":"house_name","type":"string"},{"internalType":"string","name":"house_number","type":"string"},{"internalType":"string","name":"street","type":"string"},{"internalType":"string","name":"pincode","type":"string"}],"internalType":"struct Voter.VoterAddressInfo","name":"permeant_address","type":"tuple"},{"components":[{"internalType":"string","name":"state","type":"string"},{"internalType":"string","name":"district","type":"string"},{"internalType":"string","name":"locality","type":"string"},{"internalType":"string","name":"ward","type":"string"},{"internalType":"string","name":"house_name","type":"string"},{"internalType":"string","name":"house_number","type":"string"},{"internalType":"string","name":"street","type":"string"},{"internalType":"string","name":"pincode","type":"string"}],"internalType":"struct Voter.VoterAddressInfo","name":"current_address","type":"tuple"},{"internalType":"bool","name":"married","type":"bool"},{"internalType":"bool","name":"orphan","type":"bool"},{"internalType":"string","name":"constituency","type":"string"}],"internalType":"struct Voter.VoterInfo","name":"voter_info","type":"tuple"}],"internalType":"struct Voter.VoterAccount[]","name":"","type":"tuple[]"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"uint256","name":"electionId","type":"uint256"}],"name":"getCandidates","outputs":[{"components":[{"internalType":"address","name":"voter_address","type":"address"},{"components":[{"internalType":"string","name":"aadhar_number","type":"string"},{"components":[{"internalType":"string","name":"first_name","type":"string"},{"internalType":"string","name":"middle_name","type":"string"},{"internalType":"string","name":"last_name","type":"string"},{"internalType":"string","name":"dob","type":"string"}],"internalType":"struct Voter.VoterPersonalInfo","name":"personal_info","type":"tuple"},{"components":[{"internalType":"string","name":"phone","type":"string"},{"internalType":"string","name":"email","type":"string"}],"internalType":"struct Voter.VoterContactInfo","name":"contact_info","type":"tuple"},{"components":[{"internalType":"string","name":"state","type":"string"},{"internalType":"string","name":"district","type":"string"},{"internalType":"string","name":"locality","type":"string"},{"internalType":"string","name":"ward","type":"string"},{"internalType":"string","name":"house_name","type":"string"},{"internalType":"string","name":"house_number","type":"string"},{"internalType":"string","name":"street","type":"string"},{"internalType":"string","name":"pincode","type":"string"}],"internalType":"struct Voter.VoterAddressInfo","name":"permeant_address","type":"tuple"},{"components":[{"internalType":"string","name":"state","type":"string"},{"internalType":"string","name":"district","type":"string"},{"internalType":"string","name":"locality","type":"string"},{"internalType":"string","name":"ward","type":"string"},{"internalType":"string","name":"house_name","type":"string"},{"internalType":"string","name":"house_number","type":"string"},{"internalType":"string","name":"street","type":"string"},{"internalType":"string","name":"pincode","type":"string"}],"internalType":"struct Voter.VoterAddressInfo","name":"current_address","type":"tuple"},{"internalType":"bool","name":"married","type":"bool"},{"internalType":"bool","name":"orphan","type":"bool"},{"internalType":"string","name":"constituency","type":"string"}],"internalType":"struct Voter.VoterInfo","name":"voter_info","type":"tuple"}],"internalType":"struct Voter.VoterAccount[]","name":"","type":"tuple[]"}],"stateMutability":"view","type":"function","constant":true}]',
   'Candidate',
 );
 
@@ -142,6 +142,42 @@ class Candidate extends _i1.GeneratedContract {
       function,
       params,
     );
+  }
+
+  /// The optional [atBlock] parameter can be used to view historical data. When
+  /// set, the function will be evaluated in the specified block. By default, the
+  /// latest on-chain block will be used.
+  Future<List<dynamic>> getNominations(
+    BigInt electionId, {
+    _i1.BlockNum? atBlock,
+  }) async {
+    final function = self.abi.functions[7];
+    assert(checkSignature(function, 'c86b73f3'));
+    final params = [electionId];
+    final response = await read(
+      function,
+      params,
+      atBlock,
+    );
+    return (response[0] as List<dynamic>).cast<dynamic>();
+  }
+
+  /// The optional [atBlock] parameter can be used to view historical data. When
+  /// set, the function will be evaluated in the specified block. By default, the
+  /// latest on-chain block will be used.
+  Future<List<dynamic>> getCandidates(
+    BigInt electionId, {
+    _i1.BlockNum? atBlock,
+  }) async {
+    final function = self.abi.functions[8];
+    assert(checkSignature(function, '3e39a7a5'));
+    final params = [electionId];
+    final response = await read(
+      function,
+      params,
+      atBlock,
+    );
+    return (response[0] as List<dynamic>).cast<dynamic>();
   }
 
   /// Returns a live stream of all CandidateRegistered events emitted by this contract.
