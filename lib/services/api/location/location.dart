@@ -41,10 +41,10 @@ class LocationCall extends APIClass {
   }
 
   Future<List<Constituency>> getConstituencies(
-      {String? districtId, String? search}) async {
+      {String? districtId, String? search, String? constituencyId}) async {
     try {
       var val = await getCall<List<dynamic>>(
-          '/api/location/constituencies/list/?${search != null ? 'search=$search&' : ''}${districtId != null ? 'district_id=$districtId' : ''}');
+          "/api/location/constituencies/list/?${search != null ? 'search=$search&' : ''}${districtId != null ? 'district_id=$districtId' : ''}${constituencyId != null ? '&constituency_id=$constituencyId' : ''}");
       if (val == null) {
         return [];
       }
