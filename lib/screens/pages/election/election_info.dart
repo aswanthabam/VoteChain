@@ -14,7 +14,7 @@ class ElectionInfo extends StatefulWidget {
 
 class _ElectionInfoState extends State<ElectionInfo> {
   String constituencyImage =
-      "https://raw.githubusercontent.com/aswanthabam/Manager/master/app/src/main/res/drawable-hdpi/Banner.png";
+      "https://raw.githubusercontent.com/aswanthabam/VoteChain/3ea448dfce18f2c73464d0d9a49315cb778258ec/src/images/asset/Frame%202.png";
   apiTypes.Constituency? constituency;
   @override
   void initState() {
