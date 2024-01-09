@@ -1,4 +1,6 @@
+import 'package:convert/convert.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:vote/contracts/VoteChain.g.dart';
 import 'package:vote/screens/layers/default_layer.dart';
 import 'package:vote/screens/widgets/content_views/underlined_text/underlined_text.dart';
@@ -132,28 +134,10 @@ class _HomeState extends State<Home> {
                       ),
                       Column(
                         children: upcomingElections
-                            .map<Widget>((e) => SizedBox(
-                                width: MediaQuery.of(context).size.width,
-                                child: Card(
-                                    child: Padding(
-                                        padding: EdgeInsets.all(10),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              "${e.name} (ID: ${e.id})",
-                                              style: TextStyle(fontSize: 17),
-                                            ),
-                                            const SizedBox(
-                                              height: 10,
-                                            ),
-                                            Text(
-                                              e.description,
-                                              style: TextStyle(fontSize: 14),
-                                            )
-                                          ],
-                                        )))))
+                            .map<Widget>((e) => ElectionCard(
+                                  election: e,
+                                  electionStatus: false,
+                                ))
                             .toList(),
                       )
                     ],
@@ -207,6 +191,278 @@ class AccountStatusCard extends StatelessWidget {
             const SizedBox(width: 20),
           ],
         ));
+  }
+}
+
+class ElectionCard extends StatelessWidget {
+  final apiTypes.Election election;
+  final bool electionStatus;
+  final int? nominations;
+  final int? candidates;
+  const ElectionCard(
+      {super.key,
+      required this.election,
+      this.electionStatus = false,
+      this.nominations,
+      this.candidates});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      padding: const EdgeInsets.all(19),
+      decoration: ShapeDecoration(
+        color: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(30),
+        ),
+        shadows: const [
+          BoxShadow(
+            color: Color(0x3F000000),
+            blurRadius: 4,
+            offset: Offset(0, 4),
+            spreadRadius: 0,
+          )
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+            decoration: ShapeDecoration(
+              color: electionStatus
+                  ? const Color(0xB243F034)
+                  : const Color(0xFFDFEA67),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(13),
+              ),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.access_time_sharp,
+                  size: 17,
+                ),
+                const SizedBox(width: 4),
+                Text(
+                  electionStatus ? 'Ongoing' : 'Upcoming',
+                  style: const TextStyle(
+                    color: Color(0xFF7D7777),
+                    fontSize: 12,
+                    fontFamily: 'Inter',
+                    fontWeight: FontWeight.w700,
+                    height: 0,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          Text(
+            election.name,
+            style: const TextStyle(
+              color: Colors.black,
+              fontSize: 19,
+              fontFamily: 'Inter',
+              fontWeight: FontWeight.w700,
+              height: 0,
+            ),
+          ),
+          const SizedBox(
+            height: 15,
+          ),
+          Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(15),
+                decoration: ShapeDecoration(
+                  color: const Color(0xFF67EACA),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8)),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text("Starts at",
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 13,
+                            fontFamily: 'Inter',
+                            fontWeight: FontWeight.w700,
+                            height: 0)),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    Text(
+                      DateFormat("dd MMM hh:mm a")
+                          .format(election.startDate)
+                          .toString(),
+                      style: const TextStyle(
+                        color: Colors.black,
+                        fontSize: 15,
+                        fontFamily: 'Inter',
+                        fontWeight: FontWeight.w700,
+                        height: 0,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.all(15),
+                decoration: ShapeDecoration(
+                  color: const Color(0xFF67EACA),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8)),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text("Ends on",
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 13,
+                            fontFamily: 'Inter',
+                            fontWeight: FontWeight.w700,
+                            height: 0)),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    Text(
+                      DateFormat("dd MMM hh:mm a")
+                          .format(election.endDate)
+                          .toString(),
+                      style: const TextStyle(
+                        color: Colors.black,
+                        fontSize: 15,
+                        fontFamily: 'Inter',
+                        fontWeight: FontWeight.w700,
+                        height: 0,
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          electionStatus
+              ? Placeholder()
+              : Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(15),
+                      decoration: ShapeDecoration(
+                        color: const Color(0xFF67EACA),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8)),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text("Total Nominations",
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 13,
+                                  fontFamily: 'Inter',
+                                  fontWeight: FontWeight.w700,
+                                  height: 0)),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            nominations.toString(),
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 20,
+                              fontFamily: 'Inter',
+                              fontWeight: FontWeight.w700,
+                              height: 0,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.all(15),
+                      decoration: ShapeDecoration(
+                        color: const Color(0xFF67EACA),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8)),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text("Total Candidates",
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 13,
+                                  fontFamily: 'Inter',
+                                  fontWeight: FontWeight.w700,
+                                  height: 0)),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            candidates.toString(),
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 20,
+                              fontFamily: 'Inter',
+                              fontWeight: FontWeight.w700,
+                              height: 0,
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+          const SizedBox(
+            height: 15,
+          ),
+          Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Container(
+                width: 122,
+                height: 32,
+                decoration: ShapeDecoration(
+                  color: const Color(0x281BA68D),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(11),
+                  ),
+                ),
+                child: const Center(
+                    child: Text(
+                  'Learn More',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 14,
+                    fontFamily: 'Inter',
+                    fontWeight: FontWeight.w700,
+                    height: 0,
+                  ),
+                )),
+              )
+            ],
+          )
+        ],
+      ),
+    );
   }
 }
 
