@@ -4,7 +4,7 @@
 import 'package:web3dart/web3dart.dart' as _i1;
 
 final _contractAbi = _i1.ContractAbi.fromJson(
-  '[{"inputs":[{"internalType":"address","name":"permissionsAddress","type":"address"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"candidateAddress","type":"address"}],"name":"CandidateRegistered","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"candidateAddress","type":"address"}],"name":"CandidateVerified","type":"event"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"candidates","outputs":[{"internalType":"address payable","name":"walletAddress","type":"address"},{"internalType":"string","name":"name","type":"string"},{"internalType":"enum Candidate.CandidateStatus","name":"status","type":"uint8"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"_name","type":"string"}],"name":"registerCandidate","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address payable","name":"_candidateAddress","type":"address"},{"internalType":"enum Candidate.CandidateStatus","name":"status","type":"uint8"}],"name":"verifyNomination","outputs":[],"stateMutability":"nonpayable","type":"function"}]',
+  '[{"inputs":[{"internalType":"address","name":"permissionsAddress","type":"address"},{"internalType":"address","name":"linkerAddress","type":"address"},{"internalType":"address","name":"voterAddress","type":"address"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"candidateAddress","type":"address"}],"name":"CandidateRegistered","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"candidateAddress","type":"address"}],"name":"CandidateVerified","type":"event"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"candidateCount","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"name":"candidates","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"name":"nominations","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"nominationsCount","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"uint256","name":"electionId","type":"uint256"}],"name":"registerCandidate","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"electionId","type":"uint256"},{"internalType":"address","name":"_candidateAddress","type":"address"}],"name":"verifyNomination","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"electionId","type":"uint256"}],"name":"getNominations","outputs":[{"components":[{"internalType":"address","name":"voter_address","type":"address"},{"components":[{"internalType":"string","name":"aadhar_number","type":"string"},{"components":[{"internalType":"string","name":"first_name","type":"string"},{"internalType":"string","name":"middle_name","type":"string"},{"internalType":"string","name":"last_name","type":"string"},{"internalType":"string","name":"dob","type":"string"}],"internalType":"struct Voter.VoterPersonalInfo","name":"personal_info","type":"tuple"},{"components":[{"internalType":"string","name":"phone","type":"string"},{"internalType":"string","name":"email","type":"string"}],"internalType":"struct Voter.VoterContactInfo","name":"contact_info","type":"tuple"},{"components":[{"internalType":"string","name":"state","type":"string"},{"internalType":"string","name":"district","type":"string"},{"internalType":"string","name":"locality","type":"string"},{"internalType":"string","name":"ward","type":"string"},{"internalType":"string","name":"house_name","type":"string"},{"internalType":"string","name":"house_number","type":"string"},{"internalType":"string","name":"street","type":"string"},{"internalType":"string","name":"pincode","type":"string"}],"internalType":"struct Voter.VoterAddressInfo","name":"permeant_address","type":"tuple"},{"components":[{"internalType":"string","name":"state","type":"string"},{"internalType":"string","name":"district","type":"string"},{"internalType":"string","name":"locality","type":"string"},{"internalType":"string","name":"ward","type":"string"},{"internalType":"string","name":"house_name","type":"string"},{"internalType":"string","name":"house_number","type":"string"},{"internalType":"string","name":"street","type":"string"},{"internalType":"string","name":"pincode","type":"string"}],"internalType":"struct Voter.VoterAddressInfo","name":"current_address","type":"tuple"},{"internalType":"bool","name":"married","type":"bool"},{"internalType":"bool","name":"orphan","type":"bool"},{"internalType":"string","name":"constituency","type":"string"}],"internalType":"struct Voter.VoterInfo","name":"voter_info","type":"tuple"}],"internalType":"struct Voter.VoterAccount[]","name":"","type":"tuple[]"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"uint256","name":"electionId","type":"uint256"}],"name":"getCandidates","outputs":[{"components":[{"internalType":"address","name":"voter_address","type":"address"},{"components":[{"internalType":"string","name":"aadhar_number","type":"string"},{"components":[{"internalType":"string","name":"first_name","type":"string"},{"internalType":"string","name":"middle_name","type":"string"},{"internalType":"string","name":"last_name","type":"string"},{"internalType":"string","name":"dob","type":"string"}],"internalType":"struct Voter.VoterPersonalInfo","name":"personal_info","type":"tuple"},{"components":[{"internalType":"string","name":"phone","type":"string"},{"internalType":"string","name":"email","type":"string"}],"internalType":"struct Voter.VoterContactInfo","name":"contact_info","type":"tuple"},{"components":[{"internalType":"string","name":"state","type":"string"},{"internalType":"string","name":"district","type":"string"},{"internalType":"string","name":"locality","type":"string"},{"internalType":"string","name":"ward","type":"string"},{"internalType":"string","name":"house_name","type":"string"},{"internalType":"string","name":"house_number","type":"string"},{"internalType":"string","name":"street","type":"string"},{"internalType":"string","name":"pincode","type":"string"}],"internalType":"struct Voter.VoterAddressInfo","name":"permeant_address","type":"tuple"},{"components":[{"internalType":"string","name":"state","type":"string"},{"internalType":"string","name":"district","type":"string"},{"internalType":"string","name":"locality","type":"string"},{"internalType":"string","name":"ward","type":"string"},{"internalType":"string","name":"house_name","type":"string"},{"internalType":"string","name":"house_number","type":"string"},{"internalType":"string","name":"street","type":"string"},{"internalType":"string","name":"pincode","type":"string"}],"internalType":"struct Voter.VoterAddressInfo","name":"current_address","type":"tuple"},{"internalType":"bool","name":"married","type":"bool"},{"internalType":"bool","name":"orphan","type":"bool"},{"internalType":"string","name":"constituency","type":"string"}],"internalType":"struct Voter.VoterInfo","name":"voter_info","type":"tuple"}],"internalType":"struct Voter.VoterAccount[]","name":"","type":"tuple[]"}],"stateMutability":"view","type":"function","constant":true}]',
   'Candidate',
 );
 
@@ -25,32 +25,94 @@ class Candidate extends _i1.GeneratedContract {
   /// The optional [atBlock] parameter can be used to view historical data. When
   /// set, the function will be evaluated in the specified block. By default, the
   /// latest on-chain block will be used.
-  Future<Candidates> candidates(
-    _i1.EthereumAddress $param0, {
+  Future<BigInt> candidateCount(
+    BigInt $param0, {
     _i1.BlockNum? atBlock,
   }) async {
     final function = self.abi.functions[1];
-    assert(checkSignature(function, '8ab66a90'));
+    assert(checkSignature(function, 'b1ff97c1'));
     final params = [$param0];
     final response = await read(
       function,
       params,
       atBlock,
     );
-    return Candidates(response);
+    return (response[0] as BigInt);
+  }
+
+  /// The optional [atBlock] parameter can be used to view historical data. When
+  /// set, the function will be evaluated in the specified block. By default, the
+  /// latest on-chain block will be used.
+  Future<_i1.EthereumAddress> candidates(
+    BigInt $param1,
+    BigInt $param2, {
+    _i1.BlockNum? atBlock,
+  }) async {
+    final function = self.abi.functions[2];
+    assert(checkSignature(function, '7de14242'));
+    final params = [
+      $param1,
+      $param2,
+    ];
+    final response = await read(
+      function,
+      params,
+      atBlock,
+    );
+    return (response[0] as _i1.EthereumAddress);
+  }
+
+  /// The optional [atBlock] parameter can be used to view historical data. When
+  /// set, the function will be evaluated in the specified block. By default, the
+  /// latest on-chain block will be used.
+  Future<_i1.EthereumAddress> nominations(
+    BigInt $param3,
+    BigInt $param4, {
+    _i1.BlockNum? atBlock,
+  }) async {
+    final function = self.abi.functions[3];
+    assert(checkSignature(function, 'cac5dfd8'));
+    final params = [
+      $param3,
+      $param4,
+    ];
+    final response = await read(
+      function,
+      params,
+      atBlock,
+    );
+    return (response[0] as _i1.EthereumAddress);
+  }
+
+  /// The optional [atBlock] parameter can be used to view historical data. When
+  /// set, the function will be evaluated in the specified block. By default, the
+  /// latest on-chain block will be used.
+  Future<BigInt> nominationsCount(
+    BigInt $param5, {
+    _i1.BlockNum? atBlock,
+  }) async {
+    final function = self.abi.functions[4];
+    assert(checkSignature(function, 'a6aad28b'));
+    final params = [$param5];
+    final response = await read(
+      function,
+      params,
+      atBlock,
+    );
+    return (response[0] as BigInt);
   }
 
   /// The optional [transaction] parameter can be used to override parameters
   /// like the gas price, nonce and max gas. The `data` and `to` fields will be
   /// set by the contract.
   Future<String> registerCandidate(
-    String _name, {
+    BigInt electionId, {
     required _i1.Credentials credentials,
     _i1.Transaction? transaction,
   }) async {
-    final function = self.abi.functions[2];
-    assert(checkSignature(function, '9eb88db6'));
-    final params = [_name];
+    final function = self.abi.functions[5];
+    assert(checkSignature(function, '0b2a85ea'));
+    final params = [electionId];
     return write(
       credentials,
       transaction,
@@ -63,16 +125,16 @@ class Candidate extends _i1.GeneratedContract {
   /// like the gas price, nonce and max gas. The `data` and `to` fields will be
   /// set by the contract.
   Future<String> verifyNomination(
-    _i1.EthereumAddress _candidateAddress,
-    BigInt status, {
+    BigInt electionId,
+    _i1.EthereumAddress _candidateAddress, {
     required _i1.Credentials credentials,
     _i1.Transaction? transaction,
   }) async {
-    final function = self.abi.functions[3];
-    assert(checkSignature(function, 'a97b10ad'));
+    final function = self.abi.functions[6];
+    assert(checkSignature(function, '4814dc71'));
     final params = [
+      electionId,
       _candidateAddress,
-      status,
     ];
     return write(
       credentials,
@@ -80,6 +142,42 @@ class Candidate extends _i1.GeneratedContract {
       function,
       params,
     );
+  }
+
+  /// The optional [atBlock] parameter can be used to view historical data. When
+  /// set, the function will be evaluated in the specified block. By default, the
+  /// latest on-chain block will be used.
+  Future<List<dynamic>> getNominations(
+    BigInt electionId, {
+    _i1.BlockNum? atBlock,
+  }) async {
+    final function = self.abi.functions[7];
+    assert(checkSignature(function, 'c86b73f3'));
+    final params = [electionId];
+    final response = await read(
+      function,
+      params,
+      atBlock,
+    );
+    return (response[0] as List<dynamic>).cast<dynamic>();
+  }
+
+  /// The optional [atBlock] parameter can be used to view historical data. When
+  /// set, the function will be evaluated in the specified block. By default, the
+  /// latest on-chain block will be used.
+  Future<List<dynamic>> getCandidates(
+    BigInt electionId, {
+    _i1.BlockNum? atBlock,
+  }) async {
+    final function = self.abi.functions[8];
+    assert(checkSignature(function, '3e39a7a5'));
+    final params = [electionId];
+    final response = await read(
+      function,
+      params,
+      atBlock,
+    );
+    return (response[0] as List<dynamic>).cast<dynamic>();
   }
 
   /// Returns a live stream of all CandidateRegistered events emitted by this contract.
@@ -96,7 +194,7 @@ class Candidate extends _i1.GeneratedContract {
     );
     return client.events(filter).map((_i1.FilterEvent result) {
       final decoded = event.decodeResults(
-        result.topics!.cast(),
+        result.topics!.cast().cast(),
         result.data!,
       );
       return CandidateRegistered(
@@ -120,7 +218,7 @@ class Candidate extends _i1.GeneratedContract {
     );
     return client.events(filter).map((_i1.FilterEvent result) {
       final decoded = event.decodeResults(
-        result.topics!.cast(),
+        result.topics!.cast().cast(),
         result.data!,
       );
       return CandidateVerified(
@@ -129,19 +227,6 @@ class Candidate extends _i1.GeneratedContract {
       );
     });
   }
-}
-
-class Candidates {
-  Candidates(List<dynamic> response)
-      : walletAddress = (response[0] as _i1.EthereumAddress),
-        name = (response[1] as String),
-        status = (response[2] as BigInt);
-
-  final _i1.EthereumAddress walletAddress;
-
-  final String name;
-
-  final BigInt status;
 }
 
 class CandidateRegistered {

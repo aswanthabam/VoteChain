@@ -7,6 +7,7 @@ import '../../widgets/paginated_views/paginated_views.dart' as paging;
 
 class LoginAadharPage extends FormPage<String> {
   @override
+  // ignore: overridden_fields
   String? validatedData;
 
   @override

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:vote/provider/voter_provider.dart';
 import 'package:vote/screens/pages/home/home.dart';
 import 'package:vote/screens/pages/admin/admin.dart';
+import 'package:vote/screens/pages/settings/settings.dart';
 import 'package:vote/screens/pages/splashscreen/splashscreen.dart';
 import 'package:vote/screens/pages/testscreen/test.dart';
 import 'screens/pages/getstarted/getstarted.dart';
@@ -45,6 +46,7 @@ class _AppState extends State<App> {
             'login': (context) => const Login(),
             'register': (context) => const Register(),
             'profile': (context) => const Profile(),
+            'settings': (context) => const Settings(),
             'test': (context) => const TestWidget(),
           },
           debugShowCheckedModeBanner: false,

@@ -19,6 +19,7 @@ class RegisterPersonalInfoPageData {
 class RegisterPersonalInfoOnePage
     extends FormPage<RegisterPersonalInfoPageData> {
   @override
+  // ignore: overridden_fields
   RegisterPersonalInfoPageData? validatedData;
 
   @override

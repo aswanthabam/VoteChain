@@ -94,6 +94,12 @@ class AsyncButtonState {
   bool isLoading() {
     return _state == LOADING ? true : false;
   }
+
+  bool get clickable {
+    return _state == INITED || _state == FAILED || _state == LOADED
+        ? true
+        : false;
+  }
 }
 
 class AsyncButton extends StatefulWidget {
@@ -162,14 +168,16 @@ class _AsyncButtonState extends State<AsyncButton> {
   Widget build(BuildContext context) {
     return TextButton(
       onPressed: () {
-        state.setState(AsyncButtonState.LOADING);
-        widget.onPressed().then((value) {
-          if (value) {
-            state.setState(AsyncButtonState.LOADED);
-          } else {
-            state.setState(AsyncButtonState.FAILED);
-          }
-        });
+        if (state.clickable) {
+          state.setState(AsyncButtonState.LOADING);
+          widget.onPressed().then((value) {
+            if (value) {
+              state.setState(AsyncButtonState.LOADED);
+            } else {
+              state.setState(AsyncButtonState.FAILED);
+            }
+          });
+        }
       },
       child: Container(
         height: 50,

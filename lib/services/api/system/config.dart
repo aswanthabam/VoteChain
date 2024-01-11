@@ -13,12 +13,13 @@ enum SystemConfigCallStatus {
 class SystemConfigCall extends APIClass {
   Future<SystemConfigCallStatus> getSystemConfigs() async {
     try {
-      var val = await getCall('/api/system/config');
-      if (val == null) {
+      var val = await getCall<List<dynamic>>('/api/system/config');
+      print(val);
+      if (val == null || val.isEmpty) {
         return SystemConfigCallStatus.failed;
       }
-      print(val);
-      SystemConfig.fromJson(val);
+      var val2 = val[0];
+      SystemConfig.fromJson(val2);
       return SystemConfigCallStatus.success;
     } catch (err) {
       Global.logger.e("An error occured while getting system configs : $err");

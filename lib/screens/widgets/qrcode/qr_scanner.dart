@@ -16,14 +16,14 @@ class QRScanner extends StatefulWidget {
       this.exitOnResult = true});
 
   @override
-  _QRScannerState createState() => _QRScannerState();
+  QRScannerState createState() => QRScannerState();
 }
 
-class _QRScannerState extends State<QRScanner> {
+class QRScannerState extends State<QRScanner> {
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   late QRViewController controller;
   bool exited = false;
-  bool result_proccessing = false;
+  bool resultProcessing = false;
 
   @override
   void dispose() {
@@ -69,9 +69,7 @@ class _QRScannerState extends State<QRScanner> {
               textAlign: TextAlign.center,
               style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
             ),
-            SizedBox(
-              height: MediaQuery.of(context).size.width * 0.2,
-            ),
+            // Spacer(),
             ClipRRect(
                 borderRadius: BorderRadius.circular(50),
                 child: Container(
@@ -84,9 +82,7 @@ class _QRScannerState extends State<QRScanner> {
                     onQRViewCreated: _onQRViewCreated,
                   ),
                 )),
-            SizedBox(
-              height: MediaQuery.of(context).size.width * 0.2,
-            ),
+            const Spacer(),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -101,7 +97,10 @@ class _QRScannerState extends State<QRScanner> {
                     },
                     icon: const Icon(Icons.cameraswitch_outlined)),
               ],
-            )
+            ),
+            const SizedBox(
+              height: 30,
+            ),
           ],
         ),
       ),
@@ -119,15 +118,16 @@ class _QRScannerState extends State<QRScanner> {
           controller.resumeCamera();
           return;
         }
-        if (result_proccessing) {
+        if (resultProcessing) {
           Global.logger.w("Result already being processed");
           return;
         }
-        result_proccessing = true;
+        resultProcessing = true;
         await widget.onResult(scanData.code!);
-        result_proccessing = false;
+        resultProcessing = false;
         if (widget.exitOnResult && !exited) {
           exited = true;
+          // ignore: use_build_context_synchronously
           Navigator.pop(context);
         }
       }
