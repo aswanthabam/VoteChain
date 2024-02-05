@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:vote/provider/voter_provider.dart';
 import 'package:vote/screens/pages/register/callbacks.dart';
 import 'package:vote/screens/pages/register/final/confirm_phrase.dart';
+import 'package:vote/screens/pages/register/final/face_register.dart';
 import 'package:vote/screens/pages/register/final/password_adder.dart';
 import 'package:vote/screens/pages/register/final/pin_add.dart';
 import 'package:vote/screens/pages/register/personal_information/constituency.dart';
@@ -36,6 +37,7 @@ class _RegisterState extends State<Register> {
   String pin = "";
 
   pagging.Pagination pagination = pagging.Pagination(pages: <FormPage>[
+    FaceRegisterPage(),
     RegisterInfoPage(),
     RegisterUIDPage(),
     RegisterPersonalInfoOnePage(),
