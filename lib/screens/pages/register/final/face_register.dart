@@ -1,8 +1,5 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:vote/provider/voter_provider.dart';
 import 'package:vote/screens/pages/register/final/detector_view.dart';
 import 'package:vote/screens/widgets/progress_bar/radial_progress.dart';
 import 'package:vote/screens/pages/register/register.dart';
@@ -59,7 +56,7 @@ class _FaceRegisterWidgetState extends State<FaceRegisterWidget> {
     detectionController = CameraDetectionController(
         onDoneCapture: (var files) {
           _showImageSelectionPopup(context, files, (File file) {
-            sendImageToApi(file, context, isFinal: true);
+            sendImageToApi(file, '', context, isFinal: true);
           }, detectionController.recapture);
         },
         onImage: onImage);
@@ -125,13 +122,13 @@ class _FaceRegisterWidgetState extends State<FaceRegisterWidget> {
   void startRecapture() {}
   Future<void> onImage(File file) async {
     if (totalImages < totalNeededImages - 1) {
-      bool res = await sendImageToApi(file, context, isFinal: false);
+      bool res = await sendImageToApi(file, '', context, isFinal: false);
       if (res) {
         totalImages++;
         setState(() {});
       }
     } else if (totalImages == totalNeededImages - 1) {
-      bool res = await sendImageToApi(file, context, isFinal: true);
+      bool res = await sendImageToApi(file, '', context, isFinal: true);
       if (res) {
         totalImages++;
         setState(() {});
@@ -141,7 +138,8 @@ class _FaceRegisterWidgetState extends State<FaceRegisterWidget> {
     }
   }
 
-  Future<bool> sendImageToApi(File imageFile, BuildContext context,
+  Future<bool> sendImageToApi(
+      File imageFile, String faceId, BuildContext context,
       {bool isFinal = false}) async {
     try {
       final url =
@@ -150,10 +148,10 @@ class _FaceRegisterWidgetState extends State<FaceRegisterWidget> {
       request.files
           .add(await http.MultipartFile.fromPath('face', imageFile.path));
       // ignore: use_build_context_synchronously
-      request.fields['face_id'] = '3e7e882e-6f8a-4b3b-a6b7-25c3abe3776c';
+      request.fields['face_id'] = faceId;
       request.fields['final'] = isFinal ? "1" : "0";
       var response = await request.send();
-      print(await response.stream.bytesToString());
+
       if (response.statusCode == 200) {
         Global.logger.i("Image successfully sent to the API");
         return true;

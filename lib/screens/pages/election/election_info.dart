@@ -18,6 +18,7 @@ class _ElectionInfoState extends State<ElectionInfo> {
   apiTypes.Constituency? constituency;
   @override
   void initState() {
+    super.initState();
     () async {
       constituencyImage = await LocationCall()
               .getConstituencies(constituencyId: widget.election.constituency)

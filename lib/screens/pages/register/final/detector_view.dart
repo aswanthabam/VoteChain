@@ -2,7 +2,6 @@
 
 import 'dart:async';
 import 'dart:io';
-import 'dart:ui' as ui;
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -33,7 +32,7 @@ class CameraDetectionController {
   bool _canProcess = true;
   bool _isBusy = false;
   CustomPaint? _customPaint;
-  String? _text;
+  // String? _text;
   int ith_image = 0;
   final _cameraLensDirection = CameraLensDirection.front;
   List<File> capturedImages = [];
@@ -96,7 +95,7 @@ class CameraDetectionController {
     if (_isBusy) return;
     _isBusy = true;
     setState!(() {
-      _text = '';
+      // _text = '';
     });
     final faces = await _faceDetector.processImage(inputImage);
     if (faces.length > 1) {
@@ -136,11 +135,11 @@ class CameraDetectionController {
         // }
       }
     } else {
-      String text = 'Faces found: ${faces.length}\n\n';
-      for (final face in faces) {
-        text += 'face: ${face.boundingBox}\n\n';
-      }
-      _text = text;
+      // String text = 'Faces found: ${faces.length}\n\n';
+      // for (final face in faces) {
+      //   text += 'face: ${face.boundingBox}\n\n';
+      // }
+      // _text = text;
       _customPaint = null;
     }
     _isBusy = false;

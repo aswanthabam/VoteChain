@@ -1,7 +1,5 @@
-import 'package:convert/convert.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:vote/contracts/VoteChain.g.dart';
 import 'package:vote/screens/layers/default_layer.dart';
 import 'package:vote/screens/pages/election/election_info.dart';
 import 'package:vote/screens/widgets/content_views/underlined_text/underlined_text.dart';
@@ -257,7 +255,7 @@ class ElectionCard extends StatelessWidget {
             height: 10,
           ),
           Padding(
-              padding: EdgeInsets.only(left: 10),
+              padding: const EdgeInsets.only(left: 10),
               child: Text(
                 election.name,
                 style: const TextStyle(
