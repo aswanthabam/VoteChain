@@ -36,38 +36,42 @@ class _RegisterState extends State<Register> {
   String password = "";
   String pin = "";
 
-  pagging.Pagination pagination = pagging.Pagination(pages: <FormPage>[
-    FaceRegisterPage(),
-    RegisterInfoPage(),
-    RegisterUIDPage(),
-    RegisterPersonalInfoOnePage(),
-    RegisterPersonalInfoTwoPage(),
-    ConstituencySelectorPage(),
-    // RegisterPersonalInfoThreePage(),
-    // RegisterElectionDetailsOnePage(),
-    PasswordAdderPage(),
-    PinAddPage(),
-    PhraseConfirmPage(),
-  ]);
+  late pagging.Pagination pagination;
 
   PersonalInfo? personalInfo;
   ContactInfo? contactInfo;
   AddressInfo? permenentAddressInfo;
   AddressInfo? currentAddressInfo;
   String? aadhar;
+  bool continueButtonVisible = true;
+  String faceId = "";
+
+  void hideContinueButton() {
+    setState(() {
+      continueButtonVisible = false;
+    });
+  }
+
+  void forcefullyGoNext() {
+    setState(() {
+      onNext();
+    });
+  }
 
   Future<bool> onNext() async {
     VoterHelper helper = VoterHelper();
     await helper.fetchInfo();
     FormPage page = pagination.pages[pagination.currentIndex]! as FormPage;
     FormPageStatus sts = page.validate();
+    print(pagination.pages.length);
     if (sts.status) {
-      if (pagination.hasNext()) {
+      if (pagination.currentIndex < pagination.pages.length - 1) {
         setState(() {
+          continueButtonVisible = true;
           pagination.next(rebuild: false);
         });
         return true;
-      } else {
+      } else if (pagination.currentIndex == pagination.pages.length - 1) {
         Completer<bool> completer = Completer<bool>();
         BuildContext outerContext = context;
         showDialog(
@@ -81,23 +85,29 @@ class _RegisterState extends State<Register> {
                           submitRegister(context.read<VoterModal>())
                               .then((value) {
                             if (value.success) {
-                              completer.complete(true);
-                              showDialog(
-                                  context: outerContext,
-                                  builder: (context) => TextPopup(
-                                        message: value.message,
-                                        bottomButtons: [
-                                          TextButton(
-                                              onPressed: () {
-                                                Navigator.of(context).pop();
-                                                Navigator.of(context)
-                                                    .pushNamedAndRemoveUntil(
-                                                        'home',
-                                                        (route) => false);
-                                              },
-                                              child: const Text("Continue"))
-                                        ],
-                                      ));
+                              if (value.faceId != null) {
+                                setState(() {
+                                  faceId = value.faceId!;
+                                });
+                                continueButtonVisible = true;
+                                pagination.next();
+                                completer.complete(true);
+                              } else {
+                                showDialog(
+                                    context: context,
+                                    builder: (context) => TextPopup(
+                                          message:
+                                              "There was an error with the registration, the registration got completed, but some issues occured in the middle, please contact admin",
+                                          bottomButtons: [
+                                            TextButton(
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                  completer.complete(false);
+                                                },
+                                                child: const Text("Ok"))
+                                          ],
+                                        ));
+                              }
                             } else {
                               showDialog(
                                   context: outerContext,
@@ -122,6 +132,25 @@ class _RegisterState extends State<Register> {
                   ],
                 ));
         return await completer.future;
+      } else {
+        Completer<bool> completer = Completer<bool>();
+        showDialog(
+            context: context,
+            builder: (context) => TextPopup(
+                  message:
+                      "Your registration is complete. Please wait until the admin approves your registration.",
+                  bottomButtons: [
+                    TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          completer.complete(true);
+                          Navigator.of(context).pushNamedAndRemoveUntil(
+                              'home', (route) => false);
+                        },
+                        child: const Text("Continue"))
+                  ],
+                ));
+        await completer.future;
       }
     } else {
       showDialog(
@@ -144,6 +173,22 @@ class _RegisterState extends State<Register> {
   @override
   void initState() {
     super.initState();
+    pagination = pagging.Pagination(pages: <FormPage>[
+      RegisterInfoPage(),
+      RegisterUIDPage(),
+      RegisterPersonalInfoOnePage(),
+      RegisterPersonalInfoTwoPage(),
+      ConstituencySelectorPage(),
+      // RegisterPersonalInfoThreePage(),
+      // RegisterElectionDetailsOnePage(),
+      PasswordAdderPage(),
+      PinAddPage(),
+      PhraseConfirmPage(), // -2
+      FaceRegisterPage(
+          hideContinueButton: hideContinueButton,
+          faceId: getFaceId,
+          next: forcefullyGoNext), // -1
+    ]);
   }
 
   @override
@@ -190,19 +235,25 @@ class _RegisterState extends State<Register> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Expanded(child: pagination.widget),
-                      getPrimaryAsyncButton(
-                          context,
-                          onNext,
-                          "Continue",
-                          "Loading",
-                          "An Error Occured",
-                          "Continue",
-                          MediaQuery.of(context).size.width - 20)
+                      continueButtonVisible
+                          ? getPrimaryAsyncButton(
+                              context,
+                              onNext,
+                              "Continue",
+                              "Loading",
+                              "An Error Occured",
+                              "Continue",
+                              MediaQuery.of(context).size.width - 20)
+                          : const SizedBox()
                     ],
                   )),
             ]),
           ),
         ));
+  }
+
+  String? getFaceId() {
+    return faceId;
   }
 }
 

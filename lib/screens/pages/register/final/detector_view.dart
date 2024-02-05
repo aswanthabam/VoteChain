@@ -42,6 +42,9 @@ class CameraDetectionController {
   final Future<void> Function(File) onImage;
   Function(Function())? setState;
   bool? mounted;
+
+  bool _proccessingBusy = false;
+
   CameraDetectionController(
       {required this.onDoneCapture, required this.onImage});
 
@@ -60,7 +63,7 @@ class CameraDetectionController {
     camera_controller_waiter = completer.future;
     availableCameras().then((value) {
       _cameras = value;
-      controller = CameraController(_cameras[1], ResolutionPreset.max,
+      controller = CameraController(_cameras[1], ResolutionPreset.ultraHigh,
           imageFormatGroup: Platform.isAndroid
               ? ImageFormatGroup.nv21
               : ImageFormatGroup.bgra8888,
@@ -103,23 +106,24 @@ class CameraDetectionController {
     }
     if (inputImage.metadata?.size != null &&
         inputImage.metadata?.rotation != null) {
-      final painter = FaceDetectorPainter(
-        faces,
-        inputImage.metadata!.size,
-        inputImage.metadata!.rotation,
-        _cameraLensDirection,
-      );
-      _customPaint = CustomPaint(painter: painter);
+      // final painter = FaceDetectorPainter(
+      //   faces,
+      //   inputImage.metadata!.size,
+      //   inputImage.metadata!.rotation,
+      //   _cameraLensDirection,
+      // );
+      // _customPaint = CustomPaint(painter: painter);
       if (DateTime.now().difference(_lastCaptureTime) >= captureGap &&
           !doneCapturing &&
           faces.isNotEmpty) {
         ith_image++;
         final appDirectory = await getApplicationDocumentsDirectory();
         final String imagePath =
-            '${appDirectory.path}/user_captured_image_${ith_image}_${DateTime.now().millisecondsSinceEpoch}.jpg';
+            '${appDirectory.path}/face_images/user_captured_image_${ith_image}_${DateTime.now().millisecondsSinceEpoch}.jpg';
 
-        File outFile = await File(imagePath)
-            .writeAsBytes((await convertImagetoJpg(inputImage))!);
+        File outFile = await File(imagePath);
+        await outFile.create(recursive: true);
+        await outFile.writeAsBytes((await convertImagetoJpg(image))!);
         // Global.logger.f(
         // "Format : ${image.format.group}, Bytes: ${imageBytes}, Length: ${imageBytes.length}");
         Global.logger.i("Image saved at ${outFile.path}");
@@ -154,13 +158,19 @@ class CameraDetectionController {
     controller!.pausePreview();
   }
 
-  Future<Uint8List?> convertImagetoJpg(InputImage image) async {
+  Future<Uint8List> postProccessImage(imglib.Image img) async {
+    imglib.Image tmp;
+    tmp = imglib.copyResize(img, width: img.width * 2, height: img.height * 2);
+    img = imglib.copyRotate(tmp, angle: 270);
+    return imglib.encodeJpg(img, quality: 100);
+  }
+
+  Future<Uint8List?> convertImagetoJpg(CameraImage image) async {
     try {
       imglib.Image img;
       img = decodeYUV420SP(image);
-
-      imglib.JpegEncoder jpegEncoder = imglib.JpegEncoder(quality: 200);
-      Uint8List png = jpegEncoder.encode(img);
+      Global.logger.f("Image Width: ${img.width}, Height: ${img.height}");
+      Uint8List png = await postProccessImage(img);
       return png;
     } catch (e) {
       Global.logger.e("Error converting image to png: $e");
@@ -168,22 +178,25 @@ class CameraDetectionController {
     return null;
   }
 
-  imglib.Image decodeYUV420SP(InputImage image) {
-    final width = image.metadata!.size.width.toInt();
-    final height = image.metadata!.size.height.toInt();
+  imglib.Image decodeYUV420SP(CameraImage image) {
+    // final width = image.metadata!.size.width.toInt();
+    // final height = image.metadata!.size.height.toInt();
+    final width = image.width;
+    final height = image.height;
 
-    Uint8List yuv420sp = image.bytes!;
+    Uint8List yuv420sp = image.planes.first.bytes;
     final outImg = imglib.Image(width: width, height: height);
 
-    if (image.metadata!.rotation == InputImageRotation.rotation90deg) {
-      outImg.exif.imageIfd.orientation = 6;
-    } else if (image.metadata!.rotation == InputImageRotation.rotation180deg) {
-      outImg.exif.imageIfd.orientation = 3;
-    } else if (image.metadata!.rotation == InputImageRotation.rotation270deg) {
-      outImg.exif.imageIfd.orientation = 8;
-    } else if (image.metadata!.rotation == InputImageRotation.rotation0deg) {
-      outImg.exif.imageIfd.orientation = 1;
-    }
+    // if (image.metadata!.rotation == InputImageRotation.rotation90deg) {
+    //   outImg.exif.imageIfd.orientation = 6;
+    // } else if (image.metadata!.rotation == InputImageRotation.rotation180deg) {
+    //   outImg.exif.imageIfd.orientation = 3;
+    // } else if (image.metadata!.rotation == InputImageRotation.rotation270deg) {
+    //   outImg.exif.imageIfd.orientation = 8;
+    // } else if (image.metadata!.rotation == InputImageRotation.rotation0deg) {
+    //   outImg.exif.imageIfd.orientation = 1;
+    // }
+
     final int frameSize = width * height;
 
     for (int j = 0, yp = 0; j < height; j++) {
@@ -331,7 +344,7 @@ class _CameraAppState extends State<CameraApp> {
                     detectionController.controller!.value.previewSize!.width,
                 child: CameraPreview(
                   detectionController.controller!,
-                  child: detectionController._customPaint,
+                  // child: detectionController._customPaint,
                 ),
               ),
             ));

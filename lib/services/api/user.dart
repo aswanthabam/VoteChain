@@ -2,13 +2,11 @@ import 'package:vote/services/api/api.dart';
 import 'package:vote/services/global.dart';
 import 'package:vote/utils/types/api_types.dart';
 
-enum RegisterUserCallStatus {
-  success("Successfully Synced with backend."),
-  failed(
-      "There was an error while syncing with backend. Please try again later.");
-
+class RegisterUserCallStatus {
+  final bool status;
   final String message;
-  const RegisterUserCallStatus(this.message);
+  final String? faceId;
+  const RegisterUserCallStatus(this.status, this.message, {this.faceId});
 }
 
 class UserENC {
@@ -49,12 +47,15 @@ class UserAuthCall extends APIClass {
           SystemConfig.localServer);
       print(val);
       if (val == null) {
-        return RegisterUserCallStatus.failed;
+        return const RegisterUserCallStatus(
+            false, "An error occured while registering");
       }
-      return RegisterUserCallStatus.success;
+      return RegisterUserCallStatus(true, "User registered successfully",
+          faceId: val['data']['face_id']);
     } catch (err) {
       Global.logger.e("An error occured while getting system configs : $err");
-      return RegisterUserCallStatus.failed;
+      return const RegisterUserCallStatus(
+          false, "An error occured while registering");
     }
   }
 }

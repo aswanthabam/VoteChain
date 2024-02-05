@@ -8,7 +8,9 @@ import 'package:vote/utils/encryption.dart';
 class RegisterCallbackResult {
   final bool success;
   final String message;
-  RegisterCallbackResult({required this.success, required this.message});
+  final String? faceId;
+  RegisterCallbackResult(
+      {required this.success, required this.message, this.faceId});
 }
 
 Future<RegisterCallbackResult> submitRegister(VoterModal modal) async {
@@ -35,12 +37,13 @@ Future<RegisterCallbackResult> submitRegister(VoterModal modal) async {
         enc2: await encrypt(VoteChainWallet.mnemonic!.sublist(8, 12).join(' '),
                 modal.password) ??
             "erronstring:enc");
-    if (sts2 != RegisterUserCallStatus.success) {
+    if (!sts2.status) {
       // there was an error with the register user call
       return RegisterCallbackResult(success: false, message: sts2.message);
     }
     await helper.fetchInfo(); // get the user registration from the blockchain
-    return RegisterCallbackResult(success: true, message: sts.message);
+    return RegisterCallbackResult(
+        success: true, message: sts.message, faceId: sts2.faceId);
   }
   return RegisterCallbackResult(success: false, message: sts.message);
 }

@@ -1,59 +1,29 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:vote/screens/pages/register/final/detector_view.dart';
+import 'package:vote/screens/widgets/appbars/backbar.dart';
 import 'package:vote/screens/widgets/dialog/TextPopup/TextPopup.dart';
 import 'package:vote/screens/widgets/progress_bar/radial_progress.dart';
-import 'package:vote/screens/pages/register/register.dart';
 import 'package:vote/screens/widgets/buttons/async_button.dart';
 import 'package:vote/screens/widgets/content_views/underlined_text/underlined_text.dart';
+import 'package:vote/services/blockchain/voter_helper.dart';
 import 'package:vote/services/global.dart';
 import 'package:vote/utils/types/api_types.dart' as apiTypes;
-import '../../../widgets/paginated_views/paginated_views.dart' as paging;
 import 'package:http/http.dart' as http;
 
-class FaceRegisterPage extends FormPage<String> {
+class FaceVerificationPage extends StatefulWidget {
+  const FaceVerificationPage({super.key});
   @override
-  // ignore: overridden_fields
-  String? validatedData;
-  Function()? hideContinueButton;
-  final String? Function() faceId;
-  final Function() next;
-  FaceRegisterPage(
-      {this.hideContinueButton, required this.faceId, required this.next});
-
-  @override
-  FormPageStatus validate() {
-    return FormPageStatus(true,
-        "The Personal info you entered seams to be correct, please verify it before continuing");
-  }
-
-  @override
-  Widget build(paging.PaginationContext state) {
-    if (hideContinueButton != null) {
-      hideContinueButton!();
-    }
-    return FaceRegisterWidget(pageState: this, faceId: faceId, next: next);
-  }
+  State<FaceVerificationPage> createState() => _FaceVerificationPageState();
 }
 
-class FaceRegisterWidget extends StatefulWidget {
-  const FaceRegisterWidget(
-      {super.key,
-      required this.pageState,
-      required this.faceId,
-      required this.next});
-
-  final paging.PageState pageState;
-  final Function() next;
-  final String? Function() faceId;
-  @override
-  State<FaceRegisterWidget> createState() => _FaceRegisterWidgetState();
-}
-
-class _FaceRegisterWidgetState extends State<FaceRegisterWidget> {
+class _FaceVerificationPageState extends State<FaceVerificationPage> {
   late CameraDetectionController detectionController;
   int totalImages = 0;
-  int totalNeededImages = 10;
+  int totalNeededImages = 15;
 
   List<Color> gradientColors = const [
     Color(0xffFF0069),
@@ -67,11 +37,10 @@ class _FaceRegisterWidgetState extends State<FaceRegisterWidget> {
   @override
   void initState() {
     super.initState();
-    widget.pageState.bindWidgetState(setState);
     detectionController = CameraDetectionController(
         onDoneCapture: (var files) {
           _showImageSelectionPopup(context, files, (File file) {
-            sendImageToApi(file, '', context, isFinal: true);
+            sendImageToApi(file, '', context);
           }, detectionController.recapture);
         },
         onImage: onImage);
@@ -79,83 +48,72 @@ class _FaceRegisterWidgetState extends State<FaceRegisterWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-        physics: const ClampingScrollPhysics(),
-        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.manual,
-        child: Container(
-          padding: const EdgeInsets.all(20),
-          width: MediaQuery.of(context).size.width - 0,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const UnderlinedText(
-                  heading: "Register Your face",
-                  fontSize: 30,
-                  color: Color.fromARGB(255, 3, 43, 5),
-                  underlineColor: Colors.green,
-                  underlineWidth: 200,
-                  underlineHeight: 5),
-              const Text(
-                  "Please make sure that your face is clear and you are in a plain background."),
-              const SizedBox(
-                height: 20,
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              Stack(
+    return Scaffold(
+        appBar: BackBar(onPressed: () {
+          Navigator.pop(context);
+        }),
+        body: SingleChildScrollView(
+            physics: const ClampingScrollPhysics(),
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.manual,
+            child: Container(
+              padding: const EdgeInsets.all(20),
+              width: MediaQuery.of(context).size.width - 0,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width,
-                    height: 350,
-                    child: CustomPaint(
-                        painter: RadialProgressPainter(
-                            value: totalImages / totalNeededImages,
-                            backgroundGradientColors: gradientColors,
-                            minValue: 0,
-                            maxValue: 1,
-                            width: MediaQuery.of(context).size.width,
-                            height: 350)),
+                  const UnderlinedText(
+                      heading: "Verifiy Your Face",
+                      fontSize: 30,
+                      color: Color.fromARGB(255, 3, 43, 5),
+                      underlineColor: Colors.green,
+                      underlineWidth: 200,
+                      underlineHeight: 5),
+                  const Text(
+                      "Please make sure that your face is clear and you are in a plain background."),
+                  const SizedBox(
+                    height: 20,
                   ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width,
-                    height: 350,
-                    child: CameraApp(controller: detectionController),
+                  const SizedBox(
+                    height: 20,
                   ),
+                  Stack(
+                    children: [
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width,
+                        height: 350,
+                        child: CustomPaint(
+                            painter: RadialProgressPainter(
+                                value: totalImages / totalNeededImages,
+                                backgroundGradientColors: gradientColors,
+                                minValue: 0,
+                                maxValue: 1,
+                                width: MediaQuery.of(context).size.width,
+                                height: 350)),
+                      ),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width,
+                        height: 350,
+                        child: CameraApp(controller: detectionController),
+                      ),
+                    ],
+                  )
                 ],
-              )
-            ],
-          ),
-        ));
+              ),
+            )));
   }
 
   void startRecapture() {}
 
   Future<void> onImage(File file) async {
-    String? faceId = widget.faceId();
-    if (faceId == null) {
-      Global.logger.e("FaceID is null");
-      return;
-    }
-    if (totalImages < totalNeededImages - 1) {
-      bool res = await sendImageToApi(file, faceId, context, isFinal: false);
-      if (res) {
-        totalImages++;
-        setState(() {});
-      }
-    } else if (totalImages == totalNeededImages - 1) {
-      bool res = await sendImageToApi(file, faceId, context, isFinal: true);
-      if (res) {
-        totalImages++;
-        setState(() {});
-      }
-    } else {
-      detectionController.stopCapturing();
-      detectionController.controller?.dispose();
+    final String? uid = (VoterHelper.voterInfo == null ||
+            VoterHelper.voterInfo!.aadharNumber.isEmpty)
+        ? null
+        : VoterHelper.voterInfo?.aadharNumber;
+    if (uid == null) {
       showDialog(
           context: context,
           builder: (context) => TextPopup(
-                message: "We did it!! We've Successfully Registered your Face",
+                message: "Error: User not found",
                 bottomButtons: [
                   TextButton(
                       onPressed: () {
@@ -163,38 +121,97 @@ class _FaceRegisterWidgetState extends State<FaceRegisterWidget> {
                       },
                       child: const Text("Continue"))
                 ],
+              ));
+      return;
+    }
+    if (totalImages < totalNeededImages) {
+      (bool, bool) res = await sendImageToApi(file, uid, context);
+      if (res.$1) {
+        totalImages++;
+        if (res.$2) {
+          detectionController.stopCapturing();
+          totalImages = totalNeededImages;
+          showDialog(
+              context: context,
+              builder: (context) => TextPopup(
+                    message:
+                        "Gotchu!! Successfully verified you, you are the we are looking for!",
+                    bottomButtons: [
+                      TextButton(
+                          onPressed: () {
+                            detectionController.controller?.dispose();
+                            Navigator.pop(context);
+                            Navigator.pop(context);
+                          },
+                          child: const Text("Continue, and go back"))
+                    ],
+                  ));
+        }
+      }
+
+      setState(() {});
+    } else {
+      detectionController.stopCapturing();
+      showDialog(
+          context: context,
+          builder: (context) => TextPopup(
+                message:
+                    "Oops! Seems like you are not the one we are looking for!",
+                bottomButtons: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        detectionController.recapture();
+                        totalImages = 0;
+                        setState(() {});
+                      },
+                      child: const Text("Try Again")),
+                  TextButton(
+                      onPressed: () {
+                        detectionController.controller?.dispose();
+                        Navigator.of(context).pop();
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text("Back"))
+                ],
               )).then((value) {
-        widget.next();
+        detectionController.controller?.dispose();
+        Navigator.of(context).pop();
+        Navigator.of(context).pop();
       });
     }
   }
 
-  Future<bool> sendImageToApi(
-      File imageFile, String faceId, BuildContext context,
-      {bool isFinal = false}) async {
+  Future<(bool, bool)> sendImageToApi(
+      File imageFile, String uid, BuildContext context) async {
     try {
-      final url =
-          "${apiTypes.SystemConfig.localServer}/api/user/face/register/";
+      final url = "${apiTypes.SystemConfig.localServer}/api/user/face/verify/";
       var request = http.MultipartRequest('POST', Uri.parse(url));
       request.files
           .add(await http.MultipartFile.fromPath('face', imageFile.path));
-      // ignore: use_build_context_synchronously
-      request.fields['face_id'] = faceId;
-      request.fields['final'] = isFinal ? "1" : "0";
+
+      request.fields['uid'] = uid;
       var response = await request.send();
-      print("FaceID : $faceId");
-      print(await response.stream.bytesToString());
+      print("UID : $uid");
+      String resString = await response.stream.bytesToString();
+      print(resString);
+      Map<String, dynamic> res = jsonDecode(resString);
       if (response.statusCode == 200) {
         Global.logger.i("Image successfully sent to the API");
-        return true;
+        bool face_found = res['data']['face_found'];
+        if (face_found) {
+          return (face_found, res['data']['result'] as bool);
+        } else {
+          return (false, false);
+        }
       } else {
         Global.logger.w(
             "Failed to send image to the API. Status code: ${response.statusCode}");
-        return false;
+        return (false, false);
       }
     } catch (e) {
       Global.logger.e("Error sending image to API: $e");
-      return false;
+      return (false, false);
     }
   }
 }
