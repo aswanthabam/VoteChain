@@ -68,13 +68,7 @@ class _FaceRegisterWidgetState extends State<FaceRegisterWidget> {
   void initState() {
     super.initState();
     widget.pageState.bindWidgetState(setState);
-    detectionController = CameraDetectionController(
-        onDoneCapture: (var files) {
-          _showImageSelectionPopup(context, files, (File file) {
-            sendImageToApi(file, '', context, isFinal: true);
-          }, detectionController.recapture);
-        },
-        onImage: onImage);
+    detectionController = CameraDetectionController(onImage: onImage);
   }
 
   @override

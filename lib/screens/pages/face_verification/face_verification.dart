@@ -37,13 +37,7 @@ class _FaceVerificationPageState extends State<FaceVerificationPage> {
   @override
   void initState() {
     super.initState();
-    detectionController = CameraDetectionController(
-        onDoneCapture: (var files) {
-          _showImageSelectionPopup(context, files, (File file) {
-            sendImageToApi(file, '', context);
-          }, detectionController.recapture);
-        },
-        onImage: onImage);
+    detectionController = CameraDetectionController(onImage: onImage);
   }
 
   @override
@@ -125,9 +119,10 @@ class _FaceVerificationPageState extends State<FaceVerificationPage> {
       return;
     }
     if (totalImages < totalNeededImages) {
-      (bool, bool) res = await sendImageToApi(file, uid, context);
+      (bool, bool) res =
+          await sendImageToApi(file, uid, context); // face found, result
+      totalImages++;
       if (res.$1) {
-        totalImages++;
         if (res.$2) {
           detectionController.stopCapturing();
           totalImages = totalNeededImages;
@@ -147,6 +142,8 @@ class _FaceVerificationPageState extends State<FaceVerificationPage> {
                     ],
                   ));
         }
+      } else {
+        // send a message to move a little bit
       }
 
       setState(() {});
