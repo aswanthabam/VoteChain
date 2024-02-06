@@ -214,6 +214,7 @@ class _RegisterState extends State<Register> {
                   child: IconButton(
                       onPressed: () {
                         if (pagination.hasPrev()) {
+                          continueButtonVisible = true;
                           setState(() {
                             pagination.prev(rebuild: false);
                           });

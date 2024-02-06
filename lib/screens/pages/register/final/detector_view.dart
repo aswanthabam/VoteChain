@@ -43,10 +43,10 @@ class CameraDetectionController {
 
   final Future<void> Function(File) onImage;
   Function(Function())? setState;
-
+  final Function(String) onMessage;
   // late DateTime _lastCaptureTime;
 
-  CameraDetectionController({required this.onImage});
+  CameraDetectionController({required this.onImage, required this.onMessage});
   void dispose() {
     if (_isDisposed) return;
     _isDisposed = true;
@@ -154,7 +154,9 @@ class CameraDetectionController {
     _isBusy = true;
     final faces = await _faceDetector.processImage(inputImage);
     if (faces.length > 1) {
-      Global.logger.f("More than one face detected");
+      onMessage("Multiple faces detected.");
+      _isBusy = false;
+      return;
     }
     if (inputImage.metadata?.size != null &&
         inputImage.metadata?.rotation != null) {

@@ -46,7 +46,7 @@ class RadialProgressPainter extends CustomPainter {
 
     // Paint for the progress track.
     final Paint progressTrackPaint = Paint()
-      ..color = const Color.fromARGB(255, 69, 69, 69).withOpacity(0.2)
+      ..color = const Color.fromARGB(255, 148, 205, 232)
       ..style = PaintingStyle.stroke
       ..strokeWidth = strokeWidth
       ..strokeCap = StrokeCap.round;
