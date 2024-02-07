@@ -1,10 +1,10 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:vote/screens/pages/register/final/detector_view.dart';
 import 'package:vote/screens/widgets/dialog/TextPopup/TextPopup.dart';
 import 'package:vote/screens/widgets/progress_bar/radial_progress.dart';
 import 'package:vote/screens/pages/register/register.dart';
-import 'package:vote/screens/widgets/buttons/async_button.dart';
 import 'package:vote/screens/widgets/content_views/underlined_text/underlined_text.dart';
 import 'package:vote/services/global.dart';
 import 'package:vote/utils/types/api_types.dart' as apiTypes;
@@ -54,7 +54,8 @@ class _FaceRegisterWidgetState extends State<FaceRegisterWidget> {
   late CameraDetectionController detectionController;
   int totalImages = 0;
   int totalNeededImages = 10;
-
+  String message = "Please look at the camera and stay still.";
+  late DateTime lastTime;
   List<Color> gradientColors = const [
     Color(0xffFF0069),
     Color(0xffFED602),
@@ -68,13 +69,17 @@ class _FaceRegisterWidgetState extends State<FaceRegisterWidget> {
   void initState() {
     super.initState();
     widget.pageState.bindWidgetState(setState);
-    detectionController = CameraDetectionController(
-        onDoneCapture: (var files) {
-          _showImageSelectionPopup(context, files, (File file) {
-            sendImageToApi(file, '', context, isFinal: true);
-          }, detectionController.recapture);
-        },
-        onImage: onImage);
+    detectionController =
+        CameraDetectionController(onImage: onImage, onMessage: setMessage);
+    lastTime = DateTime.now();
+  }
+
+  void setMessage(String message) {
+    if (DateTime.now().difference(lastTime).inSeconds < 2) return;
+    setState(() {
+      this.message = message;
+    });
+    lastTime = DateTime.now();
   }
 
   @override
@@ -85,23 +90,24 @@ class _FaceRegisterWidgetState extends State<FaceRegisterWidget> {
         child: Container(
           padding: const EdgeInsets.all(20),
           width: MediaQuery.of(context).size.width - 0,
+          height: MediaQuery.of(context).size.height - 0,
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const UnderlinedText(
-                  heading: "Register Your face",
+                  heading: "Register Your Face",
                   fontSize: 30,
                   color: Color.fromARGB(255, 3, 43, 5),
                   underlineColor: Colors.green,
-                  underlineWidth: 200,
+                  underlineWidth: 0,
                   underlineHeight: 5),
               const Text(
-                  "Please make sure that your face is clear and you are in a plain background."),
-              const SizedBox(
-                height: 20,
+                "Please make sure that your face is clear and you are in a plain background.",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 15),
               ),
               const SizedBox(
-                height: 20,
+                height: 40,
               ),
               Stack(
                 children: [
@@ -123,7 +129,18 @@ class _FaceRegisterWidgetState extends State<FaceRegisterWidget> {
                     child: CameraApp(controller: detectionController),
                   ),
                 ],
-              )
+              ),
+              const SizedBox(
+                height: 40,
+              ),
+              Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Text(
+                    message,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                        color: Color.fromARGB(255, 190, 91, 37)),
+                  ))
             ],
           ),
         ));
@@ -134,24 +151,48 @@ class _FaceRegisterWidgetState extends State<FaceRegisterWidget> {
   Future<void> onImage(File file) async {
     String? faceId = widget.faceId();
     if (faceId == null) {
-      Global.logger.e("FaceID is null");
+      setMessage("Error getting face id");
       return;
     }
     if (totalImages < totalNeededImages - 1) {
-      bool res = await sendImageToApi(file, faceId, context, isFinal: false);
-      if (res) {
-        totalImages++;
+      RegisterImageResponse res =
+          await sendImageToApi(file, faceId, context, isFinal: false);
+      if (res.status) {
+        if (res.faceFound) {
+          if (!res.matching) {
+            setMessage("Face not matching, Please try again.");
+          } else {
+            totalImages++;
+            setMessage("Its working... Please stay still.");
+          }
+        } else {
+          setMessage("Your face is not clear, Please try again.");
+        }
         setState(() {});
+      } else {
+        setMessage("Oops there is some issues, trying again.");
       }
     } else if (totalImages == totalNeededImages - 1) {
-      bool res = await sendImageToApi(file, faceId, context, isFinal: true);
-      if (res) {
-        totalImages++;
+      RegisterImageResponse res =
+          await sendImageToApi(file, faceId, context, isFinal: true);
+      if (res.status) {
+        if (res.faceFound) {
+          if (!res.matching) {
+            setMessage("Face not matching, Please try again.");
+          } else {
+            totalImages++;
+            setMessage("Its working... Please stay still.");
+          }
+        } else {
+          setMessage("Your face is not clear, Please try again.");
+        }
         setState(() {});
+      } else {
+        setMessage("Oops there is some issues, trying again.");
       }
     } else {
       detectionController.stopCapturing();
-      detectionController.controller?.dispose();
+      detectionController.dispose();
       showDialog(
           context: context,
           builder: (context) => TextPopup(
@@ -169,7 +210,7 @@ class _FaceRegisterWidgetState extends State<FaceRegisterWidget> {
     }
   }
 
-  Future<bool> sendImageToApi(
+  Future<RegisterImageResponse> sendImageToApi(
       File imageFile, String faceId, BuildContext context,
       {bool isFinal = false}) async {
     try {
@@ -183,120 +224,45 @@ class _FaceRegisterWidgetState extends State<FaceRegisterWidget> {
       request.fields['final'] = isFinal ? "1" : "0";
       var response = await request.send();
       print("FaceID : $faceId");
-      print(await response.stream.bytesToString());
+      String resStr = await response.stream.bytesToString();
+      print("Response : $resStr");
+      Map<String, dynamic> res = jsonDecode(resStr);
+
       if (response.statusCode == 200) {
         Global.logger.i("Image successfully sent to the API");
-        return true;
+        return RegisterImageResponse.fromJson(true, res['data']);
       } else {
         Global.logger.w(
             "Failed to send image to the API. Status code: ${response.statusCode}");
-        return false;
+        return RegisterImageResponse(
+            status: false, faceFound: false, matching: false, isFinal: isFinal);
       }
     } catch (e) {
       Global.logger.e("Error sending image to API: $e");
-      return false;
+      return RegisterImageResponse(
+          status: false, faceFound: false, matching: false, isFinal: isFinal);
     }
   }
 }
 
-void _showImageSelectionPopup(BuildContext context, List<File> imageUrls,
-    Function(File) onImageSelected, Function() recapture) {
-  showModalBottomSheet(
-    useRootNavigator: true,
-    context: context,
-    isScrollControlled: true,
-    enableDrag: false,
-    isDismissible: false,
-    builder: (BuildContext context) {
-      return Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text(
-                "Which of the following shows your face clearly?",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              const Text(
-                "Click on the image on which your face is clear.",
-                style: TextStyle(fontSize: 13, color: Colors.grey),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              SizedBox(
-                  width: MediaQuery.of(context).size.height,
-                  height: MediaQuery.of(context).size.width,
-                  child: GridView.builder(
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 8.0,
-                      mainAxisSpacing: 8.0,
-                    ),
-                    itemCount: imageUrls.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return InkWell(
-                        onTap: () {
-                          File selected = imageUrls[index];
-                          showDialog(
-                              context: context,
-                              useRootNavigator: true,
-                              builder: (context) => Dialog(
-                                  child: Padding(
-                                      padding: const EdgeInsets.all(20),
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          const Text(
-                                            "Does this image shows your beautiful face ?",
-                                            style: TextStyle(
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          const SizedBox(
-                                            height: 20,
-                                          ),
-                                          ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(20),
-                                            child: Image.file(selected),
-                                          ),
-                                          getPrimaryAsyncButton(context,
-                                              () async {
-                                            onImageSelected(selected);
-                                            return true;
-                                          },
-                                              "Confirm",
-                                              "Loading",
-                                              "An Error Occured",
-                                              "Success",
-                                              MediaQuery.of(context)
-                                                      .size
-                                                      .width -
-                                                  20)
-                                        ],
-                                      )))).then((_) {
-                            // recapture();
-                          });
-                        },
-                        child: Image.file(
-                          imageUrls[index],
-                          fit: BoxFit.cover,
-                        ),
-                      );
-                    },
-                  )),
-              const SizedBox(
-                height: 10,
-              ),
-            ],
-          ));
-    },
-  ).then((value) {
-    recapture();
-  });
+class RegisterImageResponse {
+  final bool status;
+  final bool faceFound;
+  final bool matching;
+  final bool isFinal;
+
+  RegisterImageResponse(
+      {required this.status,
+      required this.faceFound,
+      required this.matching,
+      required this.isFinal});
+
+  factory RegisterImageResponse.fromJson(
+      bool status, Map<String, dynamic> json) {
+    return RegisterImageResponse(
+        status: status,
+        faceFound: json['face_found'],
+        matching: json['matching'],
+        isFinal: json['final']);
+  }
 }

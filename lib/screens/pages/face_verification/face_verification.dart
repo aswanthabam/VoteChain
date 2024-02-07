@@ -7,7 +7,6 @@ import 'package:vote/screens/pages/register/final/detector_view.dart';
 import 'package:vote/screens/widgets/appbars/backbar.dart';
 import 'package:vote/screens/widgets/dialog/TextPopup/TextPopup.dart';
 import 'package:vote/screens/widgets/progress_bar/radial_progress.dart';
-import 'package:vote/screens/widgets/buttons/async_button.dart';
 import 'package:vote/screens/widgets/content_views/underlined_text/underlined_text.dart';
 import 'package:vote/services/blockchain/voter_helper.dart';
 import 'package:vote/services/global.dart';
@@ -24,7 +23,9 @@ class _FaceVerificationPageState extends State<FaceVerificationPage> {
   late CameraDetectionController detectionController;
   int totalImages = 0;
   int totalNeededImages = 15;
-
+  bool done = false;
+  String message = "Please look at the camera and stay still.";
+  late DateTime lastTime;
   List<Color> gradientColors = const [
     Color(0xffFF0069),
     Color(0xffFED602),
@@ -37,13 +38,9 @@ class _FaceVerificationPageState extends State<FaceVerificationPage> {
   @override
   void initState() {
     super.initState();
-    detectionController = CameraDetectionController(
-        onDoneCapture: (var files) {
-          _showImageSelectionPopup(context, files, (File file) {
-            sendImageToApi(file, '', context);
-          }, detectionController.recapture);
-        },
-        onImage: onImage);
+    detectionController =
+        CameraDetectionController(onImage: onImage, onMessage: setMessage);
+    lastTime = DateTime.now();
   }
 
   @override
@@ -58,23 +55,24 @@ class _FaceVerificationPageState extends State<FaceVerificationPage> {
             child: Container(
               padding: const EdgeInsets.all(20),
               width: MediaQuery.of(context).size.width - 0,
+              height: MediaQuery.of(context).size.height - 0,
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   const UnderlinedText(
                       heading: "Verifiy Your Face",
                       fontSize: 30,
                       color: Color.fromARGB(255, 3, 43, 5),
                       underlineColor: Colors.green,
-                      underlineWidth: 200,
+                      underlineWidth: 0,
                       underlineHeight: 5),
                   const Text(
-                      "Please make sure that your face is clear and you are in a plain background."),
-                  const SizedBox(
-                    height: 20,
+                    "Please make sure that your face is clear and you are in a plain background.",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 15),
                   ),
                   const SizedBox(
-                    height: 20,
+                    height: 40,
                   ),
                   Stack(
                     children: [
@@ -96,15 +94,34 @@ class _FaceVerificationPageState extends State<FaceVerificationPage> {
                         child: CameraApp(controller: detectionController),
                       ),
                     ],
-                  )
+                  ),
+                  const SizedBox(
+                    height: 40,
+                  ),
+                  Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Text(
+                        message,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                            color: Color.fromARGB(255, 190, 91, 37)),
+                      ))
                 ],
               ),
             )));
   }
 
+  void setMessage(String message) {
+    if (DateTime.now().difference(lastTime).inSeconds < 2) return;
+    this.message = message;
+    setState(() {});
+    lastTime = DateTime.now();
+  }
+
   void startRecapture() {}
 
   Future<void> onImage(File file) async {
+    if (done) return;
     final String? uid = (VoterHelper.voterInfo == null ||
             VoterHelper.voterInfo!.aadharNumber.isEmpty)
         ? null
@@ -125,10 +142,12 @@ class _FaceVerificationPageState extends State<FaceVerificationPage> {
       return;
     }
     if (totalImages < totalNeededImages) {
-      (bool, bool) res = await sendImageToApi(file, uid, context);
+      (bool, bool) res =
+          await sendImageToApi(file, uid, context); // face found, result
+      totalImages++;
       if (res.$1) {
-        totalImages++;
         if (res.$2) {
+          done = true;
           detectionController.stopCapturing();
           totalImages = totalNeededImages;
           showDialog(
@@ -146,12 +165,19 @@ class _FaceVerificationPageState extends State<FaceVerificationPage> {
                           child: const Text("Continue, and go back"))
                     ],
                   ));
+        } else {
+          // send a message to move a little bit
+          setMessage("Its not the face im looking for, please try again.");
         }
+      } else {
+        // send a message to move a little bit
+        setMessage("Your face is not clear, please move a little bit.");
       }
 
       setState(() {});
     } else {
       detectionController.stopCapturing();
+      done = true;
       showDialog(
           context: context,
           builder: (context) => TextPopup(
@@ -214,106 +240,4 @@ class _FaceVerificationPageState extends State<FaceVerificationPage> {
       return (false, false);
     }
   }
-}
-
-void _showImageSelectionPopup(BuildContext context, List<File> imageUrls,
-    Function(File) onImageSelected, Function() recapture) {
-  showModalBottomSheet(
-    useRootNavigator: true,
-    context: context,
-    isScrollControlled: true,
-    enableDrag: false,
-    isDismissible: false,
-    builder: (BuildContext context) {
-      return Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text(
-                "Which of the following shows your face clearly?",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              const Text(
-                "Click on the image on which your face is clear.",
-                style: TextStyle(fontSize: 13, color: Colors.grey),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              SizedBox(
-                  width: MediaQuery.of(context).size.height,
-                  height: MediaQuery.of(context).size.width,
-                  child: GridView.builder(
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 8.0,
-                      mainAxisSpacing: 8.0,
-                    ),
-                    itemCount: imageUrls.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return InkWell(
-                        onTap: () {
-                          File selected = imageUrls[index];
-                          showDialog(
-                              context: context,
-                              useRootNavigator: true,
-                              builder: (context) => Dialog(
-                                  child: Padding(
-                                      padding: const EdgeInsets.all(20),
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          const Text(
-                                            "Does this image shows your beautiful face ?",
-                                            style: TextStyle(
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          const SizedBox(
-                                            height: 20,
-                                          ),
-                                          ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(20),
-                                            child: Image.file(selected),
-                                          ),
-                                          getPrimaryAsyncButton(context,
-                                              () async {
-                                            onImageSelected(selected);
-                                            return true;
-                                          },
-                                              "Confirm",
-                                              "Loading",
-                                              "An Error Occured",
-                                              "Success",
-                                              MediaQuery.of(context)
-                                                      .size
-                                                      .width -
-                                                  20)
-                                        ],
-                                      )))).then((_) {
-                            // recapture();
-                          });
-                        },
-                        child: Image.file(
-                          imageUrls[index],
-                          fit: BoxFit.cover,
-                        ),
-                      );
-                    },
-                  )),
-              const SizedBox(
-                height: 10,
-              ),
-            ],
-          ));
-    },
-  ).then((value) {
-    recapture();
-  });
 }

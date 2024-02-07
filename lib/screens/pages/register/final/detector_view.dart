@@ -3,6 +3,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:camera/camera.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
@@ -12,10 +13,10 @@ import 'package:image/image.dart' as imglib;
 import 'dart:math';
 
 class CameraDetectionController {
+  late Future<CameraController> cameraControllerWaiter;
+  late List<CameraDescription> _cameras;
   bool doneCapturing = false;
   CameraController? controller;
-  late Future<CameraController> camera_controller_waiter;
-  late List<CameraDescription> _cameras;
   final FaceDetector _faceDetector = FaceDetector(
     options: FaceDetectorOptions(
       enableContours: true,
@@ -29,26 +30,32 @@ class CameraDetectionController {
     DeviceOrientation.portraitDown: 180,
     DeviceOrientation.landscapeRight: 270,
   };
-  bool _canProcess = true;
+  final bool _canProcess = true;
   bool _isBusy = false;
   CustomPaint? _customPaint;
-  // String? _text;
-  int ith_image = 0;
+  int ithImage = 0;
   final _cameraLensDirection = CameraLensDirection.front;
   List<File> capturedImages = [];
-  late DateTime _lastCaptureTime;
-  final Duration captureGap = const Duration(seconds: 2);
-  final Function(List<File>) onDoneCapture;
+  final Duration captureGap = const Duration(seconds: 1);
+  bool? mounted;
+  bool _isPostProcessing = false;
+  bool _isDisposed = false;
+
   final Future<void> Function(File) onImage;
   Function(Function())? setState;
-  bool? mounted;
+  final Function(String) onMessage;
+  // late DateTime _lastCaptureTime;
 
-  bool _proccessingBusy = false;
-
-  CameraDetectionController(
-      {required this.onDoneCapture, required this.onImage});
+  CameraDetectionController({required this.onImage, required this.onMessage});
+  void dispose() {
+    if (_isDisposed) return;
+    _isDisposed = true;
+    _faceDetector.close();
+    controller?.dispose();
+  }
 
   void recapture() {
+    if (_isDisposed) return;
     doneCapturing = false;
     capturedImages = [];
     controller?.resumePreview();
@@ -56,11 +63,12 @@ class CameraDetectionController {
   }
 
   void startCapturing(Function(Function()) setState, mounted) {
+    if (_isDisposed) return;
     this.setState = setState;
     this.mounted = mounted;
-    _lastCaptureTime = DateTime.now();
+    // _lastCaptureTime = DateTime.now();
     Completer<CameraController> completer = Completer();
-    camera_controller_waiter = completer.future;
+    cameraControllerWaiter = completer.future;
     availableCameras().then((value) {
       _cameras = value;
       controller = CameraController(_cameras[1], ResolutionPreset.ultraHigh,
@@ -90,87 +98,126 @@ class CameraDetectionController {
   void _processCameraImage(CameraImage image) {
     final inputImage = _inputImageFromCameraImage(image);
     if (inputImage == null) return;
+    // if (DateTime.now().difference(_lastCaptureTime) >= captureGap) {
     _processImage(inputImage, image);
+    // }
+  }
+
+  static Future<File> saveImage(Uint8List imageBytes) async {
+    final appDirectory = await getApplicationDocumentsDirectory();
+    final String imagePath =
+        '${appDirectory.path}/face_images/user_captured_image_${DateTime.now().millisecondsSinceEpoch}.jpg';
+    File outFile = File(imagePath);
+    await outFile.create(recursive: true);
+    await outFile.writeAsBytes(imageBytes);
+    return outFile;
+  }
+
+  void processImageAndSend(CameraImage image) {
+    final stopwatch = Stopwatch()..start();
+
+    convertImagetoJpg(image).then((jpgImage) {
+      if (jpgImage != null) {
+        final convertTime = stopwatch.elapsedMilliseconds;
+        Global.logger.f("Image conversion time: $convertTime ms");
+
+        saveImage(jpgImage).then((value) {
+          final saveTime = stopwatch.elapsedMilliseconds - convertTime;
+          Global.logger.f("Image save time: $saveTime ms");
+
+          ithImage++;
+          capturedImages.add(value);
+
+          onImage(value).then((onImageTime) {
+            final totalTime = stopwatch.elapsedMilliseconds;
+            Global.logger.f("Total processing time: $totalTime ms");
+            _isPostProcessing = false;
+          }).catchError((e) {
+            Global.logger.e("Error running onImage image: $e");
+            _isPostProcessing = false;
+          });
+        }).catchError((e) {
+          Global.logger.e("Error saving image: $e");
+          _isPostProcessing = false;
+        });
+      }
+    }).catchError((e) {
+      Global.logger.e("Error converting image to jpg: $e");
+      _isPostProcessing = false;
+    });
   }
 
   Future<void> _processImage(InputImage inputImage, CameraImage image) async {
+    if (_isDisposed) return;
     if (!_canProcess) return;
     if (_isBusy) return;
     _isBusy = true;
-    setState!(() {
-      // _text = '';
-    });
     final faces = await _faceDetector.processImage(inputImage);
     if (faces.length > 1) {
-      Global.logger.f("More than one face detected");
+      onMessage("Multiple faces detected.");
+      _isBusy = false;
+      return;
     }
     if (inputImage.metadata?.size != null &&
         inputImage.metadata?.rotation != null) {
-      // final painter = FaceDetectorPainter(
-      //   faces,
-      //   inputImage.metadata!.size,
-      //   inputImage.metadata!.rotation,
-      //   _cameraLensDirection,
-      // );
-      // _customPaint = CustomPaint(painter: painter);
-      if (DateTime.now().difference(_lastCaptureTime) >= captureGap &&
-          !doneCapturing &&
+      final painter = FaceDetectorPainter(
+        faces,
+        inputImage.metadata!.size,
+        inputImage.metadata!.rotation,
+        _cameraLensDirection,
+      );
+      _customPaint = CustomPaint(painter: painter);
+      if (
+          // DateTime.now().difference(_lastCaptureTime) >= captureGap &&
+          //   !doneCapturing &&
           faces.isNotEmpty) {
-        ith_image++;
-        final appDirectory = await getApplicationDocumentsDirectory();
-        final String imagePath =
-            '${appDirectory.path}/face_images/user_captured_image_${ith_image}_${DateTime.now().millisecondsSinceEpoch}.jpg';
-
-        File outFile = await File(imagePath);
-        await outFile.create(recursive: true);
-        await outFile.writeAsBytes((await convertImagetoJpg(image))!);
-        // Global.logger.f(
-        // "Format : ${image.format.group}, Bytes: ${imageBytes}, Length: ${imageBytes.length}");
-        Global.logger.i("Image saved at ${outFile.path}");
-        capturedImages.add(outFile);
-        await onImage(outFile);
-        // _lastCaptureTime = DateTime.now();
-        // if (capturedImages.length >= 4) {
-        //   doneCapturing = true;
-        //   controller!.stopImageStream();
-        //   controller!.pausePreview();
-        //   Global.logger.f("Done capturing");
-        //   onDoneCapture(capturedImages);
-        // }
+        if (!_isPostProcessing) {
+          _isPostProcessing = true;
+          processImageAndSend(image);
+        }
       }
     } else {
-      // String text = 'Faces found: ${faces.length}\n\n';
-      // for (final face in faces) {
-      //   text += 'face: ${face.boundingBox}\n\n';
-      // }
-      // _text = text;
       _customPaint = null;
     }
-    _isBusy = false;
     if (mounted!) {
       setState!(() {});
     }
+    _isBusy = false;
   }
 
   void stopCapturing() {
+    if (_isDisposed) return;
     doneCapturing = true;
     controller!.stopImageStream();
     controller!.pausePreview();
   }
 
-  Future<Uint8List> postProccessImage(imglib.Image img) async {
-    imglib.Image tmp;
-    tmp = imglib.copyResize(img, width: img.width * 2, height: img.height * 2);
-    img = imglib.copyRotate(tmp, angle: 270);
-    return imglib.encodeJpg(img, quality: 100);
+  Future<Uint8List> postProccessImageThread(imglib.Image inp) async {
+    Global.logger.f("Post processing image");
+    return await compute(postProcessImage, inp);
+  }
+
+  static Uint8List postProcessImage(imglib.Image img) {
+    Global.logger.f("Post processing image 2");
+    img = imglib.copyRotate(img, angle: 270);
+    img = imglib.copyResize(img, width: img.width * 2, height: img.height * 2);
+    return imglib.encodeJpg(img);
   }
 
   Future<Uint8List?> convertImagetoJpg(CameraImage image) async {
     try {
       imglib.Image img;
-      img = decodeYUV420SP(image);
+      final stopwatch = Stopwatch()..start();
+      img = await decodeYUV420SPThread(image);
+      final decodeTime = stopwatch.elapsedMilliseconds;
       Global.logger.f("Image Width: ${img.width}, Height: ${img.height}");
-      Uint8List png = await postProccessImage(img);
+      final imgBytes = await postProccessImageThread(img);
+      final saveTime = stopwatch.elapsedMilliseconds - decodeTime;
+      stopwatch.stop();
+      Global.logger
+          .f("Decode time: $decodeTime ms and post Process time: $saveTime ms");
+      Uint8List png =
+          Uint8List.fromList(imgBytes); // await postProccessImage(img);
       return png;
     } catch (e) {
       Global.logger.e("Error converting image to png: $e");
@@ -178,24 +225,16 @@ class CameraDetectionController {
     return null;
   }
 
-  imglib.Image decodeYUV420SP(CameraImage image) {
-    // final width = image.metadata!.size.width.toInt();
-    // final height = image.metadata!.size.height.toInt();
+  Future<imglib.Image> decodeYUV420SPThread(CameraImage image) async {
+    return await compute(decodeYUV420SP, image);
+  }
+
+  static imglib.Image decodeYUV420SP(CameraImage image) {
     final width = image.width;
     final height = image.height;
 
     Uint8List yuv420sp = image.planes.first.bytes;
     final outImg = imglib.Image(width: width, height: height);
-
-    // if (image.metadata!.rotation == InputImageRotation.rotation90deg) {
-    //   outImg.exif.imageIfd.orientation = 6;
-    // } else if (image.metadata!.rotation == InputImageRotation.rotation180deg) {
-    //   outImg.exif.imageIfd.orientation = 3;
-    // } else if (image.metadata!.rotation == InputImageRotation.rotation270deg) {
-    //   outImg.exif.imageIfd.orientation = 8;
-    // } else if (image.metadata!.rotation == InputImageRotation.rotation0deg) {
-    //   outImg.exif.imageIfd.orientation = 1;
-    // }
 
     final int frameSize = width * height;
 
@@ -282,13 +321,13 @@ class CameraApp extends StatefulWidget {
 class _CameraAppState extends State<CameraApp> {
   // CameraController? controller;
   late CameraDetectionController detectionController; // = widget.controller;
-  // late Future<CameraController> camera_controller_waiter;
+  // late Future<CameraController> cameraControllerWaiter;
   // late List<CameraDescription> _cameras;
   // bool _canProcess = true;
   // bool _isBusy = false;
   // CustomPaint? _customPaint;
   // String? _text;
-  // int ith_image = 0;
+  // int ithImage = 0;
   // final _cameraLensDirection = CameraLensDirection.front;
   // List<File> capturedImages = [];
   // late DateTime _lastCaptureTime;
@@ -307,7 +346,7 @@ class _CameraAppState extends State<CameraApp> {
     super.initState();
     detectionController = widget.controller;
     detectionController.startCapturing(setState, mounted);
-    detectionController.camera_controller_waiter.then((value) {
+    detectionController.cameraControllerWaiter.then((value) {
       setState(() {
         // controller = value;
       });
@@ -317,14 +356,14 @@ class _CameraAppState extends State<CameraApp> {
 
   @override
   void dispose() {
-    detectionController.controller?.dispose();
+    detectionController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: detectionController.camera_controller_waiter,
+        future: detectionController.cameraControllerWaiter,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting ||
               snapshot.connectionState == ConnectionState.active) {
@@ -344,7 +383,7 @@ class _CameraAppState extends State<CameraApp> {
                     detectionController.controller!.value.previewSize!.width,
                 child: CameraPreview(
                   detectionController.controller!,
-                  // child: detectionController._customPaint,
+                  child: detectionController._customPaint,
                 ),
               ),
             ));
