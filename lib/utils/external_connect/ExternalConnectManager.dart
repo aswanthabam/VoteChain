@@ -1,14 +1,11 @@
 import 'dart:async';
 
 import 'package:convert/convert.dart';
-import 'package:vote/services/api/ethers/ethers.dart';
-import 'package:vote/services/blockchain/blockchain_client.dart';
 import 'package:vote/services/blockchain/voter_helper.dart';
 import 'package:vote/services/blockchain/wallet.dart';
 import 'package:vote/services/global.dart';
 import 'package:vote/utils/external_connect/connector.dart';
 import 'package:vote/utils/external_connect/external_request_proccessor.dart';
-import 'package:web3dart/web3dart.dart';
 
 class ExternalConnectResponse {
   final bool status;

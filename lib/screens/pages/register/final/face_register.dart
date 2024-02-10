@@ -3,8 +3,6 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:vote/provider/voter_provider.dart';
 import 'package:vote/screens/pages/register/final/detector_view.dart';
 import 'package:vote/screens/widgets/dialog/TextPopup/TextPopup.dart';
 import 'package:vote/screens/widgets/progress_bar/radial_progress.dart';
@@ -252,7 +250,6 @@ class _FaceRegisterWidgetState extends State<FaceRegisterWidget> {
       var request = http.MultipartRequest('POST', Uri.parse(url));
       request.files
           .add(await http.MultipartFile.fromPath('face', imageFile.path));
-      // ignore: use_build_context_synchronously
       request.fields['face_id'] = faceId;
       request.fields['final'] = isFinal ? "1" : "0";
       var response = await request.send();

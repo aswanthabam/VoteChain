@@ -20,7 +20,6 @@ import 'package:vote/screens/widgets/dialog/TextPopup/TextPopup.dart';
 import 'package:vote/screens/widgets/paginated_views/paginated_views.dart'
     as pagging;
 import 'package:vote/services/blockchain/voter_helper.dart';
-import 'package:vote/services/utils.dart';
 import 'package:vote/utils/types/user_types.dart';
 
 class Register extends StatefulWidget {
