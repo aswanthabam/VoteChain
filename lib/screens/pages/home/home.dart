@@ -6,6 +6,7 @@ import 'package:vote/screens/widgets/content_views/underlined_text/underlined_te
 import 'package:vote/services/blockchain/blockchain_client.dart';
 import 'package:vote/services/blockchain/voter_helper.dart';
 import 'package:vote/services/global.dart';
+import 'package:vote/services/utils.dart';
 import 'package:vote/utils/types/api_types.dart' as apiTypes;
 
 class Home extends StatefulWidget {
@@ -35,6 +36,7 @@ class _HomeState extends State<Home> {
     setState(() {
       status = status;
     });
+    Global.logger.f("APP KEY: ${await Utils.storage.read(key: "app_key")}");
     await VoterHelper().fetchInfo();
     Global.logger.i(
         "About the voter : \n - ${VoterHelper.voterRegistrationStatus!.message} \n ${VoterHelper.voterInfo!.toJson()}");

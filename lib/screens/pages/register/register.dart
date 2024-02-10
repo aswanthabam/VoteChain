@@ -20,6 +20,7 @@ import 'package:vote/screens/widgets/dialog/TextPopup/TextPopup.dart';
 import 'package:vote/screens/widgets/paginated_views/paginated_views.dart'
     as pagging;
 import 'package:vote/services/blockchain/voter_helper.dart';
+import 'package:vote/services/utils.dart';
 import 'package:vote/utils/types/user_types.dart';
 
 class Register extends StatefulWidget {
@@ -45,6 +46,7 @@ class _RegisterState extends State<Register> {
   String? aadhar;
   bool continueButtonVisible = true;
   String faceId = "";
+  String appKey = "";
 
   void hideContinueButton() {
     setState(() {
@@ -89,9 +91,29 @@ class _RegisterState extends State<Register> {
                                 setState(() {
                                   faceId = value.faceId!;
                                 });
-                                continueButtonVisible = true;
-                                pagination.next();
-                                completer.complete(true);
+                                if (value.appKey != null) {
+                                  setState(() {
+                                    appKey = value.appKey!;
+                                  });
+                                  continueButtonVisible = true;
+                                  pagination.next();
+                                  completer.complete(true);
+                                } else {
+                                  showDialog(
+                                      context: outerContext,
+                                      builder: (context) => TextPopup(
+                                            message:
+                                                "An error occured while getting the app key",
+                                            bottomButtons: [
+                                              TextButton(
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                    completer.complete(false);
+                                                  },
+                                                  child: const Text("Continue"))
+                                            ],
+                                          ));
+                                }
                               } else {
                                 showDialog(
                                     context: context,
@@ -187,7 +209,8 @@ class _RegisterState extends State<Register> {
       FaceRegisterPage(
           hideContinueButton: hideContinueButton,
           faceId: getFaceId,
-          next: forcefullyGoNext), // -1
+          next: forcefullyGoNext,
+          appKey: getAppKey), // -1
     ]);
   }
 
@@ -255,6 +278,10 @@ class _RegisterState extends State<Register> {
 
   String? getFaceId() {
     return faceId;
+  }
+
+  String? getAppKey() {
+    return appKey;
   }
 }
 

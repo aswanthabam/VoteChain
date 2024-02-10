@@ -2,6 +2,7 @@
 
 import 'package:http/http.dart';
 import 'package:vote/services/global.dart';
+import 'package:vote/services/utils.dart';
 import '../preferences.dart';
 import 'dart:convert';
 
@@ -19,8 +20,10 @@ class APIClass {
 
   Future<Map<String, dynamic>?> postCall(
       String route, Map<String, dynamic>? data, String? hostAddress) async {
-    Response response =
-        await post(Uri.parse((hostAddress ?? host) + route), body: data);
+    Response response = await post(
+        Uri.parse(
+            '${hostAddress ?? host}$route?APP_KEY=${await Utils.storage.read(key: "app_key")}'),
+        body: data);
     print(response.body);
     if (response.statusCode == 200) {
       return jsonDecode(response.body);

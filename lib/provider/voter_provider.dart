@@ -34,6 +34,7 @@ class VoterModal extends ChangeNotifier {
   bool _orphan = false;
   String _constituency = "";
   String _faceId = "";
+  String _appKey = "";
 
   EthereumAddress? get address => _privateKey?.address;
   EthPrivateKey? get privateKey => _privateKey;
@@ -66,6 +67,7 @@ class VoterModal extends ChangeNotifier {
   bool get orphan => _orphan;
   String get constituency => _constituency;
   String get faceId => _faceId;
+  String get appKey => _appKey;
 
   PersonalInfo get personalInfo => PersonalInfo(
         firstName: _firstName,
@@ -111,6 +113,11 @@ class VoterModal extends ChangeNotifier {
         orphan: _orphan,
         constituency: _constituency,
       );
+
+  set appKey(String appKey) {
+    _appKey = appKey;
+    notifyListeners();
+  }
 
   set faceId(String faceId) {
     _faceId = faceId;

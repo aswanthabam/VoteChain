@@ -88,7 +88,7 @@ class ExternalConnector {
       Global.logger.i("Sending data to websocket : $dataSend");
       _channel?.sink.add(json.encode(dataSend));
       Completer<bool> listener = Completer<bool>();
-      addListener('sresult_response', (p0) {
+      addListener('result_response', (p0) {
         if (p0['status'] == 'success') {
           Global.logger.i("Successfully sent data with websocket");
           listener.complete(true);
