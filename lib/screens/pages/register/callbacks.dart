@@ -9,8 +9,9 @@ class RegisterCallbackResult {
   final bool success;
   final String message;
   final String? faceId;
+  final String? appKey;
   RegisterCallbackResult(
-      {required this.success, required this.message, this.faceId});
+      {required this.success, required this.message, this.faceId, this.appKey});
 }
 
 Future<RegisterCallbackResult> submitRegister(VoterModal modal) async {
@@ -43,7 +44,10 @@ Future<RegisterCallbackResult> submitRegister(VoterModal modal) async {
     }
     await helper.fetchInfo(); // get the user registration from the blockchain
     return RegisterCallbackResult(
-        success: true, message: sts.message, faceId: sts2.faceId);
+        success: true,
+        message: sts.message,
+        faceId: sts2.faceId,
+        appKey: sts2.appKey);
   }
   return RegisterCallbackResult(success: false, message: sts.message);
 }

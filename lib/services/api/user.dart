@@ -6,7 +6,9 @@ class RegisterUserCallStatus {
   final bool status;
   final String message;
   final String? faceId;
-  const RegisterUserCallStatus(this.status, this.message, {this.faceId});
+  final String? appKey;
+  const RegisterUserCallStatus(this.status, this.message,
+      {this.faceId, this.appKey});
 }
 
 class UserENC {
@@ -51,11 +53,32 @@ class UserAuthCall extends APIClass {
             false, "An error occured while registering");
       }
       return RegisterUserCallStatus(true, "User registered successfully",
-          faceId: val['data']['face_id']);
+          faceId: val['data']['face_id'], appKey: val['data']['app_key']);
     } catch (err) {
       Global.logger.e("An error occured while getting system configs : $err");
       return const RegisterUserCallStatus(
           false, "An error occured while registering");
+    }
+  }
+
+  Future<String?> getAccessKey(
+      {required String scope, required String clientId}) async {
+    try {
+      var val = await postCall('/api/user/app/get-accesskey/',
+          {'scope': scope, 'clientId': clientId}, SystemConfig.localServer);
+      print(val);
+      if (val == null) {
+        return null;
+      }
+      try {
+        var accessKey = val['data']['access_key'];
+        return accessKey;
+      } catch (err) {
+        return null;
+      }
+    } catch (err) {
+      Global.logger.e("An error occured while getting system configs : $err");
+      return null;
     }
   }
 }

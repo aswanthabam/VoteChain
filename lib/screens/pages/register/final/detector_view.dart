@@ -47,11 +47,12 @@ class CameraDetectionController {
   // late DateTime _lastCaptureTime;
 
   CameraDetectionController({required this.onImage, required this.onMessage});
-  void dispose() {
+  Future<void> dispose() async {
     if (_isDisposed) return;
+    await _faceDetector.close();
+    await controller?.pausePreview();
+    await controller?.dispose();
     _isDisposed = true;
-    _faceDetector.close();
-    controller?.dispose();
   }
 
   void recapture() {
@@ -185,11 +186,11 @@ class CameraDetectionController {
     _isBusy = false;
   }
 
-  void stopCapturing() {
+  Future<void> stopCapturing() async {
     if (_isDisposed) return;
     doneCapturing = true;
-    controller!.stopImageStream();
-    controller!.pausePreview();
+    await controller!.stopImageStream();
+    await controller!.pausePreview();
   }
 
   Future<Uint8List> postProccessImageThread(imglib.Image inp) async {
@@ -320,19 +321,7 @@ class CameraApp extends StatefulWidget {
 
 class _CameraAppState extends State<CameraApp> {
   // CameraController? controller;
-  late CameraDetectionController detectionController; // = widget.controller;
-  // late Future<CameraController> cameraControllerWaiter;
-  // late List<CameraDescription> _cameras;
-  // bool _canProcess = true;
-  // bool _isBusy = false;
-  // CustomPaint? _customPaint;
-  // String? _text;
-  // int ithImage = 0;
-  // final _cameraLensDirection = CameraLensDirection.front;
-  // List<File> capturedImages = [];
-  // late DateTime _lastCaptureTime;
-  // final Duration captureGap = const Duration(seconds: 2);
-  // bool doneCapturing = false;
+  late CameraDetectionController detectionController;
 
   @override
   void didUpdateWidget(covariant CameraApp oldWidget) {
@@ -356,8 +345,9 @@ class _CameraAppState extends State<CameraApp> {
 
   @override
   void dispose() {
-    detectionController.dispose();
-    super.dispose();
+    detectionController.dispose().then((e) {
+      super.dispose();
+    });
   }
 
   @override

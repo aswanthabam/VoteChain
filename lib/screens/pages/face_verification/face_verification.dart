@@ -10,6 +10,7 @@ import 'package:vote/screens/widgets/progress_bar/radial_progress.dart';
 import 'package:vote/screens/widgets/content_views/underlined_text/underlined_text.dart';
 import 'package:vote/services/blockchain/voter_helper.dart';
 import 'package:vote/services/global.dart';
+import 'package:vote/services/utils.dart';
 import 'package:vote/utils/types/api_types.dart' as apiTypes;
 import 'package:http/http.dart' as http;
 
@@ -148,7 +149,7 @@ class _FaceVerificationPageState extends State<FaceVerificationPage> {
       if (res.$1) {
         if (res.$2) {
           done = true;
-          detectionController.stopCapturing();
+          await detectionController.stopCapturing();
           totalImages = totalNeededImages;
           showDialog(
               context: context,
@@ -176,7 +177,7 @@ class _FaceVerificationPageState extends State<FaceVerificationPage> {
 
       setState(() {});
     } else {
-      detectionController.stopCapturing();
+      await detectionController.stopCapturing();
       done = true;
       showDialog(
           context: context,
@@ -202,8 +203,10 @@ class _FaceVerificationPageState extends State<FaceVerificationPage> {
                 ],
               )).then((value) {
         detectionController.controller?.dispose();
-        Navigator.of(context).pop();
-        Navigator.of(context).pop();
+        try {
+          Navigator.of(context).pop();
+          Navigator.of(context).pop();
+        } catch (e) {}
       });
     }
   }
@@ -211,7 +214,8 @@ class _FaceVerificationPageState extends State<FaceVerificationPage> {
   Future<(bool, bool)> sendImageToApi(
       File imageFile, String uid, BuildContext context) async {
     try {
-      final url = "${apiTypes.SystemConfig.localServer}/api/user/face/verify/";
+      final url =
+          "${apiTypes.SystemConfig.localServer}/api/user/face/verify/?APP_KEY=${await Utils.storage.read(key: 'app_key')}";
       var request = http.MultipartRequest('POST', Uri.parse(url));
       request.files
           .add(await http.MultipartFile.fromPath('face', imageFile.path));

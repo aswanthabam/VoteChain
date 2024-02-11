@@ -119,7 +119,10 @@ class AsyncButton extends StatefulWidget {
       required this.loadingText,
       required this.failedText,
       required this.successText,
-      required this.width});
+      required this.width,
+      this.padding = 15,
+      this.fontSize = 16,
+      this.height = 50});
 
   final Future<bool> Function() onPressed;
 
@@ -137,6 +140,9 @@ class AsyncButton extends StatefulWidget {
   final String failedText;
   final String successText;
   final double width;
+  final double padding;
+  final double fontSize;
+  final double height;
   @override
   State<AsyncButton> createState() => _AsyncButtonState();
 }
@@ -180,9 +186,9 @@ class _AsyncButtonState extends State<AsyncButton> {
         }
       },
       child: Container(
-        height: 50,
+        height: widget.height,
         width: widget.width,
-        padding: const EdgeInsets.all(15),
+        padding: EdgeInsets.all(widget.padding),
         decoration: BoxDecoration(
             color: state.getBackgroundColor(),
             borderRadius: BorderRadius.circular(30)),
@@ -201,7 +207,7 @@ class _AsyncButtonState extends State<AsyncButton> {
                         state.getText(),
                         style: TextStyle(
                           color: state.getColor(),
-                          fontSize: 16,
+                          fontSize: widget.fontSize,
                           fontFamily: 'Poppins',
                           fontWeight: FontWeight.w600,
                           letterSpacing: 0.16,

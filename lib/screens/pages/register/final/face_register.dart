@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
@@ -7,6 +9,8 @@ import 'package:vote/screens/widgets/progress_bar/radial_progress.dart';
 import 'package:vote/screens/pages/register/register.dart';
 import 'package:vote/screens/widgets/content_views/underlined_text/underlined_text.dart';
 import 'package:vote/services/global.dart';
+import 'package:vote/services/utils.dart';
+import 'package:vote/utils/encryption.dart';
 import 'package:vote/utils/types/api_types.dart' as apiTypes;
 import '../../../widgets/paginated_views/paginated_views.dart' as paging;
 import 'package:http/http.dart' as http;
@@ -17,9 +21,13 @@ class FaceRegisterPage extends FormPage<String> {
   String? validatedData;
   Function()? hideContinueButton;
   final String? Function() faceId;
+  final String? Function() appKey;
   final Function() next;
   FaceRegisterPage(
-      {this.hideContinueButton, required this.faceId, required this.next});
+      {this.hideContinueButton,
+      required this.faceId,
+      required this.next,
+      required this.appKey});
 
   @override
   FormPageStatus validate() {
@@ -32,7 +40,8 @@ class FaceRegisterPage extends FormPage<String> {
     if (hideContinueButton != null) {
       hideContinueButton!();
     }
-    return FaceRegisterWidget(pageState: this, faceId: faceId, next: next);
+    return FaceRegisterWidget(
+        pageState: this, faceId: faceId, next: next, appKey: appKey);
   }
 }
 
@@ -41,11 +50,13 @@ class FaceRegisterWidget extends StatefulWidget {
       {super.key,
       required this.pageState,
       required this.faceId,
-      required this.next});
+      required this.next,
+      required this.appKey});
 
   final paging.PageState pageState;
   final Function() next;
   final String? Function() faceId;
+  final String? Function() appKey;
   @override
   State<FaceRegisterWidget> createState() => _FaceRegisterWidgetState();
 }
@@ -53,7 +64,7 @@ class FaceRegisterWidget extends StatefulWidget {
 class _FaceRegisterWidgetState extends State<FaceRegisterWidget> {
   late CameraDetectionController detectionController;
   int totalImages = 0;
-  int totalNeededImages = 10;
+  int totalNeededImages = 3;
   String message = "Please look at the camera and stay still.";
   late DateTime lastTime;
   List<Color> gradientColors = const [
@@ -182,6 +193,26 @@ class _FaceRegisterWidgetState extends State<FaceRegisterWidget> {
           } else {
             totalImages++;
             setMessage("Its working... Please stay still.");
+            String? appKey = await decrypt(widget.appKey()!, res.faceKey!);
+            Global.logger.f("Finaly got app Key : $appKey");
+            if (appKey != null) {
+              if (Utils.secureSave(key: "app_key", value: appKey)) {
+                Global.logger.i("App Key saved successfully");
+              } else {
+                Global.logger.e("Failed to save app key");
+                showDialog(
+                    context: context,
+                    builder: (context) => TextPopup(
+                            message: "Failed to save app key",
+                            bottomButtons: [
+                              TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text("Continue"))
+                            ])).then((value) => widget.next());
+              }
+            }
           }
         } else {
           setMessage("Your face is not clear, Please try again.");
@@ -191,8 +222,8 @@ class _FaceRegisterWidgetState extends State<FaceRegisterWidget> {
         setMessage("Oops there is some issues, trying again.");
       }
     } else {
-      detectionController.stopCapturing();
-      detectionController.dispose();
+      await detectionController.stopCapturing();
+      await detectionController.dispose();
       showDialog(
           context: context,
           builder: (context) => TextPopup(
@@ -219,7 +250,6 @@ class _FaceRegisterWidgetState extends State<FaceRegisterWidget> {
       var request = http.MultipartRequest('POST', Uri.parse(url));
       request.files
           .add(await http.MultipartFile.fromPath('face', imageFile.path));
-      // ignore: use_build_context_synchronously
       request.fields['face_id'] = faceId;
       request.fields['final'] = isFinal ? "1" : "0";
       var response = await request.send();
@@ -250,12 +280,14 @@ class RegisterImageResponse {
   final bool faceFound;
   final bool matching;
   final bool isFinal;
+  final String? faceKey;
 
   RegisterImageResponse(
       {required this.status,
       required this.faceFound,
       required this.matching,
-      required this.isFinal});
+      required this.isFinal,
+      this.faceKey});
 
   factory RegisterImageResponse.fromJson(
       bool status, Map<String, dynamic> json) {
@@ -263,6 +295,7 @@ class RegisterImageResponse {
         status: status,
         faceFound: json['face_found'],
         matching: json['matching'],
-        isFinal: json['final']);
+        isFinal: json['final'],
+        faceKey: json['matching'] && json['final'] ? json['face_key'] : null);
   }
 }
