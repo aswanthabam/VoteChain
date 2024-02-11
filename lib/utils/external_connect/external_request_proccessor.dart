@@ -52,7 +52,9 @@ class ExternalRequestProcessor {
                       'status': 'success',
                       'access_key': accessKey,
                       'name':
-                          "${VoterHelper.voterInfo!.personalInfo.firstName} ${VoterHelper.voterInfo!.personalInfo.middleName} ${VoterHelper.voterInfo!.personalInfo.lastName}"
+                          "${VoterHelper.voterInfo!.personalInfo.firstName}${VoterHelper.voterInfo!.personalInfo.middleName == '' ? '' : ' ${VoterHelper.voterInfo!.personalInfo.middleName}'} ${VoterHelper.voterInfo!.personalInfo.lastName}",
+                      'candidateAddress':
+                          VoteChainWallet.credentials?.address.hex
                     });
                     listener.complete(true);
                   }

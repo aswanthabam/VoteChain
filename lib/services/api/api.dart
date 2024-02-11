@@ -18,6 +18,21 @@ class APIClass {
     return null;
   }
 
+  Future<Map<String, dynamic>?> getCallNormal(
+      String route, Map<String, dynamic>? data, String? hostAddress) async {
+    String queryString = "";
+    data?.forEach((key, value) {
+      queryString += "&$key=$value";
+    });
+    Response response = await get(Uri.parse(
+        '${hostAddress ?? host}$route?APP_KEY=${await Utils.storage.read(key: "app_key")}$queryString'));
+    print(response.body);
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    }
+    return null;
+  }
+
   Future<Map<String, dynamic>?> postCall(
       String route, Map<String, dynamic>? data, String? hostAddress) async {
     Response response = await post(

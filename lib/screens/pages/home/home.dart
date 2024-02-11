@@ -38,8 +38,8 @@ class _HomeState extends State<Home> {
     });
     Global.logger.f("APP KEY: ${await Utils.storage.read(key: "app_key")}");
     await VoterHelper().fetchInfo();
-    Global.logger.i(
-        "About the voter : \n - ${VoterHelper.voterRegistrationStatus!.message} \n ${VoterHelper.voterInfo!.toJson()}");
+    // Global.logger.i(
+    //     "About the voter : \n - ${VoterHelper.voterRegistrationStatus!.message} \n ${VoterHelper.voterInfo!.toJson()}");
     Contracts.votechain
         ?.getUpComingElections$2(VoterHelper.voterInfo?.constituency ?? "")
         .then((value) {
@@ -183,9 +183,9 @@ class AccountStatusCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(20)),
         child: Row(
           children: [
-            const SizedBox(width: 20),
+            const SizedBox(width: 15),
             const Icon(Icons.info_outline, size: 40),
-            const SizedBox(width: 20),
+            const SizedBox(width: 15),
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -201,7 +201,6 @@ class AccountStatusCard extends StatelessWidget {
             ),
             const Spacer(),
             const Icon(Icons.chevron_right_rounded, size: 50),
-            const SizedBox(width: 20),
           ],
         ));
   }

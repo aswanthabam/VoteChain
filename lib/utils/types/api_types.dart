@@ -1,3 +1,6 @@
+import 'package:vote/utils/types/user_types.dart';
+import 'package:web3dart/web3dart.dart';
+
 class SystemConfig {
   static late String votechainAddress;
   static late String voterAddress;
@@ -163,5 +166,135 @@ class Constituency {
       description: data['description'],
       image: data['image'],
     );
+  }
+}
+
+class Education {
+  final String educationId;
+  final String title;
+  final String description;
+  final String fromWhere;
+
+  Education({
+    required this.educationId,
+    required this.title,
+    required this.description,
+    required this.fromWhere,
+  });
+
+  static Education fromJson(Map<String, dynamic> data) {
+    return Education(
+      educationId: data['educationId'] ?? "",
+      title: data['title'] ?? "",
+      description: data['description'] ?? "",
+      fromWhere: data['fromWhere'] ?? "",
+    );
+  }
+}
+
+class Experience {
+  final String experienceId;
+  final String title;
+  final String description;
+  final String fromWhere;
+
+  Experience({
+    required this.experienceId,
+    required this.title,
+    required this.description,
+    required this.fromWhere,
+  });
+
+  static Experience fromJson(Map<String, dynamic> data) {
+    return Experience(
+      experienceId: data['educationId'] ?? "",
+      title: data['title'] ?? "",
+      description: data['description'] ?? "",
+      fromWhere: data['fromWhere'] ?? "",
+    );
+  }
+}
+
+class Document {
+  final String title;
+  final String link;
+
+  Document({
+    required this.title,
+    required this.link,
+  });
+
+  static Document fromJson(Map<String, dynamic> data) {
+    return Document(
+      title: data['title'] ?? "",
+      link: data['link'] ?? "",
+    );
+  }
+}
+
+class CandidateProfile {
+  final String profileId;
+  final String candidateAddress;
+  final String? about;
+  final String? photo;
+  final String name;
+  final String userId;
+  final List<Education> education;
+  final List<Experience> experience;
+  final List<Document> documents;
+
+  CandidateProfile({
+    required this.profileId,
+    required this.candidateAddress,
+    required this.about,
+    required this.photo,
+    required this.name,
+    required this.userId,
+    required this.education,
+    required this.experience,
+    required this.documents,
+  });
+
+  static CandidateProfile fromJson(Map<String, dynamic> data) {
+    print(data);
+    return CandidateProfile(
+      profileId: data['profileId'] ?? "",
+      candidateAddress: data['candidateAddress'] ?? "",
+      about: data['about'],
+      photo: data['photo'],
+      name: data['name'] ?? "",
+      userId: data['userId'] ?? "",
+      education: ((data['education'] ?? []) as List<dynamic>)
+          .map((e) => Education.fromJson(e))
+          .toList(),
+      experience: ((data['experience'] ?? []) as List<dynamic>)
+          .map((e) => Experience.fromJson(e))
+          .toList(),
+      documents: ((data['documents'] ?? []) as List<dynamic>)
+          .map((e) => Document.fromJson(e))
+          .toList(),
+    );
+  }
+}
+
+class CandidateBlockchainInfo {
+  final EthereumAddress address;
+  final VoterInfo info;
+
+  CandidateBlockchainInfo({
+    required this.address,
+    required this.info,
+  });
+
+  static CandidateBlockchainInfo fromList(List<dynamic> data) {
+    return CandidateBlockchainInfo(
+      address: data[0],
+      info: VoterInfo.fromList(data[1]),
+    );
+  }
+
+  @override
+  String toString() {
+    return "Address: ${address.hex}, Info: $info";
   }
 }
