@@ -18,7 +18,7 @@ class CardWidget extends StatelessWidget {
             children: [
               SizedBox(
                 width: MediaQuery.of(context).size.width,
-                height: 250,
+                height: 200,
               ),
               // Background image
               Positioned(
@@ -68,7 +68,7 @@ class CardWidget extends StatelessWidget {
                     ? "Unknown UID"
                     : "${VoterHelper.voterInfo?.aadharNumber.substring(0, 4)}-${VoterHelper.voterInfo!.aadharNumber.substring(4, 8)}-${VoterHelper.voterInfo!.aadharNumber.substring(8, 12)}",
                 style: const TextStyle(
-                    fontSize: 25,
+                    fontSize: 20,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                     letterSpacing: 6),

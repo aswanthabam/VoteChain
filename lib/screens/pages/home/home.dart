@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:vote/screens/layers/default_layer.dart';
 import 'package:vote/screens/pages/election/election_info.dart';
+import 'package:vote/screens/widgets/content_views/card/card.dart';
 import 'package:vote/screens/widgets/content_views/underlined_text/underlined_text.dart';
 import 'package:vote/services/blockchain/blockchain_client.dart';
 import 'package:vote/services/blockchain/voter_helper.dart';
@@ -70,7 +71,7 @@ class _HomeState extends State<Home> {
             child: SizedBox.expand(
               child: SingleChildScrollView(
                 child: Padding(
-                  padding: const EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -80,78 +81,81 @@ class _HomeState extends State<Home> {
                               statusDescription: "Waiting for verification",
                               status: false,
                             )
-                          : const AccountStatusCard(
-                              statusText: "Account Verified",
-                              statusDescription: "You can now access votechain",
-                              status: true,
-                            )),
+                          : const CardWidget()),
                       const SizedBox(height: 20),
-                      const UnderlinedText(
-                          heading: "Elections",
-                          fontSize: 20,
-                          color: Colors.black,
-                          underlineColor: Colors.black,
-                          underlineWidth: 100,
-                          underlineHeight: 8),
-                      Column(
-                        children: () {
-                          var elections = ongoingElections
-                              .map<Widget>((e) => ElectionCard(
-                                    election: e,
-                                    electionStatus: true,
-                                    candidates: 0,
-                                  ))
-                              .toList();
-                          elections
-                              .addAll(upcomingElections.map((e) => ElectionCard(
-                                    election: e,
-                                    electionStatus: false,
-                                    candidates: 0,
-                                  )));
-                          var no_elections = [
-                            Container(
-                                height: 150,
-                                width: MediaQuery.of(context).size.width,
-                                padding: const EdgeInsets.all(19),
-                                margin: const EdgeInsets.only(bottom: 15),
-                                decoration: ShapeDecoration(
-                                  color: Colors.white,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(30),
-                                  ),
-                                  shadows: const [
-                                    BoxShadow(
-                                      color: Color(0x3F000000),
-                                      blurRadius: 4,
-                                      offset: Offset(0, 4),
-                                      spreadRadius: 0,
-                                    )
-                                  ],
-                                ),
-                                child: const Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                        Icons.info_outline,
-                                        size: 40,
-                                      ),
-                                      SizedBox(
-                                        height: 15,
-                                      ),
-                                      Text(
-                                        "No Elections Available now!",
-                                        style: TextStyle(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.bold),
+                      Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Column(
+                          children: () {
+                            var elections = ongoingElections
+                                .map<Widget>((e) => ElectionCard(
+                                      election: e,
+                                      electionStatus: true,
+                                      candidates: 0,
+                                    ))
+                                .toList();
+                            elections.addAll(
+                                upcomingElections.map((e) => ElectionCard(
+                                      election: e,
+                                      electionStatus: false,
+                                      candidates: 0,
+                                    )));
+                            var no_elections = [
+                              Container(
+                                  height: 150,
+                                  width: MediaQuery.of(context).size.width,
+                                  padding: const EdgeInsets.all(19),
+                                  margin: const EdgeInsets.only(bottom: 15),
+                                  decoration: ShapeDecoration(
+                                    color: Colors.white,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(30),
+                                    ),
+                                    shadows: const [
+                                      BoxShadow(
+                                        color: Color(0x3F000000),
+                                        blurRadius: 4,
+                                        offset: Offset(0, 4),
+                                        spreadRadius: 0,
                                       )
-                                    ]))
-                          ];
-                          return elections.isNotEmpty
-                              ? elections
-                              : no_elections;
-                        }(),
+                                    ],
+                                  ),
+                                  child: const Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          Icons.info_outline,
+                                          size: 40,
+                                        ),
+                                        SizedBox(
+                                          height: 15,
+                                        ),
+                                        Text(
+                                          "No Elections Available now!",
+                                          style: TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold),
+                                        )
+                                      ]))
+                            ];
+                            List<Widget> res = [
+                              const UnderlinedText(
+                                  heading: "Elections",
+                                  fontSize: 20,
+                                  color: Colors.black,
+                                  underlineColor: Colors.black,
+                                  underlineWidth: 100,
+                                  underlineHeight: 8)
+                            ];
+                            res.addAll(elections.isNotEmpty
+                                ? elections
+                                : no_elections);
+                            return res;
+                          }(),
+                        ),
                       )
                     ],
                   ),

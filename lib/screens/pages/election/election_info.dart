@@ -140,12 +140,20 @@ class _ElectionInfoState extends State<ElectionInfo> {
                                       underlineColor: Colors.green,
                                       underlineWidth: 100,
                                       underlineHeight: 4),
-                                  Column(
-                                    children: candidateInfo
-                                        .map((e) => CandidateCard(
-                                              info: e,
-                                            ))
-                                        .toList(),
+                                  candidateInfo.isNotEmpty
+                                      ? Column(
+                                          children: candidateInfo
+                                              .map((e) => CandidateCard(
+                                                    info: e,
+                                                  ))
+                                              .toList(),
+                                        )
+                                      : const Center(
+                                          child: Text(
+                                              "No candidates registered yet. Please look back later"),
+                                        ),
+                                  const SizedBox(
+                                    height: 20,
                                   ),
                                   const UnderlinedText(
                                       heading: "About the constituency",

@@ -44,6 +44,15 @@ class _DefaultLayerState extends State<DefaultLayer> {
                 ),
                 IconButton(
                   onPressed: () {
+                    Navigator.pushReplacementNamed(context, 'elections');
+                  },
+                  icon: const Icon(
+                    Icons.list_rounded,
+                    size: 25,
+                  ),
+                ),
+                IconButton(
+                  onPressed: () {
                     Navigator.pushReplacementNamed(context, 'profile');
                   },
                   icon: const Icon(
