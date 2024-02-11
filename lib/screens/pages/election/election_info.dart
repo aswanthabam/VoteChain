@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:vote/screens/widgets/appbars/backbar.dart';
 import 'package:vote/screens/widgets/buttons/async_button.dart';
 import 'package:vote/screens/widgets/content_views/underlined_text/underlined_text.dart';
@@ -93,7 +94,7 @@ class _ElectionInfoState extends State<ElectionInfo> {
                                     height: AppBar().preferredSize.height + 10,
                                   )),
                               Positioned(
-                                  top: 165,
+                                  top: 100,
                                   width: MediaQuery.of(context).size.width - 30,
                                   child: Row(
                                     mainAxisSize: MainAxisSize.max,
@@ -113,7 +114,7 @@ class _ElectionInfoState extends State<ElectionInfo> {
                                     ],
                                   )),
                               SizedBox(
-                                  height: 260,
+                                  height: 150,
                                   width: MediaQuery.of(context).size.width)
                             ],
                           ),
@@ -124,6 +125,14 @@ class _ElectionInfoState extends State<ElectionInfo> {
                                 mainAxisSize: MainAxisSize.max,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
+                                  // const UnderlinedText(
+                                  //     heading: "About Election",
+                                  //     fontSize: 20,
+                                  //     color: Colors.black,
+                                  //     underlineColor: Colors.green,
+                                  //     underlineWidth: 100,
+                                  //     underlineHeight: 4),
+                                  AboutElectionCard(info: widget.election),
                                   const UnderlinedText(
                                       heading: "Candidates",
                                       fontSize: 20,
@@ -158,18 +167,48 @@ class _ElectionInfoState extends State<ElectionInfo> {
                       ),
                     ),
                   ),
-                  SizedBox(
-                    height: 70,
-                    width: MediaQuery.of(context).size.width,
-                    child: getPrimaryAsyncButton(
-                        context,
-                        () async => true,
-                        "Cast Your Vote",
-                        "Cast Your Vote",
-                        "Cast Your Vote",
-                        "Cast Your Vote",
-                        MediaQuery.of(context).size.width),
-                  )
+                  widget.election.isOnGoing
+                      ? SizedBox(
+                          height: 70,
+                          width: MediaQuery.of(context).size.width,
+                          child: getPrimaryAsyncButton(
+                              context,
+                              () async => true,
+                              "Cast Your Vote",
+                              "Cast Your Vote",
+                              "Cast Your Vote",
+                              "Cast Your Vote",
+                              MediaQuery.of(context).size.width),
+                        )
+                      : (widget.election.isEnded
+                          ? SizedBox(
+                              height: 70,
+                              width: MediaQuery.of(context).size.width,
+                              child: getMinimalAsyncButton(
+                                  context,
+                                  () async => true,
+                                  "Election Ended",
+                                  "Election Ended",
+                                  "Election Ended",
+                                  "Election Ended",
+                                  Colors.grey,
+                                  Colors.white,
+                                  MediaQuery.of(context).size.width),
+                            )
+                          : SizedBox(
+                              height: 70,
+                              width: MediaQuery.of(context).size.width,
+                              child: getMinimalAsyncButton(
+                                  context,
+                                  () async => true,
+                                  "Election Not Started",
+                                  "Election Not Started",
+                                  "Election Not Started",
+                                  "Election Not Started",
+                                  Colors.grey,
+                                  Colors.white,
+                                  MediaQuery.of(context).size.width),
+                            ))
                 ]);
               } else {
                 return const Center(
@@ -180,6 +219,59 @@ class _ElectionInfoState extends State<ElectionInfo> {
   }
 }
 
+class AboutElectionCard extends StatelessWidget {
+  const AboutElectionCard({super.key, required this.info});
+  final apiTypes.Election info;
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        width: MediaQuery.of(context).size.width - 20,
+        padding: const EdgeInsets.all(10),
+        margin: const EdgeInsets.symmetric(vertical: 10),
+        decoration: BoxDecoration(
+            color: const Color.fromARGB(255, 223, 241, 255),
+            borderRadius: BorderRadius.circular(10),
+            boxShadow: [
+              BoxShadow(
+                  color: const Color.fromARGB(255, 99, 98, 98).withAlpha(50),
+                  blurRadius: 5,
+                  spreadRadius: 1)
+            ]),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          SizedBox(
+              width: MediaQuery.of(context).size.width,
+              child: Row(mainAxisSize: MainAxisSize.max, children: [
+                const Icon(
+                  Icons.notifications_none,
+                  size: 25,
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                Flexible(
+                    child: RichText(
+                        text: TextSpan(
+                            text: info.isOnGoing
+                                ? "Election will end on "
+                                : info.isEnded
+                                    ? "Election ended on "
+                                    : "Election will start on ",
+                            style: DefaultTextStyle.of(context).style,
+                            children: [
+                      TextSpan(
+                          text: DateFormat('dd MMMM y, h:m a')
+                              .format(info.isOnGoing
+                                  ? info.endDate
+                                  : info.isEnded
+                                      ? info.endDate
+                                      : info.startDate),
+                          style: const TextStyle(fontWeight: FontWeight.bold))
+                    ])))
+              ]))
+        ]));
+  }
+}
+
 class CandidateCard extends StatelessWidget {
   const CandidateCard({super.key, required this.info});
   final CandidateInfo info;
@@ -187,7 +279,7 @@ class CandidateCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width - 40,
-      margin: const EdgeInsets.symmetric(vertical: 10),
+      margin: const EdgeInsets.all(10),
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
           color: Colors.white,
@@ -240,10 +332,10 @@ class CandidateCard extends StatelessWidget {
                   height: 5,
                 ),
                 Container(
-                  width: MediaQuery.of(context).size.width - 200,
+                  width: MediaQuery.of(context).size.width - 220,
                 ),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   mainAxisSize: MainAxisSize.max,
                   children: [
                     AsyncButton(
@@ -267,10 +359,10 @@ class CandidateCard extends StatelessWidget {
                       loadingText: "View Profile",
                       failedText: "View Profile",
                       successText: "View Profile",
-                      width: MediaQuery.of(context).size.width - 200,
-                      padding: 10,
+                      width: MediaQuery.of(context).size.width - 220,
+                      padding: 5,
                       fontSize: 13,
-                      height: 40,
+                      height: 30,
                     )
                   ],
                 )

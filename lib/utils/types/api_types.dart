@@ -35,6 +35,9 @@ class Election {
   final DateTime endDate;
   final String constituency;
   final int nominationStatus;
+  final bool isStarted;
+  final bool isEnded;
+  final bool isOnGoing;
 
   Election({
     required this.id,
@@ -44,7 +47,10 @@ class Election {
     required this.endDate,
     required this.constituency,
     required this.nominationStatus,
-  });
+  })  : isStarted = DateTime.now().isAfter(startDate),
+        isEnded = DateTime.now().isAfter(endDate),
+        isOnGoing = DateTime.now().isAfter(startDate) &&
+            DateTime.now().isBefore(endDate);
 
   @override
   String toString() {
