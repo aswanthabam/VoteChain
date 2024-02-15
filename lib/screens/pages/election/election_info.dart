@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:vote/screens/pages/election/candidate_profile.dart';
 import 'package:vote/screens/widgets/appbars/backbar.dart';
 import 'package:vote/screens/widgets/buttons/async_button.dart';
 import 'package:vote/screens/widgets/content_views/underlined_text/underlined_text.dart';
@@ -348,6 +349,12 @@ class CandidateCard extends StatelessWidget {
                   children: [
                     AsyncButton(
                       onPressed: () async {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => CandidateProfilePage(
+                                      info: info,
+                                    )));
                         return true;
                       },
                       primaryBackground:

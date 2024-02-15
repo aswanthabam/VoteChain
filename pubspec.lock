@@ -5,18 +5,18 @@ packages:
     dependency: transitive
     description:
       name: _fe_analyzer_shared
-      sha256: "0816708f5fbcacca324d811297153fe3c8e047beb5c6752e12292d2974c17045"
+      sha256: ae92f5d747aee634b87f89d9946000c2de774be1d6ac3e58268224348cd0101a
       url: "https://pub.dev"
     source: hosted
-    version: "62.0.0"
+    version: "61.0.0"
   analyzer:
     dependency: transitive
     description:
       name: analyzer
-      sha256: "21862995c9932cd082f89d72ae5f5e2c110d1a0204ad06e4ebaee8307b76b834"
+      sha256: ea3d8652bda62982addfd92fdc2d0214e5f82e43325104990d4f4c4a2a313562
       url: "https://pub.dev"
     source: hosted
-    version: "6.0.0"
+    version: "5.13.0"
   animated_custom_dropdown:
     dependency: "direct main"
     description:
@@ -265,14 +265,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.5"
-  dart_internal:
-    dependency: transitive
-    description:
-      name: dart_internal
-      sha256: "689dccc3d5f62affd339534cca548dce12b3a6b32f0f10861569d3025efc0567"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.2.9"
   dart_style:
     dependency: transitive
     description:
@@ -864,6 +856,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.1.0"
+  reflectable:
+    dependency: "direct main"
+    description:
+      name: reflectable
+      sha256: "775388897bfce5b1d0386b7160706367b565cdc72b5870bc6a198d0f7be1aa0b"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.0.5"
   sec:
     dependency: transitive
     description:
@@ -989,6 +989,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.0"
+  syncfusion_flutter_core:
+    dependency: "direct main"
+    description:
+      name: syncfusion_flutter_core
+      sha256: "4eed0d3ae50c16b5e8e4957f3c1917e9bd0315a08dfb49a104ca8fc10244bef3"
+      url: "https://pub.dev"
+    source: hosted
+    version: "24.2.6"
+  syncfusion_flutter_datagrid:
+    dependency: "direct main"
+    description:
+      name: syncfusion_flutter_datagrid
+      sha256: aba9182c62b46cd320ea6f9152af20b45fd6324547fb2298d63bf311f6a03ff1
+      url: "https://pub.dev"
+    source: hosted
+    version: "24.2.6"
   term_glyph:
     dependency: transitive
     description:
@@ -1118,5 +1134,5 @@ packages:
     source: hosted
     version: "3.1.2"
 sdks:
-  dart: ">=3.2.0 <3.3.0"
+  dart: ">=3.2.0 <4.0.0"
   flutter: ">=3.13.0"

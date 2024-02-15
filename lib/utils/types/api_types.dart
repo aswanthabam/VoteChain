@@ -238,6 +238,22 @@ class Document {
   }
 }
 
+class Party {
+  final String partyId;
+  final String name;
+  final String logo;
+
+  Party({required this.partyId, required this.name, required this.logo});
+
+  static Party fromJson(Map<String, dynamic> data) {
+    return Party(
+      partyId: data['partyId'] ?? "",
+      name: data['name'] ?? "",
+      logo: data['logo'] ?? "",
+    );
+  }
+}
+
 class CandidateProfile {
   final String profileId;
   final String candidateAddress;
@@ -248,6 +264,8 @@ class CandidateProfile {
   final List<Education> education;
   final List<Experience> experience;
   final List<Document> documents;
+  final String logo;
+  final Party party;
 
   CandidateProfile({
     required this.profileId,
@@ -259,6 +277,8 @@ class CandidateProfile {
     required this.education,
     required this.experience,
     required this.documents,
+    required this.logo,
+    required this.party,
   });
 
   static CandidateProfile fromJson(Map<String, dynamic> data) {
@@ -279,6 +299,8 @@ class CandidateProfile {
       documents: ((data['documents'] ?? []) as List<dynamic>)
           .map((e) => Document.fromJson(e))
           .toList(),
+      logo: data['logo'] ?? "",
+      party: Party.fromJson(data['party']),
     );
   }
 }
