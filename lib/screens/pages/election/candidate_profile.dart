@@ -48,21 +48,32 @@ class CandidateProfilePage extends StatelessWidget {
                   )),
               Positioned(
                 bottom: 10,
-                left: 10,
+                left: 20,
                 width: 100,
                 height: 100,
-                child: ClipRRect(
-                    borderRadius: BorderRadius.circular(100),
-                    child: Image.network(
-                      SystemConfig.localServer + (info.profile.photo ?? ""),
-                      fit: BoxFit.fitWidth,
-                    )),
+                child: Container(
+                  decoration: BoxDecoration(
+                      border: Border.all(color: Colors.white, width: 4),
+                      borderRadius: BorderRadius.circular(100)),
+                  child: ClipRRect(
+                      borderRadius: BorderRadius.circular(100),
+                      child: Image.network(
+                        SystemConfig.localServer + (info.profile.photo ?? ""),
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) => Image.asset(
+                            'src/images/asset/user-person-profile-block-account-circle-svgrepo-com.png',
+                            width: 90,
+                            height: 90,
+                            fit: BoxFit.cover),
+                      )),
+                ),
               ),
             ],
           ),
         ),
         Padding(
-            padding: const EdgeInsets.all(20),
+            padding:
+                const EdgeInsets.only(left: 20, right: 20, bottom: 20, top: 10),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -76,7 +87,7 @@ class CandidateProfilePage extends StatelessWidget {
                         Text(
                           info.profile.name,
                           style: const TextStyle(
-                              fontSize: 23, fontWeight: FontWeight.bold),
+                              fontSize: 26, fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(
                           height: 8,
@@ -113,6 +124,104 @@ class CandidateProfilePage extends StatelessWidget {
                   height: 10,
                 ),
                 UnderlinedText(
+                    heading: "Contact Options",
+                    fontSize: 20,
+                    color: Colors.grey.shade700,
+                    underlineColor: Colors.green,
+                    underlineWidth: 100,
+                    underlineHeight: 4),
+                SizedBox(
+                  child: Column(
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          launchUrl(
+                            Uri(scheme: 'tel', path: '${info.profile.phone}'),
+                          );
+                        },
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            const Icon(
+                              Icons.phone_outlined,
+                              size: 30,
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width - 80,
+                              child: Text(
+                                info.profile.phone ?? "No phone provided",
+                                textAlign: TextAlign.left,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          launchUrl(
+                            Uri(
+                                scheme: 'mailto',
+                                path: '${info.profile.email}'),
+                          );
+                        },
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            const Icon(
+                              Icons.email_outlined,
+                              size: 30,
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width - 80,
+                              child: Text(
+                                info.profile.email ?? "No email provided",
+                                textAlign: TextAlign.left,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          const Icon(
+                            Icons.location_on_outlined,
+                            size: 30,
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width - 80,
+                            child: Text(
+                              info.profile.address ?? "No address provided",
+                              textAlign: TextAlign.left,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                UnderlinedText(
                     heading: "Education",
                     fontSize: 20,
                     color: Colors.grey.shade700,
@@ -142,8 +251,8 @@ class CandidateProfilePage extends StatelessWidget {
                     underlineColor: Colors.green,
                     underlineWidth: 100,
                     underlineHeight: 4),
-                TableView<Education>(
-                  data: info.profile.education,
+                TableView<Experience>(
+                  data: info.profile.experience,
                   getRow: (e) => {
                     "title": e.title,
                     "fromWhere": e.fromWhere,
@@ -161,8 +270,13 @@ class CandidateProfilePage extends StatelessWidget {
                     underlineColor: Colors.green,
                     underlineWidth: 100,
                     underlineHeight: 4),
-                const Text("Click on the document to view it."),
                 const SizedBox(height: 10),
+                info.profile.documents.isEmpty
+                    ? const Text("No documents provided by the candidate")
+                    : const Text("Click on the document to view it."),
+                const SizedBox(
+                  height: 10,
+                ),
                 Column(
                   children: info.profile.documents
                       .map((e) => DocumentCard(

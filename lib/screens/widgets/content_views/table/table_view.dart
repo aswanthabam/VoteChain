@@ -22,6 +22,7 @@ class TableView<R> extends StatelessWidget {
                 gridLineColor: const Color.fromARGB(255, 161, 158, 158)),
             child: SfDataGrid(
                 verticalScrollPhysics: const BouncingScrollPhysics(),
+                shrinkWrapColumns: false,
                 columnWidthMode: ColumnWidthMode.fill,
                 gridLinesVisibility: GridLinesVisibility.both,
                 headerGridLinesVisibility: GridLinesVisibility.both,
@@ -61,10 +62,13 @@ class DataSource extends DataGridSource {
   DataGridRowAdapter buildRow(DataGridRow row) {
     return DataGridRowAdapter(
         cells: row.getCells().map<Widget>((e) {
-      return Container(
-        alignment: Alignment.center,
+      return SingleChildScrollView(
         padding: const EdgeInsets.all(8.0),
-        child: Text(e.value.toString()),
+        child: Text(
+          e.value.toString(),
+          overflow: TextOverflow.fade,
+          style: const TextStyle(fontSize: 10),
+        ),
       );
     }).toList());
   }

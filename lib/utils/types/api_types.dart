@@ -266,6 +266,9 @@ class CandidateProfile {
   final List<Document> documents;
   final String logo;
   final Party party;
+  final String? phone;
+  final String? email;
+  final String? address;
 
   CandidateProfile({
     required this.profileId,
@@ -279,6 +282,9 @@ class CandidateProfile {
     required this.documents,
     required this.logo,
     required this.party,
+    required this.phone,
+    required this.email,
+    required this.address,
   });
 
   static CandidateProfile fromJson(Map<String, dynamic> data) {
@@ -301,6 +307,9 @@ class CandidateProfile {
           .toList(),
       logo: data['logo'] ?? "",
       party: Party.fromJson(data['party']),
+      phone: data['phone'],
+      email: data['email'],
+      address: data['address'],
     );
   }
 }

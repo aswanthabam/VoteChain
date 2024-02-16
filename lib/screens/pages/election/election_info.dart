@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:vote/screens/pages/election/candidate_profile.dart';
 import 'package:vote/screens/widgets/appbars/backbar.dart';
 import 'package:vote/screens/widgets/buttons/async_button.dart';
+import 'package:vote/screens/widgets/buttons/fullsize_action_button/full_size_action_button.dart';
 import 'package:vote/screens/widgets/content_views/underlined_text/underlined_text.dart';
 import 'package:vote/services/api/location/location.dart';
 import 'package:vote/services/blockchain/candidate_helper.dart';
@@ -144,9 +145,70 @@ class _ElectionInfoState extends State<ElectionInfo> {
                                   candidateInfo.isNotEmpty
                                       ? Column(
                                           children: candidateInfo
-                                              .map((e) => CandidateCard(
-                                                    info: e,
-                                                  ))
+                                              .map((e) => FullSizeActionButton(
+                                                  showShadow: true,
+                                                  icon: ClipOval(
+                                                      child: Image.network(
+                                                    apiTypes.SystemConfig
+                                                            .localServer +
+                                                        (e.profile.photo ?? ''),
+                                                    width: 50,
+                                                    height: 50,
+                                                    fit: BoxFit.cover,
+                                                    errorBuilder: (context,
+                                                            error,
+                                                            stackTrace) =>
+                                                        Image.asset(
+                                                            'src/images/asset/user-person-profile-block-account-circle-svgrepo-com.png',
+                                                            width: 90,
+                                                            height: 90,
+                                                            fit: BoxFit.cover),
+                                                  )),
+                                                  icon2: ClipOval(
+                                                      child: Image.network(
+                                                    apiTypes.SystemConfig
+                                                            .localServer +
+                                                        (e.profile.logo),
+                                                    width: 50,
+                                                    height: 50,
+                                                    fit: BoxFit.cover,
+                                                    errorBuilder: (context,
+                                                            error,
+                                                            stackTrace) =>
+                                                        Image.asset(
+                                                            'src/images/asset/user-person-profile-block-account-circle-svgrepo-com.png',
+                                                            width: 90,
+                                                            height: 90,
+                                                            fit: BoxFit.cover),
+                                                  )),
+                                                  text: e.profile.name,
+                                                  textWidget: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Text(
+                                                          e.profile.name,
+                                                          style: const TextStyle(
+                                                              fontSize: 16,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold),
+                                                        ),
+                                                        const SizedBox(
+                                                            height: 10),
+                                                        Text(e
+                                                            .profile.party.name)
+                                                      ]),
+                                                  onPressed: () {
+                                                    Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder: (context) =>
+                                                                CandidateProfilePage(
+                                                                  info: e,
+                                                                )));
+                                                  }))
                                               .toList(),
                                         )
                                       : const Center(
@@ -304,16 +366,47 @@ class CandidateCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.max,
           children: [
-            ClipOval(
-              child: Image.network(
-                apiTypes.SystemConfig.localServer + (info.profile.photo ?? ''),
-                width: 90,
-                height: 90,
-                fit: BoxFit.cover,
-              ),
+            Container(
+              width: MediaQuery.of(context).size.width,
+              child: FullSizeActionButton(
+                  icon: ClipOval(
+                      child: Image.network(
+                    apiTypes.SystemConfig.localServer +
+                        (info.profile.photo ?? ''),
+                    width: 50,
+                    height: 50,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) => Image.asset(
+                        'src/images/asset/user-person-profile-block-account-circle-svgrepo-com.png',
+                        width: 90,
+                        height: 90,
+                        fit: BoxFit.cover),
+                  )),
+                  icon2: const Icon(Icons.chevron_right_outlined),
+                  text: info.profile.name,
+                  onPressed: () {}),
             ),
+            // Container(
+            //   decoration: BoxDecoration(
+            //       border: Border.all(color: Colors.blue, width: 2),
+            //       borderRadius: BorderRadius.circular(100)),
+            //   child: ClipOval(
+            //     child: Image.network(
+            //       apiTypes.SystemConfig.localServer +
+            //           (info.profile.photo ?? ''),
+            //       width: 50,
+            //       height: 50,
+            //       fit: BoxFit.cover,
+            //       errorBuilder: (context, error, stackTrace) => Image.asset(
+            //           'src/images/asset/user-person-profile-block-account-circle-svgrepo-com.png',
+            //           width: 90,
+            //           height: 90,
+            //           fit: BoxFit.cover),
+            //     ),
+            //   ),
+            // ),
             const SizedBox(
-              width: 20,
+              width: 10,
             ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -327,14 +420,7 @@ class CandidateCard extends StatelessWidget {
                   height: 5,
                 ),
                 Text(
-                  "Education: ${info.profile.education.map((e) => e.title).join(', ')}",
-                  style: const TextStyle(fontSize: 12),
-                ),
-                const SizedBox(
-                  height: 5,
-                ),
-                Text(
-                  "Experience: ${info.profile.experience.map((e) => e.title).join(', ')}",
+                  info.profile.party.name,
                   style: const TextStyle(fontSize: 12),
                 ),
                 const SizedBox(
