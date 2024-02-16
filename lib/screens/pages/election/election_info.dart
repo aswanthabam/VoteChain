@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:vote/screens/pages/election/candidate_profile.dart';
+import 'package:vote/screens/pages/election/candidate_vote_page.dart';
 import 'package:vote/screens/widgets/appbars/backbar.dart';
 import 'package:vote/screens/widgets/buttons/async_button.dart';
 import 'package:vote/screens/widgets/buttons/fullsize_action_button/full_size_action_button.dart';
@@ -18,6 +19,7 @@ class ElectionInfo extends StatefulWidget {
 }
 
 class _ElectionInfoState extends State<ElectionInfo> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   String constituencyImage =
       "https://raw.githubusercontent.com/aswanthabam/VoteChain/3ea448dfce18f2c73464d0d9a49315cb778258ec/src/images/asset/Frame%202.png";
   apiTypes.Constituency? constituency;
@@ -52,6 +54,7 @@ class _ElectionInfoState extends State<ElectionInfo> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        key: _scaffoldKey,
         body: FutureBuilder(
             future: loader,
             builder: (context, snapshot) {
@@ -160,27 +163,38 @@ class _ElectionInfoState extends State<ElectionInfo> {
                                                             stackTrace) =>
                                                         Image.asset(
                                                             'src/images/asset/user-person-profile-block-account-circle-svgrepo-com.png',
-                                                            width: 90,
-                                                            height: 90,
+                                                            width: 50,
+                                                            height: 50,
                                                             fit: BoxFit.cover),
                                                   )),
-                                                  icon2: ClipOval(
-                                                      child: Image.network(
-                                                    apiTypes.SystemConfig
-                                                            .localServer +
-                                                        (e.profile.logo),
-                                                    width: 50,
-                                                    height: 50,
-                                                    fit: BoxFit.cover,
-                                                    errorBuilder: (context,
-                                                            error,
-                                                            stackTrace) =>
-                                                        Image.asset(
-                                                            'src/images/asset/user-person-profile-block-account-circle-svgrepo-com.png',
-                                                            width: 90,
-                                                            height: 90,
-                                                            fit: BoxFit.cover),
-                                                  )),
+                                                  icon2: Row(
+                                                    children: [
+                                                      ClipOval(
+                                                          child: Image.network(
+                                                        apiTypes.SystemConfig
+                                                                .localServer +
+                                                            (e.profile.logo),
+                                                        width: 40,
+                                                        height: 40,
+                                                        fit: BoxFit.cover,
+                                                        errorBuilder: (context,
+                                                                error,
+                                                                stackTrace) =>
+                                                            Image.asset(
+                                                                'src/images/asset/user-person-profile-block-account-circle-svgrepo-com.png',
+                                                                width: 40,
+                                                                height: 40,
+                                                                fit: BoxFit
+                                                                    .cover),
+                                                      )),
+                                                      const SizedBox(width: 3),
+                                                      const Icon(
+                                                        Icons.chevron_right,
+                                                        size: 35,
+                                                        color: Colors.grey,
+                                                      )
+                                                    ],
+                                                  ),
                                                   text: e.profile.name,
                                                   textWidget: Column(
                                                       crossAxisAlignment:
@@ -197,12 +211,17 @@ class _ElectionInfoState extends State<ElectionInfo> {
                                                         ),
                                                         const SizedBox(
                                                             height: 10),
-                                                        Text(e
-                                                            .profile.party.name)
+                                                        Text(
+                                                          e.profile.party.name,
+                                                          style:
+                                                              const TextStyle(
+                                                                  fontSize: 12),
+                                                        )
                                                       ]),
                                                   onPressed: () {
                                                     Navigator.push(
-                                                        context,
+                                                        _scaffoldKey
+                                                            .currentContext!,
                                                         MaterialPageRoute(
                                                             builder: (context) =>
                                                                 CandidateProfilePage(
@@ -229,7 +248,7 @@ class _ElectionInfoState extends State<ElectionInfo> {
                                     Flexible(
                                         child: Text(
                                       constituency?.description ?? '',
-                                      style: const TextStyle(fontSize: 16),
+                                      style: const TextStyle(fontSize: 13),
                                     ))
                                   ]),
                                 ],
@@ -242,9 +261,12 @@ class _ElectionInfoState extends State<ElectionInfo> {
                       ? SizedBox(
                           height: 70,
                           width: MediaQuery.of(context).size.width,
-                          child: getPrimaryAsyncButton(
-                              context,
-                              () async => true,
+                          child: getPrimaryAsyncButton(context, () async {
+                            // if (widget.election.isOnGoing) {
+
+                            // }
+                            return true;
+                          },
                               "Cast Your Vote",
                               "Cast Your Vote",
                               "Cast Your Vote",
@@ -269,9 +291,134 @@ class _ElectionInfoState extends State<ElectionInfo> {
                           : SizedBox(
                               height: 70,
                               width: MediaQuery.of(context).size.width,
-                              child: getMinimalAsyncButton(
-                                  context,
-                                  () async => true,
+                              child: getMinimalAsyncButton(context, () async {
+                                showDialog(
+                                    context: context,
+                                    builder: (context) => Dialog(
+                                        insetPadding: const EdgeInsets.all(20),
+                                        child: Container(
+                                            decoration: const BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(30)),
+                                            ),
+                                            padding: const EdgeInsets.all(15),
+                                            child: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                const Text(
+                                                  "Select Candidate",
+                                                  style: TextStyle(
+                                                      fontSize: 20,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                                const Text(
+                                                    "Please select the candidate you want to vote for, you can also click on the view info to view more information about the candidate"),
+                                                const SizedBox(
+                                                  height: 20,
+                                                ),
+                                                candidateInfo.isNotEmpty
+                                                    ? Column(
+                                                        children: candidateInfo
+                                                            .map((e) =>
+                                                                FullSizeActionButton(
+                                                                    showShadow:
+                                                                        true,
+                                                                    icon:
+                                                                        ClipOval(
+                                                                            child: Image
+                                                                                .network(
+                                                                      apiTypes.SystemConfig
+                                                                              .localServer +
+                                                                          (e.profile.photo ??
+                                                                              ''),
+                                                                      width: 40,
+                                                                      height:
+                                                                          40,
+                                                                      fit: BoxFit
+                                                                          .cover,
+                                                                      errorBuilder: (context, error, stackTrace) => Image.asset(
+                                                                          'src/images/asset/user-person-profile-block-account-circle-svgrepo-com.png',
+                                                                          width:
+                                                                              40,
+                                                                          height:
+                                                                              40,
+                                                                          fit: BoxFit
+                                                                              .cover),
+                                                                    )),
+                                                                    icon2: Row(
+                                                                      children: [
+                                                                        ClipOval(
+                                                                            child:
+                                                                                Image.network(
+                                                                          apiTypes.SystemConfig.localServer +
+                                                                              (e.profile.logo),
+                                                                          width:
+                                                                              40,
+                                                                          height:
+                                                                              40,
+                                                                          fit: BoxFit
+                                                                              .cover,
+                                                                          errorBuilder: (context, error, stackTrace) => Image.asset(
+                                                                              'src/images/asset/user-person-profile-block-account-circle-svgrepo-com.png',
+                                                                              width: 40,
+                                                                              height: 40,
+                                                                              fit: BoxFit.cover),
+                                                                        )),
+                                                                        const Icon(
+                                                                          Icons
+                                                                              .content_paste_go_rounded,
+                                                                          size:
+                                                                              25,
+                                                                          color:
+                                                                              Colors.grey,
+                                                                        )
+                                                                      ],
+                                                                    ),
+                                                                    text: e
+                                                                        .profile
+                                                                        .name,
+                                                                    textWidget: Column(
+                                                                        crossAxisAlignment:
+                                                                            CrossAxisAlignment
+                                                                                .start,
+                                                                        children: [
+                                                                          Text(
+                                                                            e.profile.name,
+                                                                            style:
+                                                                                const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                                                                          ),
+                                                                          const SizedBox(
+                                                                              height: 6),
+                                                                          Text(
+                                                                            e.profile.party.name,
+                                                                            style:
+                                                                                const TextStyle(fontSize: 12),
+                                                                          )
+                                                                        ]),
+                                                                    onPressed:
+                                                                        () {
+                                                                      Navigator.of(
+                                                                              context)
+                                                                          .pop();
+                                                                      Navigator.push(
+                                                                          context,
+                                                                          MaterialPageRoute(
+                                                                              builder: (context) => CandidateVotePage(
+                                                                                    info: e,
+                                                                                  )));
+                                                                    }))
+                                                            .toList(),
+                                                      )
+                                                    : const Center(
+                                                        child: Text(
+                                                            "No candidates registered yet. Please look back later"),
+                                                      ),
+                                              ],
+                                            ))));
+                                return true;
+                              },
                                   "Election Not Started",
                                   "Election Not Started",
                                   "Election Not Started",

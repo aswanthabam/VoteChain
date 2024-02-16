@@ -340,9 +340,11 @@ class ElectionCard extends StatelessWidget {
             children: [
               TextButton(
                   onPressed: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) =>
-                            ElectionInfo(election: election)));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                ElectionInfo(election: election)));
                   },
                   child: Container(
                     padding: const EdgeInsets.symmetric(
