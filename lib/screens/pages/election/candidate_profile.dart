@@ -8,7 +8,7 @@ import 'package:vote/utils/types/api_types.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class CandidateProfilePage extends StatelessWidget {
-  const CandidateProfilePage({super.key, required this.info});
+  CandidateProfilePage({super.key, required this.info});
   final CandidateInfo info;
 
   @override

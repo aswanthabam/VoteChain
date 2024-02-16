@@ -15,7 +15,8 @@ import 'package:vote/utils/types/api_types.dart' as apiTypes;
 import 'package:http/http.dart' as http;
 
 class FaceVerificationPage extends StatefulWidget {
-  const FaceVerificationPage({super.key});
+  const FaceVerificationPage({super.key, required this.onVerificationComplete});
+  final void Function(bool, CameraDetectionController) onVerificationComplete;
   @override
   State<FaceVerificationPage> createState() => _FaceVerificationPageState();
 }
@@ -151,21 +152,7 @@ class _FaceVerificationPageState extends State<FaceVerificationPage> {
           done = true;
           await detectionController.stopCapturing();
           totalImages = totalNeededImages;
-          showDialog(
-              context: context,
-              builder: (context) => TextPopup(
-                    message:
-                        "Gotchu!! Successfully verified you, you are the we are looking for!",
-                    bottomButtons: [
-                      TextButton(
-                          onPressed: () {
-                            detectionController.controller?.dispose();
-                            Navigator.pop(context);
-                            Navigator.pop(context);
-                          },
-                          child: const Text("Continue, and go back"))
-                    ],
-                  ));
+          widget.onVerificationComplete(true, detectionController);
         } else {
           // send a message to move a little bit
           setMessage("Its not the face im looking for, please try again.");
@@ -179,35 +166,8 @@ class _FaceVerificationPageState extends State<FaceVerificationPage> {
     } else {
       await detectionController.stopCapturing();
       done = true;
-      showDialog(
-          context: context,
-          builder: (context) => TextPopup(
-                message:
-                    "Oops! Seems like you are not the one we are looking for!",
-                bottomButtons: [
-                  TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                        detectionController.recapture();
-                        totalImages = 0;
-                        setState(() {});
-                      },
-                      child: const Text("Try Again")),
-                  TextButton(
-                      onPressed: () {
-                        detectionController.controller?.dispose();
-                        Navigator.of(context).pop();
-                        Navigator.of(context).pop();
-                      },
-                      child: const Text("Back"))
-                ],
-              )).then((value) {
-        detectionController.controller?.dispose();
-        try {
-          Navigator.of(context).pop();
-          Navigator.of(context).pop();
-        } catch (e) {}
-      });
+      widget.onVerificationComplete(false, detectionController);
+      totalImages = 0;
     }
   }
 
