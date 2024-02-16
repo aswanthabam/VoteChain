@@ -7,7 +7,6 @@ import 'package:vote/screens/widgets/content_views/underlined_text/underlined_te
 import 'package:vote/services/blockchain/blockchain_client.dart';
 import 'package:vote/services/blockchain/voter_helper.dart';
 import 'package:vote/services/global.dart';
-import 'package:vote/services/utils.dart';
 import 'package:vote/utils/types/api_types.dart' as apiTypes;
 
 class Home extends StatefulWidget {
@@ -24,23 +23,17 @@ class _HomeState extends State<Home> {
   VoterStatus status = VoterStatus.registered;
   List<apiTypes.Election> upcomingElections = [];
   List<apiTypes.Election> ongoingElections = [];
-
+  late Future<void> initializationWaiter;
   @override
   void initState() {
     super.initState();
-    init();
+    initializationWaiter = init();
   }
 
   Future<void> init() async {
     status =
         await VoterHelper().fetchRegistrationStatus() ?? VoterStatus.registered;
-    setState(() {
-      status = status;
-    });
-    Global.logger.f("APP KEY: ${await Utils.storage.read(key: "app_key")}");
     await VoterHelper().fetchInfo();
-    // Global.logger.i(
-    //     "About the voter : \n - ${VoterHelper.voterRegistrationStatus!.message} \n ${VoterHelper.voterInfo!.toJson()}");
     Contracts.votechain
         ?.getUpComingElections$2(VoterHelper.voterInfo?.constituency ?? "")
         .then((value) {
@@ -59,110 +52,123 @@ class _HomeState extends State<Home> {
           .toList();
       setState(() {});
     });
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     return DefaultLayer(
-      child: SizedBox(
-        width: MediaQuery.of(context).size.width,
-        child: Padding(
-            padding: const EdgeInsets.all(10),
-            child: SizedBox.expand(
-              child: SingleChildScrollView(
+      child: FutureBuilder(
+          future: initializationWaiter,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              return SizedBox(
+                width: MediaQuery.of(context).size.width,
                 child: Padding(
-                  padding: const EdgeInsets.all(0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      (status == VoterStatus.registered
-                          ? const AccountStatusCard(
-                              statusText: "Not Verified",
-                              statusDescription: "Waiting for verification",
-                              status: false,
-                            )
-                          : const CardWidget()),
-                      const SizedBox(height: 20),
-                      Padding(
-                        padding: const EdgeInsets.all(10),
+                    padding: const EdgeInsets.all(10),
+                    child: SizedBox.expand(
+                      child: SingleChildScrollView(
+                          child: Padding(
+                        padding: const EdgeInsets.all(0),
                         child: Column(
-                          children: () {
-                            var elections = ongoingElections
-                                .map<Widget>((e) => ElectionCard(
-                                      election: e,
-                                      electionStatus: true,
-                                      candidates: 0,
-                                    ))
-                                .toList();
-                            elections.addAll(
-                                upcomingElections.map((e) => ElectionCard(
-                                      election: e,
-                                      electionStatus: false,
-                                      candidates: 0,
-                                    )));
-                            var no_elections = [
-                              Container(
-                                  height: 150,
-                                  width: MediaQuery.of(context).size.width,
-                                  padding: const EdgeInsets.all(19),
-                                  margin: const EdgeInsets.only(bottom: 15),
-                                  decoration: ShapeDecoration(
-                                    color: Colors.white,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(30),
-                                    ),
-                                    shadows: const [
-                                      BoxShadow(
-                                        color: Color(0x3F000000),
-                                        blurRadius: 4,
-                                        offset: Offset(0, 4),
-                                        spreadRadius: 0,
-                                      )
-                                    ],
-                                  ),
-                                  child: const Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Icon(
-                                          Icons.info_outline,
-                                          size: 40,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            (status == VoterStatus.registered
+                                ? const AccountStatusCard(
+                                    statusText: "Not Verified",
+                                    statusDescription:
+                                        "Waiting for verification",
+                                    status: false,
+                                  )
+                                : const CardWidget()),
+                            const SizedBox(height: 20),
+                            Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: Column(
+                                children: () {
+                                  var elections = ongoingElections
+                                      .map<Widget>((e) => ElectionCard(
+                                            election: e,
+                                            electionStatus: true,
+                                            candidates: 0,
+                                          ))
+                                      .toList();
+                                  elections.addAll(
+                                      upcomingElections.map((e) => ElectionCard(
+                                            election: e,
+                                            electionStatus: false,
+                                            candidates: 0,
+                                          )));
+                                  var no_elections = [
+                                    Container(
+                                        height: 150,
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        padding: const EdgeInsets.all(19),
+                                        margin:
+                                            const EdgeInsets.only(bottom: 15),
+                                        decoration: ShapeDecoration(
+                                          color: Colors.white,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(30),
+                                          ),
+                                          shadows: const [
+                                            BoxShadow(
+                                              color: Color(0x3F000000),
+                                              blurRadius: 4,
+                                              offset: Offset(0, 4),
+                                              spreadRadius: 0,
+                                            )
+                                          ],
                                         ),
-                                        SizedBox(
-                                          height: 15,
-                                        ),
-                                        Text(
-                                          "No Elections Available now!",
-                                          style: TextStyle(
-                                              fontSize: 20,
-                                              fontWeight: FontWeight.bold),
-                                        )
-                                      ]))
-                            ];
-                            List<Widget> res = [
-                              const UnderlinedText(
-                                  heading: "Elections",
-                                  fontSize: 20,
-                                  color: Colors.black,
-                                  underlineColor: Colors.black,
-                                  underlineWidth: 100,
-                                  underlineHeight: 8)
-                            ];
-                            res.addAll(elections.isNotEmpty
-                                ? elections
-                                : no_elections);
-                            return res;
-                          }(),
+                                        child: const Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Icon(
+                                                Icons.info_outline,
+                                                size: 40,
+                                              ),
+                                              SizedBox(
+                                                height: 15,
+                                              ),
+                                              Text(
+                                                "No Elections Available now!",
+                                                style: TextStyle(
+                                                    fontSize: 20,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              )
+                                            ]))
+                                  ];
+                                  List<Widget> res = [
+                                    const UnderlinedText(
+                                        heading: "Elections",
+                                        fontSize: 20,
+                                        color: Colors.black,
+                                        underlineColor: Colors.black,
+                                        underlineWidth: 100,
+                                        underlineHeight: 8)
+                                  ];
+                                  res.addAll(elections.isNotEmpty
+                                      ? elections
+                                      : no_elections);
+                                  return res;
+                                }(),
+                              ),
+                            )
+                          ],
                         ),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            )),
-      ),
+                      )),
+                    )),
+              );
+            } else {
+              return const Center(child: CircularProgressIndicator());
+            }
+          }),
     );
   }
 }
@@ -334,9 +340,11 @@ class ElectionCard extends StatelessWidget {
             children: [
               TextButton(
                   onPressed: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) =>
-                            ElectionInfo(election: election)));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                ElectionInfo(election: election)));
                   },
                   child: Container(
                     padding: const EdgeInsets.symmetric(

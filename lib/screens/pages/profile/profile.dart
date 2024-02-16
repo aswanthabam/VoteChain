@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vote/screens/layers/default_layer.dart';
 import 'package:vote/screens/pages/face_verification/face_verification.dart';
+import 'package:vote/screens/pages/register/final/detector_view.dart';
 import 'package:vote/screens/widgets/buttons/fullsize_action_button/full_size_action_button.dart';
 import 'package:vote/screens/widgets/content_views/card/card.dart';
 import 'package:vote/screens/widgets/dialog/TextPopup/TextPopup.dart';
@@ -89,7 +90,66 @@ class _ProfileState extends State<Profile> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const FaceVerificationPage()));
+                          builder: (context) => FaceVerificationPage(
+                                onVerificationComplete: (bool sts,
+                                    CameraDetectionController
+                                        detectionController) {
+                                  if (sts) {
+                                    showDialog(
+                                        context: context,
+                                        builder: (context) => TextPopup(
+                                              message:
+                                                  "Gotchu!! Successfully verified you, you are the we are looking for!",
+                                              bottomButtons: [
+                                                TextButton(
+                                                    onPressed: () {
+                                                      detectionController
+                                                          .controller
+                                                          ?.dispose();
+                                                      Navigator.pop(context);
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: const Text(
+                                                        "Continue, and go back"))
+                                              ],
+                                            ));
+                                  } else {
+                                    showDialog(
+                                        context: context,
+                                        builder: (context) => TextPopup(
+                                              message:
+                                                  "Oops! Seems like you are not the one we are looking for!",
+                                              bottomButtons: [
+                                                TextButton(
+                                                    onPressed: () {
+                                                      Navigator.pop(context);
+                                                      detectionController
+                                                          .recapture();
+                                                    },
+                                                    child: const Text(
+                                                        "Try Again")),
+                                                TextButton(
+                                                    onPressed: () {
+                                                      detectionController
+                                                          .controller
+                                                          ?.dispose();
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                    },
+                                                    child: const Text("Back"))
+                                              ],
+                                            )).then((value) {
+                                      detectionController.controller?.dispose();
+                                      try {
+                                        Navigator.of(context).pop();
+                                        Navigator.of(context).pop();
+                                      } catch (e) {}
+                                    });
+                                  }
+                                },
+                              )));
                 },
               ),
             ),
