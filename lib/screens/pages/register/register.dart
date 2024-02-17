@@ -14,7 +14,6 @@ import 'package:vote/screens/pages/register/personal_information/constituency.da
 import 'package:vote/screens/pages/register/personal_information/one_personal.dart';
 import 'package:vote/screens/pages/register/personal_information/two_personal.dart';
 import 'package:vote/screens/pages/register/personal_information/uid.dart';
-import 'package:vote/screens/pages/register/register_info.dart';
 import 'package:vote/screens/widgets/buttons/async_button.dart';
 import 'package:vote/screens/widgets/dialog/TextPopup/TextPopup.dart';
 import 'package:vote/screens/widgets/paginated_views/paginated_views.dart'
@@ -195,7 +194,7 @@ class _RegisterState extends State<Register> {
   void initState() {
     super.initState();
     pagination = pagging.Pagination(pages: <FormPage>[
-      RegisterInfoPage(),
+      // RegisterInfoPage(),
       RegisterUIDPage(),
       RegisterPersonalInfoOnePage(),
       RegisterPersonalInfoTwoPage(),

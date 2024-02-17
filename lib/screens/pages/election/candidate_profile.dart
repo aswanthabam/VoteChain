@@ -8,7 +8,7 @@ import 'package:vote/utils/types/api_types.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class CandidateProfilePage extends StatelessWidget {
-  CandidateProfilePage({super.key, required this.info});
+  const CandidateProfilePage({super.key, required this.info});
   final CandidateInfo info;
 
   @override
@@ -102,10 +102,13 @@ class CandidateProfilePage extends StatelessWidget {
                     ClipRRect(
                         borderRadius: BorderRadius.circular(10),
                         child: Image.network(
-                            SystemConfig.localServer + info.profile.party.logo,
+                            SystemConfig.localServer + info.profile.logo,
                             width: 80,
                             height: 80,
-                            fit: BoxFit.fitWidth))
+                            fit: BoxFit.fitWidth,
+                            errorBuilder: (context, error, stackTrace) =>
+                                const Icon(Icons.error,
+                                    size: 80, color: Colors.grey)))
                   ],
                 ),
                 const SizedBox(

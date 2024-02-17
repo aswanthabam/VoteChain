@@ -45,9 +45,15 @@ class CameraDetectionController {
   Function(Function())? setState;
   final Function(String) onMessage;
   // late DateTime _lastCaptureTime;
-
+  Future<void>? disposer;
   CameraDetectionController({required this.onImage, required this.onMessage});
   Future<void> dispose() async {
+    if (disposer != null) return disposer;
+    disposer = _dispose();
+    return disposer;
+  }
+
+  Future<void> _dispose() async {
     if (_isDisposed) return;
     await _faceDetector.close();
     await controller?.pausePreview();
@@ -345,9 +351,8 @@ class _CameraAppState extends State<CameraApp> {
 
   @override
   void dispose() {
-    detectionController.dispose().then((e) {
-      super.dispose();
-    });
+    detectionController.dispose();
+    super.dispose();
   }
 
   @override

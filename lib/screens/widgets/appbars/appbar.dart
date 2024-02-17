@@ -23,16 +23,18 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.max,
         children: [
-          IconButton(
-              onPressed: () {
-                Navigator.pushNamed(context, 'profile');
-              },
-              icon: const Icon(
-                Icons.supervised_user_circle_outlined,
-                color: Color(0xFF1BA68D),
-              )),
-          const Spacer(),
-          SizedBox(
+          // IconButton(
+          //     onPressed: () {
+          //       Navigator.pushNamed(context, 'profile');
+          //     },
+          //     icon: const Icon(
+          //       Icons.supervised_user_circle_outlined,
+          //       color: Color(0xFF1BA68D),
+          //     )),
+          // const Spacer(),
+
+          Container(
+            margin: const EdgeInsets.only(left: 10),
             width: 25,
             height: 32,
             child: Stack(children: [

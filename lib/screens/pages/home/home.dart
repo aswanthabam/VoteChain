@@ -89,14 +89,12 @@ class _HomeState extends State<Home> {
                                   var elections = ongoingElections
                                       .map<Widget>((e) => ElectionCard(
                                             election: e,
-                                            electionStatus: true,
                                             candidates: 0,
                                           ))
                                       .toList();
                                   elections.addAll(
                                       upcomingElections.map((e) => ElectionCard(
                                             election: e,
-                                            electionStatus: false,
                                             candidates: 0,
                                           )));
                                   var no_elections = [
@@ -218,14 +216,12 @@ class AccountStatusCard extends StatelessWidget {
 
 class ElectionCard extends StatelessWidget {
   final apiTypes.Election election;
-  final bool electionStatus;
   final int? nominations;
   final int candidates;
   final double? percentage;
   const ElectionCard(
       {super.key,
       required this.election,
-      this.electionStatus = false,
       required this.candidates,
       this.nominations,
       this.percentage});
@@ -253,15 +249,6 @@ class ElectionCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          TextIconBadge(
-              text: electionStatus ? "Ongoing" : "Upcoming",
-              icon: const Icon(
-                Icons.access_time,
-                size: 17,
-              ),
-              bgColor: electionStatus
-                  ? const Color(0xB243F034)
-                  : const Color(0xFFDFEA67)),
           const SizedBox(
             height: 10,
           ),
@@ -280,55 +267,62 @@ class ElectionCard extends StatelessWidget {
           const SizedBox(
             height: 15,
           ),
-          Row(
+          Column(
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              TextBadge(
-                  heading: "Starts at",
-                  value:
-                      DateFormat("dd MMM HH:MM a").format(election.startDate),
-                  background: const Color(0xFF67EACA)),
-              TextBadge(
-                  heading: "Ends on",
-                  value: DateFormat("dd MMM HH:MM a").format(election.endDate),
-                  background: const Color(0xFF54CFF6)),
+              TextBadgeSecond(
+                text:
+                    "Election starts at ${DateFormat("dd MMM HH:MM a").format(election.startDate)}",
+                icon: Icons.run_circle_outlined,
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              TextBadgeSecond(
+                text:
+                    "Election ends on ${DateFormat("dd MMM HH:MM a").format(election.endDate)}",
+                icon: Icons.timer_off_sharp,
+              ),
             ],
           ),
           const SizedBox(
             height: 10,
           ),
-          electionStatus
-              ? Row(
+          election.isOnGoing
+              ? Column(
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    TextBadge(
-                        heading: "Total Candidates",
-                        value: candidates.toString(),
-                        background: const Color(0xFFE5B9FA),
-                        valueFontsize: 20),
-                    TextBadge(
-                        heading: "Voting Percentage",
-                        value: (percentage ?? 0).toString(),
-                        background: const Color(0xFFFDDFC3),
-                        valueFontsize: 20),
+                    TextBadgeSecond(
+                      text: "${(percentage ?? 0).toString()}% Voters Voted",
+                      icon: Icons.analytics_outlined,
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    TextBadgeSecond(
+                      text: "${(candidates).toString()} Total Candidates",
+                      icon: Icons.person_sharp,
+                    ),
                   ],
                 )
-              : Row(
+              : Column(
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    TextBadge(
-                        heading: "Total Nominations",
-                        value: (nominations ?? 0).toString(),
-                        background: const Color(0xFFFDDFC3),
-                        valueFontsize: 20),
-                    TextBadge(
-                        heading: "Total Candidates",
-                        value: candidates.toString(),
-                        background: const Color(0xFFE5B9FA),
-                        valueFontsize: 20),
+                    TextBadgeSecond(
+                      text:
+                          "${(nominations ?? 0).toString()} Total Nominations",
+                      icon: Icons.control_point_duplicate_sharp,
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    TextBadgeSecond(
+                      text: "${(candidates).toString()} Total Candidates",
+                      icon: Icons.person_sharp,
+                    ),
                   ],
                 ),
           const SizedBox(
@@ -336,8 +330,24 @@ class ElectionCard extends StatelessWidget {
           ),
           Row(
             mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              TextIconBadge(
+                  text: election.isOnGoing
+                      ? "Ongoing"
+                      : election.isEnded
+                          ? "Ended"
+                          : "Upcoming",
+                  icon: const Icon(
+                    Icons.access_time,
+                    size: 17,
+                  ),
+                  bgColor: election.isOnGoing
+                      ? const Color(0xB243F034)
+                      : election.isEnded
+                          ? const Color(0xFFEA8867)
+                          : const Color(0xFFDFEA67)),
+              const Spacer(),
               TextButton(
                   onPressed: () {
                     Navigator.push(
@@ -347,19 +357,18 @@ class ElectionCard extends StatelessWidget {
                                 ElectionInfo(election: election)));
                   },
                   child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 12),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
                     decoration: ShapeDecoration(
-                      color: const Color(0x281BA68D),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(11),
                       ),
                     ),
                     child: const Center(
                         child: Text(
-                      'Learn More',
+                      'Learn More >',
                       style: TextStyle(
-                        color: Colors.black,
+                        color: Color.fromARGB(157, 67, 2, 114),
                         fontSize: 14,
                         fontFamily: 'Inter',
                         fontWeight: FontWeight.w700,
@@ -371,6 +380,31 @@ class ElectionCard extends StatelessWidget {
           )
         ],
       ),
+    );
+  }
+}
+
+class TextBadgeSecond extends StatelessWidget {
+  const TextBadgeSecond({super.key, required this.text, required this.icon});
+  final String text;
+  final IconData icon;
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Icon(
+          icon,
+          size: 17,
+        ),
+        const SizedBox(width: 10),
+        Text(text,
+            style: const TextStyle(
+                color: Colors.grey,
+                fontSize: 13,
+                fontFamily: 'Inter',
+                fontWeight: FontWeight.w700,
+                height: 0)),
+      ],
     );
   }
 }

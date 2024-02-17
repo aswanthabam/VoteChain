@@ -40,9 +40,7 @@ class _ElectionInfoState extends State<ElectionInfo> {
       constituencyImage = constituencyImage.startsWith('http')
           ? constituencyImage
           : "https:$constituencyImage";
-      CandidateHelper()
-          .getEligibleCandidates((int.parse(widget.election.id)))
-          .then((value) {
+      CandidateHelper().getEligibleCandidates(widget.election.id).then((value) {
         candidateInfo = value;
         setState(() {});
       });
@@ -119,7 +117,7 @@ class _ElectionInfoState extends State<ElectionInfo> {
                                     ],
                                   )),
                               SizedBox(
-                                  height: 150,
+                                  height: 200,
                                   width: MediaQuery.of(context).size.width)
                             ],
                           ),
@@ -262,9 +260,7 @@ class _ElectionInfoState extends State<ElectionInfo> {
                           height: 70,
                           width: MediaQuery.of(context).size.width,
                           child: getPrimaryAsyncButton(context, () async {
-                            // if (widget.election.isOnGoing) {
-
-                            // }
+                            _showCandidateSelectDialog();
                             return true;
                           },
                               "Cast Your Vote",
@@ -292,131 +288,6 @@ class _ElectionInfoState extends State<ElectionInfo> {
                               height: 70,
                               width: MediaQuery.of(context).size.width,
                               child: getMinimalAsyncButton(context, () async {
-                                showDialog(
-                                    context: context,
-                                    builder: (context) => Dialog(
-                                        insetPadding: const EdgeInsets.all(20),
-                                        child: Container(
-                                            decoration: const BoxDecoration(
-                                              color: Colors.white,
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(30)),
-                                            ),
-                                            padding: const EdgeInsets.all(15),
-                                            child: Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                const Text(
-                                                  "Select Candidate",
-                                                  style: TextStyle(
-                                                      fontSize: 20,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ),
-                                                const Text(
-                                                    "Please select the candidate you want to vote for, you can also click on the view info to view more information about the candidate"),
-                                                const SizedBox(
-                                                  height: 20,
-                                                ),
-                                                candidateInfo.isNotEmpty
-                                                    ? Column(
-                                                        children: candidateInfo
-                                                            .map((e) =>
-                                                                FullSizeActionButton(
-                                                                    showShadow:
-                                                                        true,
-                                                                    icon:
-                                                                        ClipOval(
-                                                                            child: Image
-                                                                                .network(
-                                                                      apiTypes.SystemConfig
-                                                                              .localServer +
-                                                                          (e.profile.photo ??
-                                                                              ''),
-                                                                      width: 40,
-                                                                      height:
-                                                                          40,
-                                                                      fit: BoxFit
-                                                                          .cover,
-                                                                      errorBuilder: (context, error, stackTrace) => Image.asset(
-                                                                          'src/images/asset/user-person-profile-block-account-circle-svgrepo-com.png',
-                                                                          width:
-                                                                              40,
-                                                                          height:
-                                                                              40,
-                                                                          fit: BoxFit
-                                                                              .cover),
-                                                                    )),
-                                                                    icon2: Row(
-                                                                      children: [
-                                                                        ClipOval(
-                                                                            child:
-                                                                                Image.network(
-                                                                          apiTypes.SystemConfig.localServer +
-                                                                              (e.profile.logo),
-                                                                          width:
-                                                                              40,
-                                                                          height:
-                                                                              40,
-                                                                          fit: BoxFit
-                                                                              .cover,
-                                                                          errorBuilder: (context, error, stackTrace) => Image.asset(
-                                                                              'src/images/asset/user-person-profile-block-account-circle-svgrepo-com.png',
-                                                                              width: 40,
-                                                                              height: 40,
-                                                                              fit: BoxFit.cover),
-                                                                        )),
-                                                                        const Icon(
-                                                                          Icons
-                                                                              .content_paste_go_rounded,
-                                                                          size:
-                                                                              25,
-                                                                          color:
-                                                                              Colors.grey,
-                                                                        )
-                                                                      ],
-                                                                    ),
-                                                                    text: e
-                                                                        .profile
-                                                                        .name,
-                                                                    textWidget: Column(
-                                                                        crossAxisAlignment:
-                                                                            CrossAxisAlignment
-                                                                                .start,
-                                                                        children: [
-                                                                          Text(
-                                                                            e.profile.name,
-                                                                            style:
-                                                                                const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-                                                                          ),
-                                                                          const SizedBox(
-                                                                              height: 6),
-                                                                          Text(
-                                                                            e.profile.party.name,
-                                                                            style:
-                                                                                const TextStyle(fontSize: 12),
-                                                                          )
-                                                                        ]),
-                                                                    onPressed:
-                                                                        () {
-                                                                      Navigator.of(
-                                                                              context)
-                                                                          .pop();
-                                                                      Navigator.push(
-                                                                          context,
-                                                                          MaterialPageRoute(
-                                                                              builder: (context) => CandidateVotePage(
-                                                                                    info: e,
-                                                                                  )));
-                                                                    }))
-                                                            .toList(),
-                                                      )
-                                                    : const Center(
-                                                        child: Text(
-                                                            "No candidates registered yet. Please look back later"),
-                                                      ),
-                                              ],
-                                            ))));
                                 return true;
                               },
                                   "Election Not Started",
@@ -434,6 +305,113 @@ class _ElectionInfoState extends State<ElectionInfo> {
                 );
               }
             }));
+  }
+
+  void _showCandidateSelectDialog() {
+    showDialog(
+        context: context,
+        builder: (context) => Dialog(
+            insetPadding: const EdgeInsets.all(20),
+            child: Container(
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(Radius.circular(30)),
+                ),
+                padding: const EdgeInsets.all(15),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text(
+                      "Select Candidate",
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                    const Text(
+                        "Please select the candidate you want to vote for, you can also click on the view info to view more information about the candidate"),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    candidateInfo.isNotEmpty
+                        ? Column(
+                            children: candidateInfo
+                                .map((e) => FullSizeActionButton(
+                                    showShadow: true,
+                                    icon: ClipOval(
+                                        child: Image.network(
+                                      apiTypes.SystemConfig.localServer +
+                                          (e.profile.photo ?? ''),
+                                      width: 40,
+                                      height: 40,
+                                      fit: BoxFit.cover,
+                                      errorBuilder: (context, error,
+                                              stackTrace) =>
+                                          Image.asset(
+                                              'src/images/asset/user-person-profile-block-account-circle-svgrepo-com.png',
+                                              width: 40,
+                                              height: 40,
+                                              fit: BoxFit.cover),
+                                    )),
+                                    icon2: Row(
+                                      children: [
+                                        ClipOval(
+                                            child: Image.network(
+                                          apiTypes.SystemConfig.localServer +
+                                              (e.profile.logo),
+                                          width: 40,
+                                          height: 40,
+                                          fit: BoxFit.cover,
+                                          errorBuilder: (context, error,
+                                                  stackTrace) =>
+                                              Image.asset(
+                                                  'src/images/asset/user-person-profile-block-account-circle-svgrepo-com.png',
+                                                  width: 40,
+                                                  height: 40,
+                                                  fit: BoxFit.cover),
+                                        )),
+                                        const Icon(
+                                          Icons.content_paste_go_rounded,
+                                          size: 25,
+                                          color: Colors.grey,
+                                        )
+                                      ],
+                                    ),
+                                    text: e.profile.name,
+                                    textWidget: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            e.profile.name,
+                                            style: const TextStyle(
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          const SizedBox(height: 6),
+                                          Text(
+                                            e.profile.party.name,
+                                            style:
+                                                const TextStyle(fontSize: 12),
+                                          )
+                                        ]),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  CandidateVotePage(
+                                                    info: e,
+                                                    election: widget.election,
+                                                  )));
+                                    }))
+                                .toList(),
+                          )
+                        : const Center(
+                            child: Text(
+                                "No candidates registered yet. Please look back later"),
+                          ),
+                  ],
+                ))));
   }
 }
 

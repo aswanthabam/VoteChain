@@ -37,7 +37,8 @@ Future<RegisterCallbackResult> submitRegister(VoterModal modal) async {
             "errorstring:enc",
         enc2: await encrypt(VoteChainWallet.mnemonic!.sublist(8, 12).join(' '),
                 modal.password) ??
-            "erronstring:enc");
+            "erronstring:enc",
+        voterAddress: VoteChainWallet.address!);
     if (!sts2.status) {
       // there was an error with the register user call
       return RegisterCallbackResult(success: false, message: sts2.message);

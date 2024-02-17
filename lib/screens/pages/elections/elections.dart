@@ -87,14 +87,12 @@ class _ElectionsState extends State<Elections> {
                                   var elections = ongoingElections
                                       .map<Widget>((e) => ElectionCard(
                                             election: e,
-                                            electionStatus: true,
                                             candidates: 0,
                                           ))
                                       .toList();
                                   elections.addAll(
                                       upcomingElections.map((e) => ElectionCard(
                                             election: e,
-                                            electionStatus: false,
                                             candidates: 0,
                                           )));
                                   var no_elections = [

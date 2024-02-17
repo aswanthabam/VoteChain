@@ -194,7 +194,7 @@ class Candidate extends _i1.GeneratedContract {
     );
     return client.events(filter).map((_i1.FilterEvent result) {
       final decoded = event.decodeResults(
-        result.topics!.cast().cast(),
+        result.topics!.cast(),
         result.data!,
       );
       return CandidateRegistered(
@@ -218,7 +218,7 @@ class Candidate extends _i1.GeneratedContract {
     );
     return client.events(filter).map((_i1.FilterEvent result) {
       final decoded = event.decodeResults(
-        result.topics!.cast().cast(),
+        result.topics!.cast(),
         result.data!,
       );
       return CandidateVerified(

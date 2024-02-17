@@ -222,7 +222,6 @@ class _FaceRegisterWidgetState extends State<FaceRegisterWidget> {
         setMessage("Oops there is some issues, trying again.");
       }
     } else {
-      await detectionController.stopCapturing();
       await detectionController.dispose();
       showDialog(
           context: context,

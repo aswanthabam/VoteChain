@@ -131,4 +131,17 @@ class VoterHelper {
       return VoterRegistrationStatus.failed;
     }
   }
+
+  Future<bool> vote(EthereumAddress candidateAddress, int electionId) async {
+    try {
+      await Contracts.votechain?.vote(BigInt.from(electionId), candidateAddress,
+          credentials: credentials,
+          transaction: Transaction(
+              maxPriorityFeePerGas: EtherAmount.fromInt(EtherUnit.ether, 0)));
+      return true;
+    } catch (err) {
+      Global.logger.e("An error occured while voting : $err");
+      return false;
+    }
+  }
 }

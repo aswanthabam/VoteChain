@@ -28,7 +28,7 @@ class SystemConfig {
 }
 
 class Election {
-  final String id;
+  final int id;
   final String name;
   final String description;
   final DateTime startDate;
@@ -59,7 +59,7 @@ class Election {
 
   static Election fromList(List<dynamic> data) {
     return Election(
-      id: data[0].toString(),
+      id: (data[0] as BigInt).toInt(),
       name: data[1],
       description: data[2],
       startDate: DateTime.fromMillisecondsSinceEpoch(data[3].toInt() * 1000),
