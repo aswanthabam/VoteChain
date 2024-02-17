@@ -91,7 +91,7 @@ class _CandidateVotePageState extends State<CandidateVotePage> {
                           ClipOval(
                               child: Image.network(
                             apiTypes.SystemConfig.localServer +
-                                (widget.info.profile.party.logo),
+                                (widget.info.profile.logo),
                             width: 50,
                             height: 50,
                             fit: BoxFit.cover,

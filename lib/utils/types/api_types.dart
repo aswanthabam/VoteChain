@@ -38,7 +38,10 @@ class Election {
   final bool isStarted;
   final bool isEnded;
   final bool isOnGoing;
-
+  int candidatesCount;
+  int nominationCount;
+  int voterCount;
+  int votes;
   Election({
     required this.id,
     required this.name,
@@ -47,6 +50,10 @@ class Election {
     required this.endDate,
     required this.constituency,
     required this.nominationStatus,
+    this.candidatesCount = 0,
+    this.nominationCount = 0,
+    this.voterCount = 0,
+    this.votes = 0,
   })  : isStarted = DateTime.now().isAfter(startDate),
         isEnded = DateTime.now().isAfter(endDate),
         isOnGoing = DateTime.now().isAfter(startDate) &&

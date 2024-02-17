@@ -17,7 +17,14 @@ class _VoteCastResultDialogState extends State<VoteCastResultDialog> {
   @override
   void initState() {
     super.initState();
-    waiter = VoterHelper().vote(widget.candidateAddress, widget.electionId);
+    waiter = VoterHelper()
+        .vote(widget.candidateAddress, widget.electionId)
+        .then((value) {
+      setState(() {
+        voteCasted = value;
+      });
+      return value;
+    });
   }
 
   @override

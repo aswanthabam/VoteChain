@@ -1,5 +1,6 @@
 import 'package:vote/contracts/Voter.g.dart';
 import 'package:vote/contracts/VoterReader.g.dart';
+import 'package:vote/services/api/election.dart';
 import 'package:vote/services/blockchain/blockchain_client.dart';
 import 'package:vote/services/blockchain/wallet.dart';
 import 'package:vote/services/global.dart';
@@ -138,10 +139,44 @@ class VoterHelper {
           credentials: credentials,
           transaction: Transaction(
               maxPriorityFeePerGas: EtherAmount.fromInt(EtherUnit.ether, 0)));
+      await ElectionCall().castVote(electionId: electionId.toString());
       return true;
     } catch (err) {
       Global.logger.e("An error occured while voting : $err");
       return false;
+    }
+  }
+
+  Future<int> totalVotersCount(String constituency) async {
+    try {
+      var count = await Contracts.voter?.constituency_voter_count(constituency);
+      return count!.toInt();
+    } catch (err) {
+      Global.logger.e("An error occured while fetching voters count : $err");
+      return -1;
+    }
+  }
+
+  Future<int> totalVotes(int electionId) async {
+    try {
+      var count =
+          await Contracts.votechain?.getTotalVoteCount(BigInt.from(electionId));
+      return count!.toInt();
+    } catch (err) {
+      Global.logger.e("An error occured while fetching voters count : $err");
+      return -1;
+    }
+  }
+
+  Future<int> candidatesCount(int electionId) async {
+    try {
+      var count =
+          await Contracts.candidate?.candidateCount(BigInt.from(electionId));
+      return count!.toInt();
+    } catch (err) {
+      Global.logger
+          .e("An error occured while fetching candidates count : $err");
+      return -1;
     }
   }
 }

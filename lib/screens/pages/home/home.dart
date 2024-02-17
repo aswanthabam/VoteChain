@@ -38,18 +38,45 @@ class _HomeState extends State<Home> {
         ?.getUpComingElections$2(VoterHelper.voterInfo?.constituency ?? "")
         .then((value) {
       Global.logger.d("Upcoming elections: $value");
-      upcomingElections = value
-          .map<apiTypes.Election>((e) => apiTypes.Election.fromList(e))
-          .toList();
+      upcomingElections = value.map<apiTypes.Election>((e) {
+        apiTypes.Election el = apiTypes.Election.fromList(e);
+        VoterHelper().candidatesCount(el.id).then((value) {
+          el.candidatesCount = value;
+          setState(() {});
+        });
+        VoterHelper().totalVotersCount(el.constituency).then((value) {
+          el.voterCount = value;
+          setState(() {});
+        });
+        VoterHelper().totalVotes(el.id).then((value) {
+          el.votes = value;
+          setState(() {});
+        });
+
+        return el;
+      }).toList();
       setState(() {});
     });
     Contracts.votechain
         ?.getOnGoingElections(VoterHelper.voterInfo?.constituency ?? "")
         .then((value) {
       Global.logger.d("Ongoing elections: $value");
-      ongoingElections = value
-          .map<apiTypes.Election>((e) => apiTypes.Election.fromList(e))
-          .toList();
+      ongoingElections = value.map<apiTypes.Election>((e) {
+        apiTypes.Election el = apiTypes.Election.fromList(e);
+        VoterHelper().candidatesCount(el.id).then((value) {
+          el.candidatesCount = value;
+          setState(() {});
+        });
+        VoterHelper().totalVotersCount(el.constituency).then((value) {
+          el.voterCount = value;
+          setState(() {});
+        });
+        VoterHelper().totalVotes(el.id).then((value) {
+          el.votes = value;
+          setState(() {});
+        });
+        return el;
+      }).toList();
       setState(() {});
     });
     setState(() {});
@@ -86,16 +113,21 @@ class _HomeState extends State<Home> {
                               padding: const EdgeInsets.all(10),
                               child: Column(
                                 children: () {
-                                  var elections = ongoingElections
-                                      .map<Widget>((e) => ElectionCard(
-                                            election: e,
-                                            candidates: 0,
-                                          ))
-                                      .toList();
+                                  var elections =
+                                      ongoingElections.map<Widget>((e) {
+                                    return ElectionCard(
+                                      election: e,
+                                      candidates: e.candidatesCount,
+                                      percentage: e.voterCount > 0
+                                          ? (e.votes / e.voterCount * 100)
+                                          : 100,
+                                    );
+                                  }).toList();
                                   elections.addAll(
                                       upcomingElections.map((e) => ElectionCard(
                                             election: e,
-                                            candidates: 0,
+                                            candidates: e.candidatesCount,
+                                            nominations: e.nominationCount,
                                           )));
                                   var no_elections = [
                                     Container(
@@ -219,6 +251,7 @@ class ElectionCard extends StatelessWidget {
   final int? nominations;
   final int candidates;
   final double? percentage;
+
   const ElectionCard(
       {super.key,
       required this.election,
