@@ -147,6 +147,18 @@ class VoterHelper {
     }
   }
 
+  Future<int> totalNominations(int electionId) async {
+    try {
+      var count =
+          await Contracts.candidate?.nominationsCount(BigInt.from(electionId));
+      return count!.toInt();
+    } catch (err) {
+      Global.logger
+          .e("An error occured while fetching nominations count : $err");
+      return -1;
+    }
+  }
+
   Future<int> totalVotersCount(String constituency) async {
     try {
       var count = await Contracts.voter?.constituency_voter_count(constituency);

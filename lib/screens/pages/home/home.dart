@@ -48,11 +48,10 @@ class _HomeState extends State<Home> {
           el.voterCount = value;
           setState(() {});
         });
-        VoterHelper().totalVotes(el.id).then((value) {
-          el.votes = value;
+        VoterHelper().totalNominations(el.id).then((value) {
+          el.nominationCount = value;
           setState(() {});
         });
-
         return el;
       }).toList();
       setState(() {});
