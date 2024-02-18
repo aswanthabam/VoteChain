@@ -45,9 +45,15 @@ class CameraDetectionController {
   Function(Function())? setState;
   final Function(String) onMessage;
   // late DateTime _lastCaptureTime;
-
+  Future<void>? disposer;
   CameraDetectionController({required this.onImage, required this.onMessage});
   Future<void> dispose() async {
+    if (disposer != null) return disposer;
+    disposer = _dispose();
+    return disposer;
+  }
+
+  Future<void> _dispose() async {
     if (_isDisposed) return;
     await _faceDetector.close();
     await controller?.pausePreview();
@@ -189,8 +195,8 @@ class CameraDetectionController {
   Future<void> stopCapturing() async {
     if (_isDisposed) return;
     doneCapturing = true;
-    await controller!.stopImageStream();
     await controller!.pausePreview();
+    await controller!.stopImageStream();
   }
 
   Future<Uint8List> postProccessImageThread(imglib.Image inp) async {
@@ -208,15 +214,9 @@ class CameraDetectionController {
   Future<Uint8List?> convertImagetoJpg(CameraImage image) async {
     try {
       imglib.Image img;
-      final stopwatch = Stopwatch()..start();
       img = await decodeYUV420SPThread(image);
-      final decodeTime = stopwatch.elapsedMilliseconds;
       Global.logger.f("Image Width: ${img.width}, Height: ${img.height}");
       final imgBytes = await postProccessImageThread(img);
-      final saveTime = stopwatch.elapsedMilliseconds - decodeTime;
-      stopwatch.stop();
-      Global.logger
-          .f("Decode time: $decodeTime ms and post Process time: $saveTime ms");
       Uint8List png =
           Uint8List.fromList(imgBytes); // await postProccessImage(img);
       return png;
@@ -324,13 +324,6 @@ class _CameraAppState extends State<CameraApp> {
   late CameraDetectionController detectionController;
 
   @override
-  void didUpdateWidget(covariant CameraApp oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    setState(() {});
-    Global.logger.f("Updated widget");
-  }
-
-  @override
   void initState() {
     super.initState();
     detectionController = widget.controller;
@@ -345,9 +338,8 @@ class _CameraAppState extends State<CameraApp> {
 
   @override
   void dispose() {
-    detectionController.dispose().then((e) {
-      super.dispose();
-    });
+    detectionController.dispose();
+    super.dispose();
   }
 
   @override

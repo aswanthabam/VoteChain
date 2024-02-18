@@ -1,6 +1,7 @@
 import 'package:vote/services/api/api.dart';
 import 'package:vote/services/global.dart';
 import 'package:vote/utils/types/api_types.dart';
+import 'package:web3dart/web3dart.dart';
 
 class RegisterUserCallStatus {
   final bool status;
@@ -41,11 +42,18 @@ class UserAuthCall extends APIClass {
       {required String uid,
       required String aadhar,
       required String enc1,
-      required String enc2}) async {
+      required String enc2,
+      required EthereumAddress voterAddress}) async {
     try {
       var val = await postCall(
           '/api/user/auth/register/',
-          {'uid': uid, 'aadhar': aadhar, 'enc1': enc1, 'enc2': enc2},
+          {
+            'uid': uid,
+            'aadhar': aadhar,
+            'enc1': enc1,
+            'enc2': enc2,
+            'voterAddress': voterAddress.hex
+          },
           SystemConfig.localServer);
       print(val);
       if (val == null) {

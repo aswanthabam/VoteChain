@@ -198,6 +198,23 @@ class _FaceRegisterWidgetState extends State<FaceRegisterWidget> {
             if (appKey != null) {
               if (Utils.secureSave(key: "app_key", value: appKey)) {
                 Global.logger.i("App Key saved successfully");
+                await detectionController.controller?.pausePreview();
+                // await detectionController.dispose();
+                showDialog(
+                    context: context,
+                    builder: (context) => TextPopup(
+                          message:
+                              "We did it!! We've Successfully Registered your Face",
+                          bottomButtons: [
+                            TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: const Text("Continue"))
+                          ],
+                        )).then((value) {
+                  widget.next();
+                });
               } else {
                 Global.logger.e("Failed to save app key");
                 showDialog(
@@ -221,23 +238,6 @@ class _FaceRegisterWidgetState extends State<FaceRegisterWidget> {
       } else {
         setMessage("Oops there is some issues, trying again.");
       }
-    } else {
-      await detectionController.stopCapturing();
-      await detectionController.dispose();
-      showDialog(
-          context: context,
-          builder: (context) => TextPopup(
-                message: "We did it!! We've Successfully Registered your Face",
-                bottomButtons: [
-                  TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: const Text("Continue"))
-                ],
-              )).then((value) {
-        widget.next();
-      });
     }
   }
 

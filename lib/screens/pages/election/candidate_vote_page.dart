@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:vote/screens/pages/election/candidate_profile.dart';
+import 'package:vote/screens/pages/election/vote_cast_result.dart';
 import 'package:vote/screens/pages/face_verification/face_verification.dart';
 import 'package:vote/screens/pages/register/final/detector_view.dart';
 import 'package:vote/screens/widgets/appbars/backbar.dart';
@@ -10,14 +11,18 @@ import 'package:vote/services/blockchain/candidate_helper.dart';
 import 'package:vote/utils/types/api_types.dart' as apiTypes;
 
 class CandidateVotePage extends StatefulWidget {
-  const CandidateVotePage({super.key, required this.info});
+  const CandidateVotePage(
+      {super.key, required this.info, required this.election});
   final CandidateInfo info;
+  final apiTypes.Election election;
 
   @override
   State<CandidateVotePage> createState() => _CandidateVotePageState();
 }
 
 class _CandidateVotePageState extends State<CandidateVotePage> {
+  bool voteCasted = false;
+  bool voteCastingFailed = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -86,7 +91,7 @@ class _CandidateVotePageState extends State<CandidateVotePage> {
                           ClipOval(
                               child: Image.network(
                             apiTypes.SystemConfig.localServer +
-                                (widget.info.profile.party.logo),
+                                (widget.info.profile.logo),
                             width: 50,
                             height: 50,
                             fit: BoxFit.cover,
@@ -255,63 +260,28 @@ class _CandidateVotePageState extends State<CandidateVotePage> {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder:
-                                            (context) => FaceVerificationPage(
-                                                  onVerificationComplete: (bool
-                                                          sts,
-                                                      CameraDetectionController
-                                                          detectionController) {
-                                                    if (sts) {
-                                                      showDialog(
-                                                          barrierDismissible:
-                                                              false,
-                                                          context: context,
-                                                          builder:
-                                                              (context) =>
-                                                                  Dialog(
-                                                                    insetPadding:
-                                                                        EdgeInsets.all(
-                                                                            20),
-                                                                    child:
-                                                                        Container(
-                                                                      decoration: BoxDecoration(
-                                                                          borderRadius: BorderRadius.circular(
-                                                                              10),
-                                                                          color:
-                                                                              Colors.white),
-                                                                      padding: const EdgeInsets
-                                                                          .all(
-                                                                          20),
-                                                                      width: MediaQuery.of(context)
-                                                                              .size
-                                                                              .width -
-                                                                          100,
-                                                                      child: Column(
-                                                                          mainAxisSize:
-                                                                              MainAxisSize.min,
-                                                                          children: [
-                                                                            const CircularProgressIndicator(),
-                                                                            const SizedBox(
-                                                                              height: 20,
-                                                                            ),
-                                                                            Text(
-                                                                              "Casting Vote ..",
-                                                                              style: TextStyle(color: Colors.grey[700], fontSize: 17, fontWeight: FontWeight.bold),
-                                                                            ),
-                                                                            const SizedBox(
-                                                                              height: 20,
-                                                                            ),
-                                                                            Text(
-                                                                              "Please wait while we cast your vote",
-                                                                              textAlign: TextAlign.center,
-                                                                              style: TextStyle(color: Colors.grey[700]),
-                                                                            ),
-                                                                          ]),
-                                                                    ),
-                                                                  ));
-                                                    }
-                                                  },
-                                                )));
+                                        builder: (context) =>
+                                            FaceVerificationPage(
+                                              onVerificationComplete: (bool sts,
+                                                  CameraDetectionController
+                                                      detectionController) {
+                                                if (sts) {
+                                                  showDialog(
+                                                      barrierDismissible: false,
+                                                      context: context,
+                                                      builder: (context) =>
+                                                          VoteCastResultDialog(
+                                                              candidateAddress:
+                                                                  widget
+                                                                      .info
+                                                                      .info
+                                                                      .address,
+                                                              electionId: widget
+                                                                  .election
+                                                                  .id));
+                                                }
+                                              },
+                                            )));
                               },
                               child: const Text(
                                 "I Confirm",

@@ -4,7 +4,7 @@
 import 'package:web3dart/web3dart.dart' as _i1;
 
 final _contractAbi = _i1.ContractAbi.fromJson(
-  '[{"inputs":[{"internalType":"address","name":"permissionsAddress","type":"address"},{"internalType":"address","name":"linkerAddress","type":"address"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"voterAddress","type":"address"}],"name":"VoterRegistered","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"voterAddress","type":"address"}],"name":"VoterVerified","type":"event"},{"inputs":[{"internalType":"string","name":"","type":"string"}],"name":"email_linker","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"string","name":"","type":"string"}],"name":"phone_linker","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[],"name":"registered_voter_count","outputs":[{"internalType":"uint232","name":"","type":"uint232"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"registration_list","outputs":[{"internalType":"uint232","name":"voter_id","type":"uint232"},{"components":[{"internalType":"string","name":"aadhar_number","type":"string"},{"components":[{"internalType":"string","name":"first_name","type":"string"},{"internalType":"string","name":"middle_name","type":"string"},{"internalType":"string","name":"last_name","type":"string"},{"internalType":"string","name":"dob","type":"string"}],"internalType":"struct Voter.VoterPersonalInfo","name":"personal_info","type":"tuple"},{"components":[{"internalType":"string","name":"phone","type":"string"},{"internalType":"string","name":"email","type":"string"}],"internalType":"struct Voter.VoterContactInfo","name":"contact_info","type":"tuple"},{"components":[{"internalType":"string","name":"state","type":"string"},{"internalType":"string","name":"district","type":"string"},{"internalType":"string","name":"locality","type":"string"},{"internalType":"string","name":"ward","type":"string"},{"internalType":"string","name":"house_name","type":"string"},{"internalType":"string","name":"house_number","type":"string"},{"internalType":"string","name":"street","type":"string"},{"internalType":"string","name":"pincode","type":"string"}],"internalType":"struct Voter.VoterAddressInfo","name":"permeant_address","type":"tuple"},{"components":[{"internalType":"string","name":"state","type":"string"},{"internalType":"string","name":"district","type":"string"},{"internalType":"string","name":"locality","type":"string"},{"internalType":"string","name":"ward","type":"string"},{"internalType":"string","name":"house_name","type":"string"},{"internalType":"string","name":"house_number","type":"string"},{"internalType":"string","name":"street","type":"string"},{"internalType":"string","name":"pincode","type":"string"}],"internalType":"struct Voter.VoterAddressInfo","name":"current_address","type":"tuple"},{"internalType":"bool","name":"married","type":"bool"},{"internalType":"bool","name":"orphan","type":"bool"},{"internalType":"string","name":"constituency","type":"string"}],"internalType":"struct Voter.VoterInfo","name":"voter_info","type":"tuple"},{"internalType":"address","name":"voter_address","type":"address"},{"internalType":"enum Voter.VoterStatus","name":"status","type":"uint8"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[],"name":"voter_count","outputs":[{"internalType":"uint232","name":"","type":"uint232"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"voter_id_linker","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"voters","outputs":[{"internalType":"address","name":"voter_address","type":"address"},{"components":[{"internalType":"string","name":"aadhar_number","type":"string"},{"components":[{"internalType":"string","name":"first_name","type":"string"},{"internalType":"string","name":"middle_name","type":"string"},{"internalType":"string","name":"last_name","type":"string"},{"internalType":"string","name":"dob","type":"string"}],"internalType":"struct Voter.VoterPersonalInfo","name":"personal_info","type":"tuple"},{"components":[{"internalType":"string","name":"phone","type":"string"},{"internalType":"string","name":"email","type":"string"}],"internalType":"struct Voter.VoterContactInfo","name":"contact_info","type":"tuple"},{"components":[{"internalType":"string","name":"state","type":"string"},{"internalType":"string","name":"district","type":"string"},{"internalType":"string","name":"locality","type":"string"},{"internalType":"string","name":"ward","type":"string"},{"internalType":"string","name":"house_name","type":"string"},{"internalType":"string","name":"house_number","type":"string"},{"internalType":"string","name":"street","type":"string"},{"internalType":"string","name":"pincode","type":"string"}],"internalType":"struct Voter.VoterAddressInfo","name":"permeant_address","type":"tuple"},{"components":[{"internalType":"string","name":"state","type":"string"},{"internalType":"string","name":"district","type":"string"},{"internalType":"string","name":"locality","type":"string"},{"internalType":"string","name":"ward","type":"string"},{"internalType":"string","name":"house_name","type":"string"},{"internalType":"string","name":"house_number","type":"string"},{"internalType":"string","name":"street","type":"string"},{"internalType":"string","name":"pincode","type":"string"}],"internalType":"struct Voter.VoterAddressInfo","name":"current_address","type":"tuple"},{"internalType":"bool","name":"married","type":"bool"},{"internalType":"bool","name":"orphan","type":"bool"},{"internalType":"string","name":"constituency","type":"string"}],"internalType":"struct Voter.VoterInfo","name":"voter_info","type":"tuple"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"components":[{"internalType":"string","name":"aadhar_number","type":"string"},{"components":[{"internalType":"string","name":"first_name","type":"string"},{"internalType":"string","name":"middle_name","type":"string"},{"internalType":"string","name":"last_name","type":"string"},{"internalType":"string","name":"dob","type":"string"}],"internalType":"struct Voter.VoterPersonalInfo","name":"personal_info","type":"tuple"},{"components":[{"internalType":"string","name":"phone","type":"string"},{"internalType":"string","name":"email","type":"string"}],"internalType":"struct Voter.VoterContactInfo","name":"contact_info","type":"tuple"},{"components":[{"internalType":"string","name":"state","type":"string"},{"internalType":"string","name":"district","type":"string"},{"internalType":"string","name":"locality","type":"string"},{"internalType":"string","name":"ward","type":"string"},{"internalType":"string","name":"house_name","type":"string"},{"internalType":"string","name":"house_number","type":"string"},{"internalType":"string","name":"street","type":"string"},{"internalType":"string","name":"pincode","type":"string"}],"internalType":"struct Voter.VoterAddressInfo","name":"permeant_address","type":"tuple"},{"components":[{"internalType":"string","name":"state","type":"string"},{"internalType":"string","name":"district","type":"string"},{"internalType":"string","name":"locality","type":"string"},{"internalType":"string","name":"ward","type":"string"},{"internalType":"string","name":"house_name","type":"string"},{"internalType":"string","name":"house_number","type":"string"},{"internalType":"string","name":"street","type":"string"},{"internalType":"string","name":"pincode","type":"string"}],"internalType":"struct Voter.VoterAddressInfo","name":"current_address","type":"tuple"},{"internalType":"bool","name":"married","type":"bool"},{"internalType":"bool","name":"orphan","type":"bool"},{"internalType":"string","name":"constituency","type":"string"}],"internalType":"struct Voter.VoterInfo","name":"details","type":"tuple"},{"internalType":"string","name":"constituency","type":"string"}],"name":"registerVoter","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"voterID","type":"uint256"},{"internalType":"enum Voter.VoterStatus","name":"_status","type":"uint8"}],"name":"updateVoterStatus","outputs":[],"stateMutability":"nonpayable","type":"function"}]',
+  '[{"inputs":[{"internalType":"address","name":"permissionsAddress","type":"address"},{"internalType":"address","name":"linkerAddress","type":"address"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"voterAddress","type":"address"}],"name":"VoterRegistered","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"voterAddress","type":"address"}],"name":"VoterVerified","type":"event"},{"inputs":[{"internalType":"string","name":"","type":"string"}],"name":"constituency_voter_count","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"string","name":"","type":"string"}],"name":"email_linker","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"string","name":"","type":"string"}],"name":"phone_linker","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[],"name":"registered_voter_count","outputs":[{"internalType":"uint232","name":"","type":"uint232"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"registration_list","outputs":[{"internalType":"uint232","name":"voter_id","type":"uint232"},{"components":[{"internalType":"string","name":"aadhar_number","type":"string"},{"components":[{"internalType":"string","name":"first_name","type":"string"},{"internalType":"string","name":"middle_name","type":"string"},{"internalType":"string","name":"last_name","type":"string"},{"internalType":"string","name":"dob","type":"string"}],"internalType":"struct Voter.VoterPersonalInfo","name":"personal_info","type":"tuple"},{"components":[{"internalType":"string","name":"phone","type":"string"},{"internalType":"string","name":"email","type":"string"}],"internalType":"struct Voter.VoterContactInfo","name":"contact_info","type":"tuple"},{"components":[{"internalType":"string","name":"state","type":"string"},{"internalType":"string","name":"district","type":"string"},{"internalType":"string","name":"locality","type":"string"},{"internalType":"string","name":"ward","type":"string"},{"internalType":"string","name":"house_name","type":"string"},{"internalType":"string","name":"house_number","type":"string"},{"internalType":"string","name":"street","type":"string"},{"internalType":"string","name":"pincode","type":"string"}],"internalType":"struct Voter.VoterAddressInfo","name":"permeant_address","type":"tuple"},{"components":[{"internalType":"string","name":"state","type":"string"},{"internalType":"string","name":"district","type":"string"},{"internalType":"string","name":"locality","type":"string"},{"internalType":"string","name":"ward","type":"string"},{"internalType":"string","name":"house_name","type":"string"},{"internalType":"string","name":"house_number","type":"string"},{"internalType":"string","name":"street","type":"string"},{"internalType":"string","name":"pincode","type":"string"}],"internalType":"struct Voter.VoterAddressInfo","name":"current_address","type":"tuple"},{"internalType":"bool","name":"married","type":"bool"},{"internalType":"bool","name":"orphan","type":"bool"},{"internalType":"string","name":"constituency","type":"string"}],"internalType":"struct Voter.VoterInfo","name":"voter_info","type":"tuple"},{"internalType":"address","name":"voter_address","type":"address"},{"internalType":"enum Voter.VoterStatus","name":"status","type":"uint8"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[],"name":"voter_count","outputs":[{"internalType":"uint232","name":"","type":"uint232"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"voter_id_linker","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"voters","outputs":[{"internalType":"address","name":"voter_address","type":"address"},{"components":[{"internalType":"string","name":"aadhar_number","type":"string"},{"components":[{"internalType":"string","name":"first_name","type":"string"},{"internalType":"string","name":"middle_name","type":"string"},{"internalType":"string","name":"last_name","type":"string"},{"internalType":"string","name":"dob","type":"string"}],"internalType":"struct Voter.VoterPersonalInfo","name":"personal_info","type":"tuple"},{"components":[{"internalType":"string","name":"phone","type":"string"},{"internalType":"string","name":"email","type":"string"}],"internalType":"struct Voter.VoterContactInfo","name":"contact_info","type":"tuple"},{"components":[{"internalType":"string","name":"state","type":"string"},{"internalType":"string","name":"district","type":"string"},{"internalType":"string","name":"locality","type":"string"},{"internalType":"string","name":"ward","type":"string"},{"internalType":"string","name":"house_name","type":"string"},{"internalType":"string","name":"house_number","type":"string"},{"internalType":"string","name":"street","type":"string"},{"internalType":"string","name":"pincode","type":"string"}],"internalType":"struct Voter.VoterAddressInfo","name":"permeant_address","type":"tuple"},{"components":[{"internalType":"string","name":"state","type":"string"},{"internalType":"string","name":"district","type":"string"},{"internalType":"string","name":"locality","type":"string"},{"internalType":"string","name":"ward","type":"string"},{"internalType":"string","name":"house_name","type":"string"},{"internalType":"string","name":"house_number","type":"string"},{"internalType":"string","name":"street","type":"string"},{"internalType":"string","name":"pincode","type":"string"}],"internalType":"struct Voter.VoterAddressInfo","name":"current_address","type":"tuple"},{"internalType":"bool","name":"married","type":"bool"},{"internalType":"bool","name":"orphan","type":"bool"},{"internalType":"string","name":"constituency","type":"string"}],"internalType":"struct Voter.VoterInfo","name":"voter_info","type":"tuple"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"components":[{"internalType":"string","name":"aadhar_number","type":"string"},{"components":[{"internalType":"string","name":"first_name","type":"string"},{"internalType":"string","name":"middle_name","type":"string"},{"internalType":"string","name":"last_name","type":"string"},{"internalType":"string","name":"dob","type":"string"}],"internalType":"struct Voter.VoterPersonalInfo","name":"personal_info","type":"tuple"},{"components":[{"internalType":"string","name":"phone","type":"string"},{"internalType":"string","name":"email","type":"string"}],"internalType":"struct Voter.VoterContactInfo","name":"contact_info","type":"tuple"},{"components":[{"internalType":"string","name":"state","type":"string"},{"internalType":"string","name":"district","type":"string"},{"internalType":"string","name":"locality","type":"string"},{"internalType":"string","name":"ward","type":"string"},{"internalType":"string","name":"house_name","type":"string"},{"internalType":"string","name":"house_number","type":"string"},{"internalType":"string","name":"street","type":"string"},{"internalType":"string","name":"pincode","type":"string"}],"internalType":"struct Voter.VoterAddressInfo","name":"permeant_address","type":"tuple"},{"components":[{"internalType":"string","name":"state","type":"string"},{"internalType":"string","name":"district","type":"string"},{"internalType":"string","name":"locality","type":"string"},{"internalType":"string","name":"ward","type":"string"},{"internalType":"string","name":"house_name","type":"string"},{"internalType":"string","name":"house_number","type":"string"},{"internalType":"string","name":"street","type":"string"},{"internalType":"string","name":"pincode","type":"string"}],"internalType":"struct Voter.VoterAddressInfo","name":"current_address","type":"tuple"},{"internalType":"bool","name":"married","type":"bool"},{"internalType":"bool","name":"orphan","type":"bool"},{"internalType":"string","name":"constituency","type":"string"}],"internalType":"struct Voter.VoterInfo","name":"details","type":"tuple"},{"internalType":"string","name":"constituency","type":"string"}],"name":"registerVoter","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"voterID","type":"uint256"},{"internalType":"enum Voter.VoterStatus","name":"_status","type":"uint8"}],"name":"updateVoterStatus","outputs":[],"stateMutability":"nonpayable","type":"function"}]',
   'Voter',
 );
 
@@ -25,30 +25,30 @@ class Voter extends _i1.GeneratedContract {
   /// The optional [atBlock] parameter can be used to view historical data. When
   /// set, the function will be evaluated in the specified block. By default, the
   /// latest on-chain block will be used.
-  Future<_i1.EthereumAddress> email_linker(
+  Future<BigInt> constituency_voter_count(
     String $param0, {
     _i1.BlockNum? atBlock,
   }) async {
     final function = self.abi.functions[1];
-    assert(checkSignature(function, 'c26398ab'));
+    assert(checkSignature(function, '62eede7d'));
     final params = [$param0];
     final response = await read(
       function,
       params,
       atBlock,
     );
-    return (response[0] as _i1.EthereumAddress);
+    return (response[0] as BigInt);
   }
 
   /// The optional [atBlock] parameter can be used to view historical data. When
   /// set, the function will be evaluated in the specified block. By default, the
   /// latest on-chain block will be used.
-  Future<_i1.EthereumAddress> phone_linker(
+  Future<_i1.EthereumAddress> email_linker(
     String $param1, {
     _i1.BlockNum? atBlock,
   }) async {
     final function = self.abi.functions[2];
-    assert(checkSignature(function, 'db256a83'));
+    assert(checkSignature(function, 'c26398ab'));
     final params = [$param1];
     final response = await read(
       function,
@@ -61,8 +61,26 @@ class Voter extends _i1.GeneratedContract {
   /// The optional [atBlock] parameter can be used to view historical data. When
   /// set, the function will be evaluated in the specified block. By default, the
   /// latest on-chain block will be used.
-  Future<BigInt> registered_voter_count({_i1.BlockNum? atBlock}) async {
+  Future<_i1.EthereumAddress> phone_linker(
+    String $param2, {
+    _i1.BlockNum? atBlock,
+  }) async {
     final function = self.abi.functions[3];
+    assert(checkSignature(function, 'db256a83'));
+    final params = [$param2];
+    final response = await read(
+      function,
+      params,
+      atBlock,
+    );
+    return (response[0] as _i1.EthereumAddress);
+  }
+
+  /// The optional [atBlock] parameter can be used to view historical data. When
+  /// set, the function will be evaluated in the specified block. By default, the
+  /// latest on-chain block will be used.
+  Future<BigInt> registered_voter_count({_i1.BlockNum? atBlock}) async {
+    final function = self.abi.functions[4];
     assert(checkSignature(function, '525581c7'));
     final params = [];
     final response = await read(
@@ -77,12 +95,12 @@ class Voter extends _i1.GeneratedContract {
   /// set, the function will be evaluated in the specified block. By default, the
   /// latest on-chain block will be used.
   Future<Registration_list> registration_list(
-    BigInt $param2, {
+    BigInt $param3, {
     _i1.BlockNum? atBlock,
   }) async {
-    final function = self.abi.functions[4];
+    final function = self.abi.functions[5];
     assert(checkSignature(function, 'ce60f9a1'));
-    final params = [$param2];
+    final params = [$param3];
     final response = await read(
       function,
       params,
@@ -95,7 +113,7 @@ class Voter extends _i1.GeneratedContract {
   /// set, the function will be evaluated in the specified block. By default, the
   /// latest on-chain block will be used.
   Future<BigInt> voter_count({_i1.BlockNum? atBlock}) async {
-    final function = self.abi.functions[5];
+    final function = self.abi.functions[6];
     assert(checkSignature(function, 'beb604e0'));
     final params = [];
     final response = await read(
@@ -110,12 +128,12 @@ class Voter extends _i1.GeneratedContract {
   /// set, the function will be evaluated in the specified block. By default, the
   /// latest on-chain block will be used.
   Future<BigInt> voter_id_linker(
-    _i1.EthereumAddress $param3, {
+    _i1.EthereumAddress $param4, {
     _i1.BlockNum? atBlock,
   }) async {
-    final function = self.abi.functions[6];
+    final function = self.abi.functions[7];
     assert(checkSignature(function, 'c26f84fa'));
-    final params = [$param3];
+    final params = [$param4];
     final response = await read(
       function,
       params,
@@ -128,12 +146,12 @@ class Voter extends _i1.GeneratedContract {
   /// set, the function will be evaluated in the specified block. By default, the
   /// latest on-chain block will be used.
   Future<Voters> voters(
-    _i1.EthereumAddress $param4, {
+    _i1.EthereumAddress $param5, {
     _i1.BlockNum? atBlock,
   }) async {
-    final function = self.abi.functions[7];
+    final function = self.abi.functions[8];
     assert(checkSignature(function, 'a3ec138d'));
-    final params = [$param4];
+    final params = [$param5];
     final response = await read(
       function,
       params,
@@ -151,7 +169,7 @@ class Voter extends _i1.GeneratedContract {
     required _i1.Credentials credentials,
     _i1.Transaction? transaction,
   }) async {
-    final function = self.abi.functions[8];
+    final function = self.abi.functions[9];
     assert(checkSignature(function, '5364206e'));
     final params = [
       details,
@@ -174,7 +192,7 @@ class Voter extends _i1.GeneratedContract {
     required _i1.Credentials credentials,
     _i1.Transaction? transaction,
   }) async {
-    final function = self.abi.functions[9];
+    final function = self.abi.functions[10];
     assert(checkSignature(function, 'd3c14b62'));
     final params = [
       voterID,
@@ -202,7 +220,7 @@ class Voter extends _i1.GeneratedContract {
     );
     return client.events(filter).map((_i1.FilterEvent result) {
       final decoded = event.decodeResults(
-        result.topics!.cast().cast(),
+        result.topics!.cast(),
         result.data!,
       );
       return VoterRegistered(
@@ -226,7 +244,7 @@ class Voter extends _i1.GeneratedContract {
     );
     return client.events(filter).map((_i1.FilterEvent result) {
       final decoded = event.decodeResults(
-        result.topics!.cast().cast(),
+        result.topics!.cast(),
         result.data!,
       );
       return VoterVerified(

@@ -28,7 +28,7 @@ class SystemConfig {
 }
 
 class Election {
-  final String id;
+  final int id;
   final String name;
   final String description;
   final DateTime startDate;
@@ -38,7 +38,12 @@ class Election {
   final bool isStarted;
   final bool isEnded;
   final bool isOnGoing;
-
+  final bool resultsPublished;
+  int candidatesCount;
+  int nominationCount;
+  int voterCount;
+  int votes;
+  bool isVoted;
   Election({
     required this.id,
     required this.name,
@@ -47,6 +52,12 @@ class Election {
     required this.endDate,
     required this.constituency,
     required this.nominationStatus,
+    required this.resultsPublished,
+    this.candidatesCount = 0,
+    this.nominationCount = 0,
+    this.voterCount = 0,
+    this.votes = 0,
+    this.isVoted = false,
   })  : isStarted = DateTime.now().isAfter(startDate),
         isEnded = DateTime.now().isAfter(endDate),
         isOnGoing = DateTime.now().isAfter(startDate) &&
@@ -59,13 +70,14 @@ class Election {
 
   static Election fromList(List<dynamic> data) {
     return Election(
-      id: data[0].toString(),
+      id: (data[0] as BigInt).toInt(),
       name: data[1],
       description: data[2],
       startDate: DateTime.fromMillisecondsSinceEpoch(data[3].toInt() * 1000),
       endDate: DateTime.fromMillisecondsSinceEpoch(data[4].toInt() * 1000),
       constituency: data[5],
       nominationStatus: data[6].toInt(),
+      resultsPublished: data[7],
     );
   }
 }
@@ -333,5 +345,22 @@ class CandidateBlockchainInfo {
   @override
   String toString() {
     return "Address: ${address.hex}, Info: $info";
+  }
+}
+
+class Result {
+  final EthereumAddress candidateAddress;
+  final int votes;
+
+  Result({
+    required this.candidateAddress,
+    required this.votes,
+  });
+
+  static Result fromList(List<dynamic> data) {
+    return Result(
+      candidateAddress: data[0],
+      votes: data[1].toInt(),
+    );
   }
 }

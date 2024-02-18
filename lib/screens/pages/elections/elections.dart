@@ -5,7 +5,6 @@ import 'package:vote/screens/widgets/content_views/underlined_text/underlined_te
 import 'package:vote/services/blockchain/blockchain_client.dart';
 import 'package:vote/services/blockchain/voter_helper.dart';
 import 'package:vote/services/global.dart';
-import 'package:vote/services/utils.dart';
 import 'package:vote/utils/types/api_types.dart' as apiTypes;
 
 class Elections extends StatefulWidget {
@@ -19,9 +18,7 @@ class _ElectionsState extends State<Elections> {
   String address = "";
   String balance = "";
   bool isVerified = false;
-  VoterStatus status = VoterStatus.registered;
-  List<apiTypes.Election> upcomingElections = [];
-  List<apiTypes.Election> ongoingElections = [];
+  List<apiTypes.Election> allElections = [];
   late Future<void> loader;
   @override
   void initState() {
@@ -30,31 +27,33 @@ class _ElectionsState extends State<Elections> {
   }
 
   Future<void> init() async {
-    status =
-        await VoterHelper().fetchRegistrationStatus() ?? VoterStatus.registered;
-    setState(() {
-      status = status;
-    });
-    Global.logger.f("APP KEY: ${await Utils.storage.read(key: "app_key")}");
-    await VoterHelper().fetchInfo();
     Contracts.votechain
-        ?.getUpComingElections$2(VoterHelper.voterInfo?.constituency ?? "")
-        .then((value) {
-      Global.logger.d("Upcoming elections: $value");
-      upcomingElections = value
-          .map<apiTypes.Election>((e) => apiTypes.Election.fromList(e))
-          .toList();
-      setState(() {});
-    });
-    Contracts.votechain
-        ?.getOnGoingElections(VoterHelper.voterInfo?.constituency ?? "")
+        ?.getAllElections$2(VoterHelper.voterInfo?.constituency ?? "")
         .then((value) {
       Global.logger.d("Ongoing elections: $value");
-      ongoingElections = value
-          .map<apiTypes.Election>((e) => apiTypes.Election.fromList(e))
-          .toList();
+      allElections = value.map<apiTypes.Election>((e) {
+        apiTypes.Election el = apiTypes.Election.fromList(e);
+        VoterHelper().candidatesCount(el.id).then((value) {
+          el.candidatesCount = value;
+          setState(() {});
+        });
+        VoterHelper().totalVotersCount(el.constituency).then((value) {
+          el.voterCount = value;
+          setState(() {});
+        });
+        VoterHelper().totalVotes(el.id).then((value) {
+          el.votes = value;
+          setState(() {});
+        });
+        VoterHelper().isVoted(el.id).then((value) {
+          el.isVoted = value;
+          setState(() {});
+        });
+        return el;
+      }).toList();
       setState(() {});
     });
+    setState(() {});
   }
 
   @override
@@ -84,19 +83,13 @@ class _ElectionsState extends State<Elections> {
                                   underlineHeight: 8),
                               Column(
                                 children: () {
-                                  var elections = ongoingElections
+                                  var elections = allElections
                                       .map<Widget>((e) => ElectionCard(
                                             election: e,
-                                            electionStatus: true,
                                             candidates: 0,
                                           ))
                                       .toList();
-                                  elections.addAll(
-                                      upcomingElections.map((e) => ElectionCard(
-                                            election: e,
-                                            electionStatus: false,
-                                            candidates: 0,
-                                          )));
+
                                   var no_elections = [
                                     Container(
                                         height: 150,

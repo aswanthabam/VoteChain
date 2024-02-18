@@ -7,6 +7,7 @@ class FullSizeActionButton extends StatelessWidget {
   final Widget? textWidget;
   final VoidCallback onPressed;
   final bool showShadow;
+  final Color backgroundColor;
   const FullSizeActionButton({
     Key? key,
     required this.icon,
@@ -15,6 +16,7 @@ class FullSizeActionButton extends StatelessWidget {
     required this.onPressed,
     this.textWidget,
     this.showShadow = false,
+    this.backgroundColor = const Color.fromARGB(0, 255, 255, 255),
   }) : super(key: key);
 
   @override
@@ -22,14 +24,12 @@ class FullSizeActionButton extends StatelessWidget {
     return FractionallySizedBox(
       widthFactor: 1,
       child: Container(
-        decoration: showShadow
-            ? BoxDecoration(
-                color: const Color.fromARGB(255, 250, 250, 250),
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                    BoxShadow(color: Colors.grey[400]!, blurRadius: 10)
-                  ])
-            : null,
+        decoration: BoxDecoration(
+            color: backgroundColor,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: showShadow
+                ? [BoxShadow(color: Colors.grey[400]!, blurRadius: 10)]
+                : null),
         child: OutlinedButton(
           style: OutlinedButton.styleFrom(
               shape: const RoundedRectangleBorder(

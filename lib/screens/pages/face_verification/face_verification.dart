@@ -2,6 +2,7 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:vote/screens/pages/register/final/detector_view.dart';
 import 'package:vote/screens/widgets/appbars/backbar.dart';
@@ -21,7 +22,8 @@ class FaceVerificationPage extends StatefulWidget {
   State<FaceVerificationPage> createState() => _FaceVerificationPageState();
 }
 
-class _FaceVerificationPageState extends State<FaceVerificationPage> {
+class _FaceVerificationPageState extends State<FaceVerificationPage>
+    with WidgetsBindingObserver {
   late CameraDetectionController detectionController;
   int totalImages = 0;
   int totalNeededImages = 15;
@@ -40,9 +42,32 @@ class _FaceVerificationPageState extends State<FaceVerificationPage> {
   @override
   void initState() {
     super.initState();
+
+    WidgetsBinding.instance.addObserver(this);
     detectionController =
         CameraDetectionController(onImage: onImage, onMessage: setMessage);
     lastTime = DateTime.now();
+  }
+
+  @override
+  void dispose() {
+    detectionController.dispose();
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    final CameraController? cameraController = detectionController
+        .controller; // App state changed before we got the chance to initialize.
+    if (cameraController == null || !cameraController.value.isInitialized) {
+      return;
+    }
+
+    if (state == AppLifecycleState.inactive) {
+      cameraController.dispose();
+    } else if (state == AppLifecycleState.resumed) {
+      detectionController.recapture();
+    }
   }
 
   @override
