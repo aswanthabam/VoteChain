@@ -74,6 +74,10 @@ class _HomeState extends State<Home> {
           el.votes = value;
           setState(() {});
         });
+        VoterHelper().isVoted(el.id).then((value) {
+          el.isVoted = value;
+          setState(() {});
+        });
         return el;
       }).toList();
       setState(() {});
@@ -496,7 +500,7 @@ class TextBadge extends StatelessWidget {
   final Color textColor;
   final double headingFontsize;
   final double valueFontsize;
-
+  final double height;
   const TextBadge(
       {super.key,
       required this.heading,
@@ -504,7 +508,8 @@ class TextBadge extends StatelessWidget {
       required this.background,
       this.textColor = Colors.black,
       this.headingFontsize = 13,
-      this.valueFontsize = 15});
+      this.valueFontsize = 15,
+      this.height = 100});
 
   @override
   Widget build(BuildContext context) {
@@ -512,14 +517,17 @@ class TextBadge extends StatelessWidget {
         child: Container(
       margin: const EdgeInsets.symmetric(horizontal: 5),
       padding: const EdgeInsets.all(10),
+      height: height,
       decoration: ShapeDecoration(
         color: background,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.max,
         children: [
           Text(heading,
+              textAlign: TextAlign.center,
               style: TextStyle(
                   color: textColor,
                   fontSize: headingFontsize,

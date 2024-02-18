@@ -147,6 +147,30 @@ class VoterHelper {
     }
   }
 
+  Future<bool> getResults(int electionId) async {
+    try {
+      var val = await Contracts.votechain?.getResults(BigInt.from(electionId));
+      Global.logger.f("Election results : $val");
+      return true;
+    } catch (err) {
+      Global.logger
+          .e("An error occured while fetching election results : $err");
+      return false;
+    }
+  }
+
+  Future<bool> isVoted(int electionId) async {
+    try {
+      var val = await Contracts.votechain
+          ?.voterVoted(BigInt.from(electionId), VoteChainWallet.address!);
+      Global.logger.f("Voter voted status : $val");
+      return val!;
+    } catch (err) {
+      Global.logger.e("An error occured while fetching voter id : $err");
+      return false;
+    }
+  }
+
   Future<int> totalNominations(int electionId) async {
     try {
       var count =

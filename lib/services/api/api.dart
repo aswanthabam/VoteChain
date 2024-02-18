@@ -26,7 +26,6 @@ class APIClass {
     });
     Response response = await get(Uri.parse(
         '${hostAddress ?? host}$route?APP_KEY=${await Utils.storage.read(key: "app_key")}$queryString'));
-    print(response.body);
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
     }

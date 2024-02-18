@@ -38,10 +38,12 @@ class Election {
   final bool isStarted;
   final bool isEnded;
   final bool isOnGoing;
+  final bool resultsPublished;
   int candidatesCount;
   int nominationCount;
   int voterCount;
   int votes;
+  bool isVoted;
   Election({
     required this.id,
     required this.name,
@@ -50,10 +52,12 @@ class Election {
     required this.endDate,
     required this.constituency,
     required this.nominationStatus,
+    required this.resultsPublished,
     this.candidatesCount = 0,
     this.nominationCount = 0,
     this.voterCount = 0,
     this.votes = 0,
+    this.isVoted = false,
   })  : isStarted = DateTime.now().isAfter(startDate),
         isEnded = DateTime.now().isAfter(endDate),
         isOnGoing = DateTime.now().isAfter(startDate) &&
@@ -73,6 +77,7 @@ class Election {
       endDate: DateTime.fromMillisecondsSinceEpoch(data[4].toInt() * 1000),
       constituency: data[5],
       nominationStatus: data[6].toInt(),
+      resultsPublished: data[7],
     );
   }
 }

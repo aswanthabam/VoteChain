@@ -7,6 +7,7 @@ class UnderlinedText extends StatelessWidget {
   final Color underlineColor;
   final double underlineWidth;
   final double underlineHeight;
+  final bool center;
   const UnderlinedText({
     super.key,
     required this.heading,
@@ -15,12 +16,14 @@ class UnderlinedText extends StatelessWidget {
     required this.underlineColor,
     required this.underlineWidth,
     required this.underlineHeight,
+    this.center = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment:
+          center ? CrossAxisAlignment.center : CrossAxisAlignment.start,
       children: [
         Text(
           heading,
