@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:vote/services/api/ethers/ethers.dart';
 import 'package:vote/services/api/user.dart';
 import 'package:vote/services/blockchain/blockchain_client.dart';
+import 'package:vote/services/blockchain/candidate_helper.dart';
 import 'package:vote/services/blockchain/voter_helper.dart';
 import 'package:vote/services/blockchain/wallet.dart';
 import 'package:vote/services/global.dart';
@@ -84,6 +85,23 @@ class ExternalRequestProcessor {
 
             return ExternalConnectResponse(true,
                 "Successfully completed operation, please wait for the result!",
+                stayUntilComplete: true, waiter: waiter);
+          }
+        } else if (val[1] == 'withdraw') {
+          if (val[2] == 'stay') {
+            String electionId = val[3];
+            Global.logger.i("Candidate withdraw election id: $electionId");
+            waiter() async {
+              bool val = await CandidateHelper()
+                  .withdrawNomination(int.parse(electionId));
+              await connector
+                  ?.sendResult({'status': val ? 'success' : 'failed'});
+              return val;
+            }
+
+            ();
+            return ExternalConnectResponse(
+                true, "Successfully completed operation, withdrawn nomination!",
                 stayUntilComplete: true, waiter: waiter);
           }
         }

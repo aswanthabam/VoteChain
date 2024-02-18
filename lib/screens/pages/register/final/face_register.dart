@@ -198,7 +198,8 @@ class _FaceRegisterWidgetState extends State<FaceRegisterWidget> {
             if (appKey != null) {
               if (Utils.secureSave(key: "app_key", value: appKey)) {
                 Global.logger.i("App Key saved successfully");
-                await detectionController.dispose();
+                await detectionController.controller?.pausePreview();
+                // await detectionController.dispose();
                 showDialog(
                     context: context,
                     builder: (context) => TextPopup(

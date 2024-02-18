@@ -1,7 +1,9 @@
 import 'package:vote/services/api/candidates.dart';
 import 'package:vote/services/blockchain/blockchain_client.dart';
+import 'package:vote/services/blockchain/wallet.dart';
 import 'package:vote/services/global.dart';
 import 'package:vote/utils/types/api_types.dart';
+import 'package:web3dart/web3dart.dart';
 
 class CandidateInfo {
   final CandidateBlockchainInfo info;
@@ -11,6 +13,21 @@ class CandidateInfo {
 }
 
 class CandidateHelper {
+  Future<bool> withdrawNomination(int electionId) async {
+    try {
+      var res = await Contracts.candidate?.withdrawNomination(
+          BigInt.from(electionId),
+          credentials: VoteChainWallet.credentials!,
+          transaction: Transaction(
+              maxPriorityFeePerGas: EtherAmount.inWei(BigInt.zero)));
+      Global.logger.i("Withdraw nomination response: $res");
+      return true;
+    } catch (err) {
+      Global.logger.e("An error occured while withdrawing nomination: $err");
+      return false;
+    }
+  }
+
   Future<List<CandidateInfo>> getEligibleCandidates(int electionId) async {
     // Get the list of candidates who are eligible for the election
     List<CandidateInfo> candidates = [];

@@ -194,13 +194,10 @@ class _RegisterState extends State<Register> {
   void initState() {
     super.initState();
     pagination = pagging.Pagination(pages: <FormPage>[
-      // RegisterInfoPage(),
       RegisterUIDPage(),
       RegisterPersonalInfoOnePage(),
       RegisterPersonalInfoTwoPage(),
       ConstituencySelectorPage(),
-      // RegisterPersonalInfoThreePage(),
-      // RegisterElectionDetailsOnePage(),
       PasswordAdderPage(),
       PinAddPage(),
       PhraseConfirmPage(), // -2
