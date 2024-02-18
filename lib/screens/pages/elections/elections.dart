@@ -18,8 +18,7 @@ class _ElectionsState extends State<Elections> {
   String address = "";
   String balance = "";
   bool isVerified = false;
-  List<apiTypes.Election> upcomingElections = [];
-  List<apiTypes.Election> ongoingElections = [];
+  List<apiTypes.Election> allElections = [];
   late Future<void> loader;
   @override
   void initState() {
@@ -29,32 +28,10 @@ class _ElectionsState extends State<Elections> {
 
   Future<void> init() async {
     Contracts.votechain
-        ?.getUpComingElections$2(VoterHelper.voterInfo?.constituency ?? "")
-        .then((value) {
-      Global.logger.d("Upcoming elections: $value");
-      upcomingElections = value.map<apiTypes.Election>((e) {
-        apiTypes.Election el = apiTypes.Election.fromList(e);
-        VoterHelper().candidatesCount(el.id).then((value) {
-          el.candidatesCount = value;
-          setState(() {});
-        });
-        VoterHelper().totalVotersCount(el.constituency).then((value) {
-          el.voterCount = value;
-          setState(() {});
-        });
-        VoterHelper().totalNominations(el.id).then((value) {
-          el.nominationCount = value;
-          setState(() {});
-        });
-        return el;
-      }).toList();
-      setState(() {});
-    });
-    Contracts.votechain
-        ?.getOnGoingElections(VoterHelper.voterInfo?.constituency ?? "")
+        ?.getAllElections$2(VoterHelper.voterInfo?.constituency ?? "")
         .then((value) {
       Global.logger.d("Ongoing elections: $value");
-      ongoingElections = value.map<apiTypes.Election>((e) {
+      allElections = value.map<apiTypes.Election>((e) {
         apiTypes.Election el = apiTypes.Election.fromList(e);
         VoterHelper().candidatesCount(el.id).then((value) {
           el.candidatesCount = value;
@@ -106,17 +83,13 @@ class _ElectionsState extends State<Elections> {
                                   underlineHeight: 8),
                               Column(
                                 children: () {
-                                  var elections = ongoingElections
+                                  var elections = allElections
                                       .map<Widget>((e) => ElectionCard(
                                             election: e,
                                             candidates: 0,
                                           ))
                                       .toList();
-                                  elections.addAll(
-                                      upcomingElections.map((e) => ElectionCard(
-                                            election: e,
-                                            candidates: 0,
-                                          )));
+
                                   var no_elections = [
                                     Container(
                                         height: 150,

@@ -347,3 +347,20 @@ class CandidateBlockchainInfo {
     return "Address: ${address.hex}, Info: $info";
   }
 }
+
+class Result {
+  final EthereumAddress candidateAddress;
+  final int votes;
+
+  Result({
+    required this.candidateAddress,
+    required this.votes,
+  });
+
+  static Result fromList(List<dynamic> data) {
+    return Result(
+      candidateAddress: data[0],
+      votes: data[1].toInt(),
+    );
+  }
+}

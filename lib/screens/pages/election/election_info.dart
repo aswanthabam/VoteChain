@@ -11,6 +11,7 @@ import 'package:vote/screens/widgets/content_views/underlined_text/underlined_te
 import 'package:vote/services/api/election.dart';
 import 'package:vote/services/api/location/location.dart';
 import 'package:vote/services/blockchain/candidate_helper.dart';
+import 'package:vote/services/blockchain/voter_helper.dart';
 import 'package:vote/services/global.dart';
 import 'package:vote/utils/types/api_types.dart' as apiTypes;
 
@@ -29,6 +30,7 @@ class _ElectionInfoState extends State<ElectionInfo> {
   apiTypes.Constituency? constituency;
   apiTypes.CandidateProfile? candidateProfile;
   List<CandidateInfo> candidateInfo = [];
+  List<apiTypes.Result> results = [];
   late Future<bool> loader;
   @override
   void initState() {
@@ -48,6 +50,12 @@ class _ElectionInfoState extends State<ElectionInfo> {
         candidateInfo = value;
         setState(() {});
       });
+      if (widget.election.resultsPublished) {
+        VoterHelper().getResults(widget.election.id).then((value) {
+          results = value ?? [];
+          setState(() {});
+        });
+      }
       setState(() {});
       return true;
     }();
@@ -253,6 +261,27 @@ class _ElectionInfoState extends State<ElectionInfo> {
                                       style: const TextStyle(fontSize: 13),
                                     ))
                                   ]),
+                                  (widget.election.isEnded &&
+                                          widget.election.resultsPublished)
+                                      ? Column(
+                                          children: [
+                                            const UnderlinedText(
+                                                heading: "Result",
+                                                fontSize: 20,
+                                                color: Colors.black,
+                                                underlineColor: Colors.green,
+                                                underlineWidth: 100,
+                                                underlineHeight: 4),
+                                            Column(
+                                                children: results
+                                                    .map((e) => Text(
+                                                        "${e.candidateAddress} : ${e.votes}"))
+                                                    .toList())
+                                          ],
+                                        )
+                                      : const SizedBox(
+                                          height: 0,
+                                        ),
                                   widget.election.isOnGoing ||
                                           widget.election.isEnded
                                       ? Column(

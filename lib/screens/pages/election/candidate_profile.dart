@@ -116,7 +116,7 @@ class CandidateProfilePage extends StatelessWidget {
                 ),
                 UnderlinedText(
                     heading: "About Me",
-                    fontSize: 20,
+                    fontSize: 18,
                     color: Colors.grey.shade700,
                     underlineColor: Colors.green,
                     underlineWidth: 100,
@@ -128,7 +128,7 @@ class CandidateProfilePage extends StatelessWidget {
                 ),
                 UnderlinedText(
                     heading: "Contact Options",
-                    fontSize: 20,
+                    fontSize: 18,
                     color: Colors.grey.shade700,
                     underlineColor: Colors.green,
                     underlineWidth: 100,

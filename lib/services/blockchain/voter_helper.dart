@@ -4,6 +4,7 @@ import 'package:vote/services/api/election.dart';
 import 'package:vote/services/blockchain/blockchain_client.dart';
 import 'package:vote/services/blockchain/wallet.dart';
 import 'package:vote/services/global.dart';
+import 'package:vote/utils/types/api_types.dart';
 import 'package:vote/utils/types/user_types.dart';
 import 'package:web3dart/web3dart.dart';
 
@@ -147,15 +148,22 @@ class VoterHelper {
     }
   }
 
-  Future<bool> getResults(int electionId) async {
+  Future<List<Result>?> getResults(int electionId) async {
     try {
       var val = await Contracts.votechain?.getResults(BigInt.from(electionId));
       Global.logger.f("Election results : $val");
-      return true;
+      if (val == null) {
+        return null;
+      }
+      List<Result> results = [];
+      for (var r in val) {
+        results.add(Result.fromList(r));
+      }
+      return results;
     } catch (err) {
       Global.logger
           .e("An error occured while fetching election results : $err");
-      return false;
+      return null;
     }
   }
 

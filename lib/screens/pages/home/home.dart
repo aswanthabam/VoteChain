@@ -179,12 +179,14 @@ class _HomeState extends State<Home> {
                                   ];
                                   List<Widget> res = [
                                     const UnderlinedText(
-                                        heading: "Elections",
-                                        fontSize: 20,
-                                        color: Colors.black,
-                                        underlineColor: Colors.black,
-                                        underlineWidth: 100,
-                                        underlineHeight: 8)
+                                      heading: "Elections",
+                                      fontSize: 20,
+                                      color: Colors.black,
+                                      underlineColor: Colors.green,
+                                      underlineWidth: 100,
+                                      underlineHeight: 8,
+                                      center: true,
+                                    )
                                   ];
                                   res.addAll(elections.isNotEmpty
                                       ? elections
