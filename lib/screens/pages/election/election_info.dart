@@ -53,6 +53,7 @@ class _ElectionInfoState extends State<ElectionInfo> {
       if (widget.election.resultsPublished) {
         VoterHelper().getResults(widget.election.id).then((value) {
           results = value ?? [];
+          results.sort((a, b) => a.votes.compareTo(b.votes));
           setState(() {});
         });
       }
@@ -159,6 +160,7 @@ class _ElectionInfoState extends State<ElectionInfo> {
                                       ? Column(
                                           children: candidateInfo
                                               .map((e) => FullSizeActionButton(
+                                                  backgroundColor: Colors.white,
                                                   showShadow: true,
                                                   icon: ClipOval(
                                                       child: Image.network(
@@ -264,24 +266,131 @@ class _ElectionInfoState extends State<ElectionInfo> {
                                   (widget.election.isEnded &&
                                           widget.election.resultsPublished)
                                       ? Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
                                             const UnderlinedText(
                                                 heading: "Result",
                                                 fontSize: 20,
                                                 color: Colors.black,
                                                 underlineColor: Colors.green,
-                                                underlineWidth: 100,
+                                                underlineWidth: 70,
                                                 underlineHeight: 4),
                                             Column(
-                                                children: results
-                                                    .map((e) => Text(
-                                                        "${e.candidateAddress} : ${e.votes}"))
-                                                    .toList())
+                                                children: results.map((e) {
+                                              return Container(
+                                                decoration: BoxDecoration(
+                                                  color: Colors.white,
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                ),
+                                                child: () {
+                                                  if (candidateInfo.isEmpty) {
+                                                    return const SizedBox(
+                                                      height: 0,
+                                                    );
+                                                  }
+                                                  var rank =
+                                                      results.indexOf(e) + 1;
+                                                  var candidate = candidateInfo
+                                                      .where((element) =>
+                                                          element.info.address
+                                                              .hex ==
+                                                          e.candidateAddress
+                                                              .hex)
+                                                      .first;
+                                                  Global.logger.f(
+                                                      "Candidate : ${candidate.profile.name}, rank : $rank");
+                                                  return FullSizeActionButton(
+                                                      backgroundColor: rank == 1
+                                                          ? const Color.fromARGB(
+                                                                  255,
+                                                                  209,
+                                                                  132,
+                                                                  55)
+                                                              .withAlpha(100)
+                                                          : rank == 2
+                                                              ? const Color.fromARGB(
+                                                                  255,
+                                                                  141,
+                                                                  213,
+                                                                  145)
+                                                              : rank == 3
+                                                                  ? const Color.fromARGB(
+                                                                      255,
+                                                                      154,
+                                                                      198,
+                                                                      234)
+                                                                  : const Color
+                                                                      .fromARGB(
+                                                                      255,
+                                                                      139,
+                                                                      131,
+                                                                      131),
+                                                      icon: ClipOval(
+                                                          child: Image.network(
+                                                        apiTypes.SystemConfig
+                                                                .localServer +
+                                                            (candidate.profile
+                                                                    .photo ??
+                                                                ''),
+                                                        width: 40,
+                                                        height: 40,
+                                                        fit: BoxFit.cover,
+                                                        errorBuilder: (context,
+                                                                error,
+                                                                stackTrace) =>
+                                                            Image.asset(
+                                                                'src/images/asset/user-person-profile-block-account-circle-svgrepo-com.png',
+                                                                width: 40,
+                                                                height: 40,
+                                                                fit: BoxFit
+                                                                    .cover),
+                                                      )),
+                                                      icon2: Text(
+                                                        e.votes.toString(),
+                                                        style: const TextStyle(
+                                                            fontSize: 20,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold),
+                                                      ),
+                                                      text: "text",
+                                                      textWidget: Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            Text(
+                                                              candidate
+                                                                  .profile.name,
+                                                              style: const TextStyle(
+                                                                  fontSize: 15,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold),
+                                                            ),
+                                                            const SizedBox(
+                                                                height: 6),
+                                                            Text(
+                                                              candidate.profile
+                                                                  .party.name,
+                                                              style:
+                                                                  const TextStyle(
+                                                                      fontSize:
+                                                                          12),
+                                                            )
+                                                          ]),
+                                                      onPressed: () {});
+                                                }(),
+                                              );
+                                            }).toList())
                                           ],
                                         )
                                       : const SizedBox(
                                           height: 0,
                                         ),
+                                  const SizedBox(height: 20),
                                   widget.election.isOnGoing ||
                                           widget.election.isEnded
                                       ? Column(
