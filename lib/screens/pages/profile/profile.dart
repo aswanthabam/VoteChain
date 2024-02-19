@@ -92,6 +92,7 @@ class _ProfileState extends State<Profile> {
                       MaterialPageRoute(
                           builder: (context) => FaceVerificationPage(
                                 onVerificationComplete: (bool sts,
+                                    String? faceKey,
                                     CameraDetectionController
                                         detectionController) {
                                   if (sts) {

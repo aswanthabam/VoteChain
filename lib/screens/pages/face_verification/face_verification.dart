@@ -16,8 +16,11 @@ import 'package:vote/utils/types/api_types.dart' as apiTypes;
 import 'package:http/http.dart' as http;
 
 class FaceVerificationPage extends StatefulWidget {
-  const FaceVerificationPage({super.key, required this.onVerificationComplete});
-  final void Function(bool, CameraDetectionController) onVerificationComplete;
+  const FaceVerificationPage(
+      {super.key, required this.onVerificationComplete, this.aadhar});
+  final void Function(bool, String? faceKey, CameraDetectionController)
+      onVerificationComplete;
+  final String? aadhar;
   @override
   State<FaceVerificationPage> createState() => _FaceVerificationPageState();
 }
@@ -149,10 +152,12 @@ class _FaceVerificationPageState extends State<FaceVerificationPage>
 
   Future<void> onImage(File file) async {
     if (done) return;
-    final String? uid = (VoterHelper.voterInfo == null ||
-            VoterHelper.voterInfo!.aadharNumber.isEmpty)
-        ? null
-        : VoterHelper.voterInfo?.aadharNumber;
+    final String? uid = (widget.aadhar != null)
+        ? widget.aadhar
+        : ((VoterHelper.voterInfo == null ||
+                VoterHelper.voterInfo!.aadharNumber.isEmpty)
+            ? null
+            : VoterHelper.voterInfo?.aadharNumber);
     if (uid == null) {
       showDialog(
           context: context,
@@ -169,7 +174,7 @@ class _FaceVerificationPageState extends State<FaceVerificationPage>
       return;
     }
     if (totalImages < totalNeededImages) {
-      (bool, bool) res =
+      (bool, bool, String?) res =
           await sendImageToApi(file, uid, context); // face found, result
       totalImages++;
       if (res.$1) {
@@ -177,7 +182,7 @@ class _FaceVerificationPageState extends State<FaceVerificationPage>
           done = true;
           await detectionController.stopCapturing();
           totalImages = totalNeededImages;
-          widget.onVerificationComplete(true, detectionController);
+          widget.onVerificationComplete(true, res.$3, detectionController);
         } else {
           // send a message to move a little bit
           setMessage("Its not the face im looking for, please try again.");
@@ -191,12 +196,12 @@ class _FaceVerificationPageState extends State<FaceVerificationPage>
     } else {
       await detectionController.stopCapturing();
       done = true;
-      widget.onVerificationComplete(false, detectionController);
+      widget.onVerificationComplete(false, null, detectionController);
       totalImages = 0;
     }
   }
 
-  Future<(bool, bool)> sendImageToApi(
+  Future<(bool, bool, String?)> sendImageToApi(
       File imageFile, String uid, BuildContext context) async {
     try {
       final url =
@@ -211,22 +216,26 @@ class _FaceVerificationPageState extends State<FaceVerificationPage>
       String resString = await response.stream.bytesToString();
       print(resString);
       Map<String, dynamic> res = jsonDecode(resString);
+      String? face_key;
       if (response.statusCode == 200) {
         Global.logger.i("Image successfully sent to the API");
         bool face_found = res['data']['face_found'];
         if (face_found) {
-          return (face_found, res['data']['result'] as bool);
+          face_key = res['data']['face_key'];
+        }
+        if (face_found) {
+          return (face_found, res['data']['result'] as bool, face_key);
         } else {
-          return (false, false);
+          return (false, false, face_key);
         }
       } else {
         Global.logger.w(
             "Failed to send image to the API. Status code: ${response.statusCode}");
-        return (false, false);
+        return (false, false, face_key);
       }
     } catch (e) {
       Global.logger.e("Error sending image to API: $e");
-      return (false, false);
+      return (false, false, null);
     }
   }
 }
