@@ -18,7 +18,7 @@ This repo contains the code for the client side mobile app of VoteChain (Blockch
   - build apk:
 
   ```bash
-  flutter build apk --split-abis
+  flutter build apk --split-per-abi
   ```
 
 > Note that this project is under development and **doesnt accept any contributions** until an initial implementation of the project is done.
