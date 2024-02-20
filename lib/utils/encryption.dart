@@ -37,7 +37,6 @@ Future<String?> encrypt(String data, String password) async {
 
 Future<String?> decrypt(String ciphertext, String password) async {
   try {
-    ;
     final data = Uint8List.fromList(hex.decode(ciphertext));
     final salt = Uint8List.fromList(data.sublist(0, 16));
     final key = await deriveKey(password, salt);

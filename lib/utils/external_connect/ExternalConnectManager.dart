@@ -71,10 +71,10 @@ class ExternalConnectManager {
   }
 
   Future<ExternalConnectResponse> handleTypeAll() async {
-    Map<String, dynamic> _data = VoterHelper.voterInfo!.toJson();
-    _data['private_key'] = hex.encode(VoteChainWallet.credentials!.privateKey);
-    _data['address'] = VoteChainWallet.credentials?.address.hex;
-    bool sts = await connector?.sendEncryptedData(_data) ?? false;
+    Map<String, dynamic> data = VoterHelper.voterInfo!.toJson();
+    data['private_key'] = hex.encode(VoteChainWallet.credentials!.privateKey);
+    data['address'] = VoteChainWallet.credentials?.address.hex;
+    bool sts = await connector?.sendEncryptedData(data) ?? false;
 
     if (sts) {
       connector?.close();

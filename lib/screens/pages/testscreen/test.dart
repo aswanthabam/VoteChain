@@ -13,7 +13,7 @@ class _TestWidgetState extends State<TestWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      body: Column(
+      body: const Column(
         children: [CardWidget()],
       ),
     );

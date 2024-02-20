@@ -4,7 +4,7 @@ class DateField extends StatefulWidget {
   final String label;
   final Function(DateTime) onDateSelected;
 
-  DateField({required this.label, required this.onDateSelected});
+  const DateField({super.key, required this.label, required this.onDateSelected});
 
   @override
   _DateFieldState createState() => _DateFieldState();
@@ -37,9 +37,9 @@ class _DateFieldState extends State<DateField> {
         _selectDate(context);
       },
       child: Container(
-        padding: EdgeInsets.all(20),
+        padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: Color.fromARGB(68, 27, 166, 141),
+          color: const Color.fromARGB(68, 27, 166, 141),
           borderRadius: BorderRadius.circular(20),
         ),
         child: Row(

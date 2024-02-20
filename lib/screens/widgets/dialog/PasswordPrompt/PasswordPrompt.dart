@@ -30,10 +30,10 @@ class PasswordPrompt extends StatelessWidget {
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  icon: Icon(Icons.close)),
+                  icon: const Icon(Icons.close)),
               const SizedBox(height: 20.0),
-              Text(message, style: TextStyle(fontSize: 13)),
-              Container(
+              Text(message, style: const TextStyle(fontSize: 13)),
+              SizedBox(
                 height: 60,
                 width: 200,
                 child: Row(

@@ -216,22 +216,22 @@ class _FaceVerificationPageState extends State<FaceVerificationPage>
       String resString = await response.stream.bytesToString();
       print(resString);
       Map<String, dynamic> res = jsonDecode(resString);
-      String? face_key;
+      String? faceKey;
       if (response.statusCode == 200) {
         Global.logger.i("Image successfully sent to the API");
-        bool face_found = res['data']['face_found'];
-        if (face_found) {
-          face_key = res['data']['face_key'];
+        bool faceFound = res['data']['face_found'];
+        if (faceFound) {
+          faceKey = res['data']['face_key'];
         }
-        if (face_found) {
-          return (face_found, res['data']['result'] as bool, face_key);
+        if (faceFound) {
+          return (faceFound, res['data']['result'] as bool, faceKey);
         } else {
-          return (false, false, face_key);
+          return (false, false, faceKey);
         }
       } else {
         Global.logger.w(
             "Failed to send image to the API. Status code: ${response.statusCode}");
-        return (false, false, face_key);
+        return (false, false, faceKey);
       }
     } catch (e) {
       Global.logger.e("Error sending image to API: $e");

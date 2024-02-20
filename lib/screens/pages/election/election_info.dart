@@ -711,7 +711,7 @@ class CandidateCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.max,
           children: [
-            Container(
+            SizedBox(
               width: MediaQuery.of(context).size.width,
               child: FullSizeActionButton(
                   icon: ClipOval(
