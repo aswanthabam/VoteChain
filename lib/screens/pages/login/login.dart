@@ -1,8 +1,10 @@
 // ignore_for_file: use_build_context_synchronously
 import 'package:flutter/material.dart';
+import 'package:vote/screens/pages/face_verification/face_verification.dart';
 import 'package:vote/screens/pages/login/login_aadhar.dart';
 import 'package:vote/screens/pages/login/password_page.dart';
 import 'package:vote/screens/pages/login/phrases.dart';
+import 'package:vote/screens/pages/register/final/detector_view.dart';
 import 'package:vote/screens/pages/register/register.dart';
 import 'package:vote/screens/widgets/buttons/async_button.dart';
 import 'package:vote/screens/widgets/dialog/TextPopup/TextPopup.dart';
@@ -10,6 +12,8 @@ import 'package:vote/screens/widgets/paginated_views/paginated_views.dart'
     as pagging;
 import 'package:vote/services/api/user.dart';
 import 'package:vote/services/blockchain/wallet.dart';
+import 'package:vote/services/global.dart';
+import 'package:vote/services/utils.dart';
 import 'package:vote/utils/encryption.dart';
 
 class Login extends StatefulWidget {
@@ -81,7 +85,35 @@ class _LoginState extends State<Login> {
                   ]));
       return;
     }
-    Navigator.of(context).pushNamedAndRemoveUntil('home', (route) => false);
+    Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => FaceVerificationPage(
+            aadhar: aadhar!,
+            onVerificationComplete: (bool val, String? faceKey,
+                CameraDetectionController controller) {
+              if (val) {
+                // decrypt(ciphertext, password)
+                decrypt(encs.appKey, faceKey ?? '').then((value) {
+                  if (Utils.secureSave(key: "app_key", value: value ?? '')) {
+                    Global.logger.i("Saved wallet successfully.");
+                    Navigator.of(context)
+                        .pushNamedAndRemoveUntil('home', (route) => false);
+                  } else {
+                    showDialog(
+                        context: context,
+                        builder: (context) => TextPopup(
+                              message: "An error occured while saving appkey",
+                              bottomButtons: [
+                                TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: const Text("Close"))
+                              ],
+                            ));
+                  }
+                });
+              }
+            })));
   }
 
   @override

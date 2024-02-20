@@ -28,7 +28,7 @@ class ListContent extends ContentType {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      " * " + e,
+                      " * $e",
                       softWrap: true,
                     )
                   ],

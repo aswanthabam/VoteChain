@@ -90,7 +90,7 @@ class _ElectionsState extends State<Elections> {
                                           ))
                                       .toList();
 
-                                  var no_elections = [
+                                  var noElections = [
                                     Container(
                                         height: 150,
                                         width:
@@ -137,7 +137,7 @@ class _ElectionsState extends State<Elections> {
                                   ];
                                   return elections.isNotEmpty
                                       ? elections
-                                      : no_elections;
+                                      : noElections;
                                 }(),
                               )
                             ],

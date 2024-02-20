@@ -263,6 +263,7 @@ class _CandidateVotePageState extends State<CandidateVotePage> {
                                         builder: (context) =>
                                             FaceVerificationPage(
                                               onVerificationComplete: (bool sts,
+                                                  String? faceKey,
                                                   CameraDetectionController
                                                       detectionController) {
                                                 if (sts) {

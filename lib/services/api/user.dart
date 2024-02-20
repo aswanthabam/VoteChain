@@ -15,10 +15,12 @@ class RegisterUserCallStatus {
 class UserENC {
   String enc1;
   String enc2;
-  UserENC({required this.enc1, required this.enc2});
+  String appKey;
+  UserENC({required this.enc1, required this.enc2, required this.appKey});
 
   static UserENC fromJson(Map<String, dynamic> json) {
-    return UserENC(enc1: json['ec1'], enc2: json['ec2']);
+    return UserENC(
+        enc1: json['ec1'], enc2: json['ec2'], appKey: json['app_key']);
   }
 }
 

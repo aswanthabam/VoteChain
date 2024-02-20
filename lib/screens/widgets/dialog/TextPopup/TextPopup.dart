@@ -35,8 +35,8 @@ class TextPopup extends StatelessWidget {
               //       size: 20,
               //     )),
               const SizedBox(height: 10.0),
-              Text(message, style: TextStyle(fontSize: 13)),
-              Container(
+              Text(message, style: const TextStyle(fontSize: 13)),
+              SizedBox(
                 height: 60,
                 width: 200,
                 child: Row(

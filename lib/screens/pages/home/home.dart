@@ -132,7 +132,7 @@ class _HomeState extends State<Home> {
                                             candidates: e.candidatesCount,
                                             nominations: e.nominationCount,
                                           )));
-                                  var no_elections = [
+                                  var noElections = [
                                     Container(
                                         height: 150,
                                         width:
@@ -190,7 +190,7 @@ class _HomeState extends State<Home> {
                                   ];
                                   res.addAll(elections.isNotEmpty
                                       ? elections
-                                      : no_elections);
+                                      : noElections);
                                   return res;
                                 }(),
                               ),

@@ -30,7 +30,7 @@ class _AdminState extends State<Admin> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: MyAppBar(),
+        appBar: const MyAppBar(),
         body: Padding(
           padding: const EdgeInsets.all(20),
           child: Column(

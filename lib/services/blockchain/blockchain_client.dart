@@ -66,7 +66,6 @@ class BlockchainClient {
           address: ContractAddress.candidateAddress,
           client: BlockchainClient.client,
           chainId: 1337);
-      ;
       Contracts.permissions = Permissions(
           address: ContractAddress.permissionsAddress,
           client: BlockchainClient.client,
