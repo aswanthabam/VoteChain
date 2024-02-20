@@ -27,10 +27,10 @@ class ElectionCall extends APIClass {
           'type': 'time',
           'gap': gap,
           'start_time': startTime != null
-              ? DateFormat('yyyy-MM-dd HH:mm:ss').format(startTime)
+              ? DateFormat('yyyy-MM-dd HH:mm:ss').format(startTime.toUtc())
               : null,
           'end_time': endTIme != null
-              ? DateFormat('yyyy-MM-dd HH:mm:ss').format(endTIme)
+              ? DateFormat('yyyy-MM-dd HH:mm:ss').format(endTIme.toUtc())
               : null
         },
         SystemConfig.localServer);
@@ -42,7 +42,9 @@ class ElectionCall extends APIClass {
     try {
       for (var entry in (val['data'] as Map<String, dynamic>).entries) {
         print(entry);
-        var time = DateTime.parse(entry.key);
+        var time =
+            DateFormat("yyyy-MM-dd HH:mm:ss").parse(entry.key, true).toLocal();
+        // var time = DateTime.parse(entry.key).toLocal();
         var votes = entry.value;
         stats.add(ElectionStatisticsTime(time: time, votes: votes));
       }

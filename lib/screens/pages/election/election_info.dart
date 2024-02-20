@@ -141,13 +141,6 @@ class _ElectionInfoState extends State<ElectionInfo> {
                                 mainAxisSize: MainAxisSize.max,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  // const UnderlinedText(
-                                  //     heading: "About Election",
-                                  //     fontSize: 20,
-                                  //     color: Colors.black,
-                                  //     underlineColor: Colors.green,
-                                  //     underlineWidth: 100,
-                                  //     underlineHeight: 4),
                                   AboutElectionCard(info: widget.election),
                                   const UnderlinedText(
                                       heading: "Candidates",
@@ -162,6 +155,7 @@ class _ElectionInfoState extends State<ElectionInfo> {
                                               .map((e) => FullSizeActionButton(
                                                   backgroundColor: Colors.white,
                                                   showShadow: true,
+                                                  marginBottom: 10,
                                                   icon: ClipOval(
                                                       child: Image.network(
                                                     apiTypes.SystemConfig
@@ -555,7 +549,9 @@ class _ElectionInfoState extends State<ElectionInfo> {
                         ? Column(
                             children: candidateInfo
                                 .map((e) => FullSizeActionButton(
-                                    showShadow: true,
+                                showShadow: true,
+                                    backgroundColor: Colors.white,
+                                    marginBottom: 10,
                                     icon: ClipOval(
                                         child: Image.network(
                                       apiTypes.SystemConfig.localServer +
